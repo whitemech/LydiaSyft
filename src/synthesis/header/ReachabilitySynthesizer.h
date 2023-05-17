@@ -12,7 +12,7 @@ namespace Syft {
 /**
  * \brief A maxset-synthesizer for a reachability game given as a symbolic-state DFA.
  */
-    class ReachabilityMaxSetSynthesizer : public DfaGameSynthesizer {
+    class ReachabilitySynthesizer : public DfaGameSynthesizer {
     private:
 
         CUDD::BDD goal_states_;
@@ -27,8 +27,8 @@ namespace Syft {
          * \param starting_player The player that moves first each turn.
          * \param goal_states The set of states that the agent must reach to win.
          */
-        ReachabilityMaxSetSynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
-                                      CUDD::BDD goal_states, CUDD::BDD state_space);
+        ReachabilitySynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
+                                CUDD::BDD goal_states, CUDD::BDD state_space);
 
         /**
          * \brief Solves the reachability game.
