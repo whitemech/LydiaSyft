@@ -20,6 +20,9 @@ find_package(spot REQUIRED)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 add_subdirectory(${LYDIA_DIR})
+set_target_properties(lydiaTest PROPERTIES EXCLUDE_FROM_ALL True)
+set_target_properties(lydiaBench PROPERTIES EXCLUDE_FROM_ALL True)
+set_target_properties(lydia-bin PROPERTIES EXCLUDE_FROM_ALL True)
 set(LYDIA_LIBRARIES lydia)
 
 set(LYDIA_INCLUDE_DIR ${LYDIA_DIR}/lib/include)
