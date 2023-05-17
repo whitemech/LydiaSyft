@@ -1,10 +1,10 @@
-#include "ReachabilityMaxSetSynthesizer.h"
+#include "ReachabilitySynthesizer.h"
 
 #include <cassert>
 
 namespace Syft {
 
-    ReachabilityMaxSetSynthesizer::ReachabilityMaxSetSynthesizer(SymbolicStateDfa spec,
+    ReachabilitySynthesizer::ReachabilitySynthesizer(SymbolicStateDfa spec,
                                                      Player starting_player, Player protagonist_player,
                                                      CUDD::BDD goal_states,
                                                      CUDD::BDD state_space)
@@ -13,7 +13,7 @@ namespace Syft {
     {}
 
 
-    SynthesisResult ReachabilityMaxSetSynthesizer::run() const {
+    SynthesisResult ReachabilitySynthesizer::run() const {
         SynthesisResult result;
         CUDD::BDD winning_states = state_space_ & goal_states_;
         CUDD::BDD winning_moves = winning_states;
@@ -56,7 +56,7 @@ namespace Syft {
 
     }
 
-    std::unique_ptr<Transducer> ReachabilityMaxSetSynthesizer::AbstractSingleStrategy(SynthesisResult result) const {
+    std::unique_ptr<Transducer> ReachabilitySynthesizer::AbstractSingleStrategy(SynthesisResult result) const {
         std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
                 result.winning_moves);
 
@@ -66,7 +66,7 @@ namespace Syft {
         return transducer;
     }
 
-    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(SynthesisResult result) const {
+    MaxSet ReachabilitySynthesizer::AbstractMaxSet(SynthesisResult result) const {
         MaxSet maxset;
         maxset.nondeferring_strategy = result.winning_moves;
         maxset.deferring_strategy = result.winning_moves | (result.winning_states & preimage(result.winning_states));
@@ -74,7 +74,7 @@ namespace Syft {
     }
 
     std::pair<std::unique_ptr<Transducer>, std::unique_ptr<Transducer>>
-    ReachabilityMaxSetSynthesizer::AbstractSingleStrategyFromMaxSet(MaxSet maxset) const {
+    ReachabilitySynthesizer::AbstractSingleStrategyFromMaxSet(MaxSet maxset) const {
         std::unordered_map<int, CUDD::BDD> df_strategy = synthesize_strategy(
                 maxset.deferring_strategy);
 
