@@ -20,7 +20,7 @@ find_package(spot REQUIRED)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 add_subdirectory(${LYDIA_DIR})
-set(LYDIA_LIBRARIES ${LYDIA_DIR})
+set(LYDIA_LIBRARIES lydia)
 
 set(LYDIA_INCLUDE_DIR ${LYDIA_DIR}/lib/include)
 set(LYDIA_THIRD_PARTY_INCLUDE_PATH "${LYDIA_DIR}/third_party/spdlog/include;${LYDIA_DIR}/third_party/CLI11/include;/usr/local/include;/usr/local/include;/usr/local/include;${LYDIA_DIR}/third_party/google/benchmark/include;/usr/include")
