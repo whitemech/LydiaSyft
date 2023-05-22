@@ -3,6 +3,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <boost/algorithm/string.hpp>
+#include <iostream>
 
 namespace Syft {
 
@@ -86,11 +87,11 @@ void VarMgr::partition_variables(const std::vector<std::string>& input_names,
     throw std::runtime_error(
 	"Error: Only one input-output partition is allowed.");
   }
-
 //  if (input_names.size() + output_names.size() != index_to_name_.size()) {
 //    throw std::runtime_error(
 //	"Error: Input-output partition is the wrong size.");
 //  }
+
 
     if (input_names.size() + output_names.size() != index_to_name_.size()) {
         throw std::runtime_error(

@@ -62,7 +62,5 @@ Follow the instructions to complete the installation of lydia.
    ```cd bin```
 
 2. Run example:
-
-    ---- Synthesize one single strategy ----
-        Agn first: ```./Lydiasyft -f ../../example/env.ltlf -p ../../example/test.part```
+   Agn first: ```./Lydiasyft -s ../../syfco-bin/syfco -f ../../example/test.tlsf```
 
