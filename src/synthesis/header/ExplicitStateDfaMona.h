@@ -56,45 +56,6 @@ namespace Syft {
 
 
         /**
-         * \brief Prune a DFA with given set of states.
-         *
-         * Basically remove a set of states from the DFA, and return a minimized one.
-         *
-         * \param d The DFA to be pruned.
-         * \param states The set of states to be removed.
-         * \return The pruned DFA.
-         */
-        static ExplicitStateDfaMona prune_dfa_with_states(ExplicitStateDfaMona& d, std::vector<size_t> states);
-
-        /**
-         * \brief Prune a DFA with given transitions.
-         *
-         * Basically remove a set of transitions from the DFA, and return a minimized one.
-         *
-         * \param d The DFA to be pruned.
-         * \param transitions The set of transitions to be removed.
-         * \return The pruned DFA.
-         */
-        static ExplicitStateDfaMona prune_dfa_with_transitions(ExplicitStateDfaMona& d, std::unordered_map<size_t, CUDD::BDD> transitions, std::shared_ptr<VarMgr> var_mgr);
-
-        /**
-         * \brief Take the product of a vector of DFAs.
-         *
-         * \param dfa_vector The DFAs to be processed.
-         * \return The product DFA.
-         */
-        static ExplicitStateDfaMona dfa_product(const std::vector<ExplicitStateDfaMona>& dfa_vector);
-
-        /**
-         * \brief Minimize a given DFA.
-         *
-         * \param d The DFA to be minimized.
-         * \return The minimal DFA.
-         */
-        static ExplicitStateDfaMona dfa_minimize(const ExplicitStateDfaMona& d);
-
-
-        /**
          * \brief Construct DFA from a given formula
          *
          *

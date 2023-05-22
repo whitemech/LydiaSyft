@@ -9,7 +9,7 @@ include_directories(${SPOT_INCLUDE_DIRS})
 file(GLOB HEADER_FILES ${PARSER_INCLUDE_PATH}/*.h)
 file(GLOB SOURCE_FILES ${PARSER_SRC_PATH}/*.cpp)
 
-add_library(${PARSER_LIB_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PARSER_LIB_NAME} STATIC ${HEADER_FILES} ${SOURCE_FILES} Parser.cpp Parser.h)
 
 target_link_libraries(${PARSER_LIB_NAME} ${SPOT_LIBRARIES})
 

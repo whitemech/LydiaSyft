@@ -56,4 +56,12 @@ InputOutputPartition InputOutputPartition::read_from_file(
   return partition;
 }
 
+InputOutputPartition InputOutputPartition::construct_from_input(const std::vector<std::string> inputs_substr,
+                                                               std::vector<std::string> outputs_substr) {
+    InputOutputPartition partition;
+    partition.input_variables = inputs_substr;
+    partition.output_variables = outputs_substr;
+    return partition;
+}
+
 }
