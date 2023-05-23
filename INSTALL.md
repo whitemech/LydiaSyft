@@ -33,6 +33,13 @@
 Follow the instructions to complete the installation of lydia.
 
 
+==== Install Z3 ====
+
+On Ubuntu:
+
+    sudo apt install libz3-dev
+
+
 ==== Build LYDIASYFT ====
 
 1. Make build folder so your directory is not flooded with build files:
