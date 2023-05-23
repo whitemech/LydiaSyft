@@ -53,7 +53,12 @@ Follow the instructions to complete the installation of lydia.
 
 4. Compile using the generated makefile:
 
-    ```make```
+    ```make -j$(nproc --ignore=1) LydiaSyft```
+
+5. Run tests:
+
+    ```./bin/tests```
+
 
 ==== Run LYDIASYFT ====
 
