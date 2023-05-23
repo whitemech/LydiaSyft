@@ -8,7 +8,8 @@
 #include "ExplicitStateDfaMona.h"
 #include "ReachabilitySynthesizer.h"
 #include "InputOutputPartition.h"
-#include "lydia/parser/ltlf/driver.hpp"
+#include "OneStepRealizability.h"
+#include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
 #include <istream>
 
@@ -61,6 +62,13 @@ int main(int argc, char ** argv) {
     auto context = driver->context;
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
+
+    // one-step realizability check
+    auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition);
+    if (one_step_realizability_check_result) {
+      std::cout << "The problem is Realizable" << std::endl;
+      return 0;
+    }
 
     Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
 

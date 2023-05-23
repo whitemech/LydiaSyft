@@ -64,4 +64,12 @@ InputOutputPartition InputOutputPartition::construct_from_input(const std::vecto
     return partition;
 }
 
+  bool InputOutputPartition::is_input(const std::string &var_name) {
+    return std::find(input_variables.begin(), input_variables.end(), var_name) != input_variables.end();
+  }
+
+  bool InputOutputPartition::is_output(const std::string &var_name) {
+    return std::find(output_variables.begin(), output_variables.end(), var_name) != output_variables.end();
+  }
+
 }
