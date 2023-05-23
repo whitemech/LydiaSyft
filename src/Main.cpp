@@ -27,7 +27,10 @@ int main(int argc, char ** argv) {
             required() -> check(CLI::ExistingFile);
 
     bool env_start = false;
-    app.add_flag("-e, --environment", env_start, "Environment as the first player");
+    app.add_flag("-e, --environment", env_start, "Environment as the first player (default: false)");
+
+    bool print_strategy = false;
+    app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
 
     CLI11_PARSE(app, argc, argv);
     Syft::Stopwatch total_time_stopwatch; // stopwatch for end-to-end execution
@@ -76,8 +79,9 @@ int main(int argc, char ** argv) {
         abstract_single_strategy_time_stopwatch.start();
 
         auto transducer = synthesizer.AbstractSingleStrategy(std::move(result));
-//            transducer->dump_dot("strategy.dot");
-
+        if (print_strategy){
+            transducer->dump_dot("strategy.dot");
+        }
         auto abstract_single_strategy_time = abstract_single_strategy_time_stopwatch.stop();
         std::cout << "Abstract single strategy time: "
                   << abstract_single_strategy_time.count() << " ms" << std::endl;
