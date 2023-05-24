@@ -25,14 +25,6 @@
     sudo apt-get install flex bison
 
 
-
-==== Install SPOT ====
-
-0.5 Spot can be found at:
-
-    https://spot.lrde.epita.fr/
-
-
 ==== Install LYDIA ====
 
     cd submodules
