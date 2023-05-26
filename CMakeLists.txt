@@ -19,8 +19,8 @@ find_package(mona REQUIRED)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 set(WITH_SYFT OFF)
+set(LYDIA_ENABLE_TESTS OFF)
 add_subdirectory(${LYDIA_DIR})
-set_target_properties(lydiaTest PROPERTIES EXCLUDE_FROM_ALL True)
 set_target_properties(lydiaBench PROPERTIES EXCLUDE_FROM_ALL True)
 set(LYDIA_LIBRARIES lydia)
 
