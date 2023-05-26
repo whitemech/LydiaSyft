@@ -16,15 +16,13 @@ namespace Syft {
     Parser::Parser()
     {}
 
-    std::string Parser::ltrim(const std::string &s)
-    {
+    std::string Parser::ltrim(const std::string &s) {
         const std::string WHITESPACE = " \n\r\t\f\v";
         size_t start = s.find_first_not_of(WHITESPACE);
         return (start == std::string::npos) ? "" : s.substr(start);
     }
 
-    std::string Parser::rtrim(const std::string &s)
-    {
+    std::string Parser::rtrim(const std::string &s) {
         const std::string WHITESPACE = " \n\r\t\f\v";
         size_t end = s.find_last_not_of(WHITESPACE);
         return (end == std::string::npos) ? "" : s.substr(0, end + 1);
@@ -71,6 +69,12 @@ namespace Syft {
         boost::split(output_substr, outs_str_trimmed, boost::is_any_of(","));
         parser.output_variables = output_substr;
 
+        std::string cmd_get_target = "./" + syfco_location + " --format ltlxba-fin -g "+filename;
+        std::string target_str = parser.exec(cmd_get_target.c_str());
+        std::string target_str_trimmed = parser.trim(target_str);
+        target_str_trimmed.erase(std::remove_if(target_str_trimmed.begin(), target_str_trimmed.end(), ::isspace),
+                               target_str_trimmed.end());
+        parser.sys_first = (target_str_trimmed == "Moore")?  true : false;
         return parser;
 
     }
@@ -85,6 +89,10 @@ namespace Syft {
 
     std::string Parser::get_formula() const{
         return formula;
+    }
+
+    bool Parser::get_sys_first() const{
+        return sys_first;
     }
 }
 

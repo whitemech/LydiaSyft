@@ -66,33 +66,6 @@ namespace Syft {
         return transducer;
     }
 
-    MaxSet ReachabilitySynthesizer::AbstractMaxSet(SynthesisResult result) const {
-        MaxSet maxset;
-        maxset.nondeferring_strategy = result.winning_moves;
-        maxset.deferring_strategy = result.winning_moves | (result.winning_states & preimage(result.winning_states));
-        return maxset;
-    }
 
-    std::pair<std::unique_ptr<Transducer>, std::unique_ptr<Transducer>>
-    ReachabilitySynthesizer::AbstractSingleStrategyFromMaxSet(MaxSet maxset) const {
-        std::unordered_map<int, CUDD::BDD> df_strategy = synthesize_strategy(
-                maxset.deferring_strategy);
-
-        auto df_transducer = std::make_unique<Transducer>(
-                var_mgr_, initial_vector_, df_strategy, spec_.transition_function(),
-                starting_player_);
-
-        std::unordered_map<int, CUDD::BDD> ndf_strategy = synthesize_strategy(
-                maxset.nondeferring_strategy);
-
-        auto ndf_transducer = std::make_unique<Transducer>(
-                var_mgr_, initial_vector_, ndf_strategy, spec_.transition_function(),
-                starting_player_);
-
-        std::pair<std::unique_ptr<Transducer>, std::unique_ptr<Transducer>> transducer;
-        transducer.first = std::move(df_transducer);
-        transducer.second = std::move(ndf_transducer);
-        return transducer;
-    }
 
 }

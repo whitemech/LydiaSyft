@@ -1,16 +1,12 @@
-#ifndef SYFT_REACHABILITYMAXSETSYNTHESIZER_H
-#define SYFT_REACHABILITYMAXSETSYNTHESIZER_H
+#ifndef SYFT_REACHABILITYSYNTHESIZER_H
+#define SYFT_REACHABILITYSYNTHESIZER_H
 
 #include "DfaGameSynthesizer.h"
 
 namespace Syft {
-    struct MaxSet{
-        CUDD::BDD deferring_strategy;
-        CUDD::BDD nondeferring_strategy;
-    };
 
 /**
- * \brief A maxset-synthesizer for a reachability game given as a symbolic-state DFA.
+ * \brief A single-strategy-synthesizer for a reachability game given as a symbolic-state DFA.
  */
     class ReachabilitySynthesizer : public DfaGameSynthesizer {
     private:
@@ -21,7 +17,7 @@ namespace Syft {
     public:
 
         /**
-         * \brief Construct a maxset-synthesizer for the given reachability game.
+         * \brief Construct a single-strategy-synthesizer for the given reachability game.
          *
          * \param spec A symbolic-state DFA representing the reachability game.
          * \param starting_player The player that moves first each turn.
@@ -42,11 +38,8 @@ namespace Syft {
 
         std::unique_ptr<Transducer> AbstractSingleStrategy(SynthesisResult result) const;
 
-        MaxSet AbstractMaxSet(SynthesisResult result) const;
-
-        std::pair<std::unique_ptr<Transducer>, std::unique_ptr<Transducer>> AbstractSingleStrategyFromMaxSet(MaxSet maxset) const;
     };
 
 }
 
-#endif //SYFT_REACHABILITYMAXSETSYNTHESIZER_H
+#endif //SYFT_REACHABILITYSYNTHESIZER_H

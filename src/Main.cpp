@@ -26,9 +26,6 @@ int main(int argc, char ** argv) {
     app.add_option("-s,--syfco-location", syfco_location, "Syfco location")->
             required() -> check(CLI::ExistingFile);
 
-    bool env_start = false;
-    app.add_flag("-e, --environment", env_start, "Environment as the first player (default: false)");
-
     bool print_strategy = false;
     app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
 
@@ -39,12 +36,15 @@ int main(int argc, char ** argv) {
     Syft::Stopwatch aut_time_stopwatch; // stopwatch for abstract single strategy
     aut_time_stopwatch.start();
 
-    Syft::Player starting_player = env_start? Syft::Player::Environment : Syft::Player::Agent;
+    Syft::Parser parser;
+    parser = Syft::Parser::read_from_file(syfco_location, formula_file);
+    bool sys_first = parser.get_sys_first();
+
+    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
     bool realizability;
 
-    Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(syfco_location, formula_file);
+
 
     Syft::InputOutputPartition partition =
             Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
@@ -53,6 +53,7 @@ int main(int argc, char ** argv) {
     var_mgr->create_named_variables(partition.output_variables);
 
     Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(parser.get_formula());
+//    std::cout<<parser.get_formula()<<"\n";
 
     Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
 

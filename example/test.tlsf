@@ -2,7 +2,7 @@ INFO {
   TITLE:       "LTLf-test"
   DESCRIPTION: "LTLf-test example"
   SEMANTICS:   Finite,Moore
-  TARGET:      Moore
+  TARGET:      Mealy
 }
 
 MAIN {
@@ -18,7 +18,7 @@ MAIN {
   }
 
   GUARANTEES {
-    X[!](a1 || b1) && (a2 U b2);
+    (a1 <-> b1);
   }
 
 }

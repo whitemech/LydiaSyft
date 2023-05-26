@@ -19,6 +19,7 @@ namespace Syft {
         std::vector<std::string> input_variables;
         std::vector<std::string> output_variables;
         std::string formula;
+        bool sys_first;
 
         std::string exec(const char* cmd);
         std::string ltrim(const std::string &s);
@@ -26,7 +27,6 @@ namespace Syft {
         std::string rtrim(const std::string &s);
 
         std::string trim(const std::string &s);
-
 
     public:
 
@@ -55,6 +55,11 @@ namespace Syft {
          * \brief Return the formula.
          */
         std::string get_formula() const;
+
+        /**
+         * \brief Return true if the target is a Moore machine.
+         */
+        bool get_sys_first() const;
     };
 
 }
