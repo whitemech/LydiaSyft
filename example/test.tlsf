@@ -1,0 +1,24 @@
+INFO {
+  TITLE:       "LTLf-test"
+  DESCRIPTION: "LTLf-test example"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Mealy
+}
+
+MAIN {
+
+  INPUTS {
+    a1;
+    a2;
+  }
+
+  OUTPUTS {
+    b1;
+    b2;
+  }
+
+  GUARANTEES {
+    (a1 <-> b1);
+  }
+
+}

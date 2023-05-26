@@ -35,6 +35,16 @@ public:
     * \return A partition with the input and output variables listed in the file
     */
   static InputOutputPartition read_from_file(const std::string& filename);
+
+    /**
+   * \brief Constructs a partition from inputs.
+   *
+   *
+   * \param inputs_substr A string vector of input variables.
+   * \param outputs_substr A string vector of output variables.
+   * \return A partition with the input and output variables listed in the file
+   */
+    static InputOutputPartition construct_from_input(const std::vector<std::string> inputs_substr, std::vector<std::string> outputs_substr);
 };
 
 }

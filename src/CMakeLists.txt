@@ -3,11 +3,12 @@ add_subdirectory(synthesis)
 
 
 include_directories(${PARSER_INCLUDE_PATH} ${SYNTHESIS_INCLUDE_PATH} ${EXT_INCLUDE_PATH})
-add_executable(Syftmax Main.cpp)
+add_executable(LydiaSyft Main.cpp)
 
-target_link_libraries(Syftmax ${PARSER_LIB_NAME} ${SYNTHESIS_LIB_NAME} ${LYDIA_LIBRARIES})
+target_link_libraries(LydiaSyft ${PARSER_LIB_NAME} ${SYNTHESIS_LIB_NAME} ${LYDIA_LIBRARIES})
 
-install(TARGETS Syftmax
+
+install(TARGETS LydiaSyft
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION lib
   )

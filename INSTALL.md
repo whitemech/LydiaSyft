@@ -41,7 +41,7 @@
 Follow the instructions to complete the installation of lydia.
 
 
-==== Build SYFTMAX ====
+==== Build LYDIASYFT ====
 
 1. Make build folder so your directory is not flooded with build files:
 
@@ -55,19 +55,12 @@ Follow the instructions to complete the installation of lydia.
 
     ```make```
 
-==== Run SYFTMAX ====
+==== Run LYDIASYFT ====
 
-1. Reach executable file Syftmax
+1. Reach executable file LydiaSyft
 
    ```cd bin```
 
 2. Run example:
-
-    ---- Synthesize one single strategy ----
-        Agn first: ```./Syftmax -f ../../example/env.ltlf -p ../../example/test.part```
-
-    ---- Synthesize the maximally permissive strategy ----
-        Agn first: ```./Syftmax -f ../../example/env.ltlf -p ../../example/test.part -m```
-   
-
+   Agn first: ```./Lydiasyft -s ../../syfco-bin/syfco -f ../../example/test.tlsf```
 
