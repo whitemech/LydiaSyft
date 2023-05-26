@@ -22,7 +22,6 @@ jobs:
         with:
           submodules: 'recursive'
           token: '${{ secrets.LYDIA_SYFT_ACCESS_TOKEN }}'
-
       - name: Install dependencies
         run: |
           sudo apt-get update
