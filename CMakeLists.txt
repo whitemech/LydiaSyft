@@ -18,10 +18,10 @@ find_package(cudd REQUIRED)
 find_package(mona REQUIRED)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
+set(WITH_SYFT OFF)
 add_subdirectory(${LYDIA_DIR})
 set_target_properties(lydiaTest PROPERTIES EXCLUDE_FROM_ALL True)
 set_target_properties(lydiaBench PROPERTIES EXCLUDE_FROM_ALL True)
-set_target_properties(lydia-bin PROPERTIES EXCLUDE_FROM_ALL True)
 set(LYDIA_LIBRARIES lydia)
 
 set(LYDIA_INCLUDE_DIR ${LYDIA_DIR}/lib/include)
