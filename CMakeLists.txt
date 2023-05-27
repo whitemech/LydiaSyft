@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(LydiaSyft)
 
-set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-#set(CMAKE_CXX_FLAGS_RELEASE "-O0")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_definitions( -D__ROOT_DIRECTORY="${CMAKE_SOURCE_DIR}" )
