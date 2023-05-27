@@ -47,9 +47,12 @@ Follow the instructions to complete the installation of lydia.
 
     ```make -j$(nproc --ignore=1) LydiaSyft```
 
-5. Run tests:
+5. Compile and Run tests:
 
-    ```./bin/tests```
+    ```
+    make -j$(nproc --ignore=1) tests
+    ./bin/tests
+   ```
 
 
 ==== Run LYDIASYFT ====
