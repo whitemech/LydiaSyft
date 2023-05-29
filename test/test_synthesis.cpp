@@ -14,19 +14,10 @@
 #include "lydia/parser/ltlf/driver.hpp"
 
 
-typedef std::vector<std::string> vars;
 
-bool get_realizability(std::string formula, std::vector<std::string> input_variables, std::vector<std::string> output_variables) {
-  // Parsing the formula
-  std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver;
-  driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
-  std::stringstream formula_stream(formula);
-  driver->parse(formula_stream);
-  whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
-  // Apply no-empty semantics
-  auto context = driver->context;
-  auto not_end = context->makeLtlfNotEnd();
-  parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
+bool get_realizability(const std::string& formula, std::vector<std::string> input_variables, std::vector<std::string> output_variables) {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto parsed_formula = Syft::Test::parse_formula(formula, *driver);
 
   Syft::InputOutputPartition partition = Syft::InputOutputPartition::construct_from_input(input_variables, output_variables);
   std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
