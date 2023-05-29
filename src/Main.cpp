@@ -36,7 +36,8 @@ int main(int argc, char ** argv) {
     aut_time_stopwatch.start();
 
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(formula_file);
+    // the parser assumes "syfco" is in the current working directory
+    parser = Syft::Parser::read_from_file("./syfco", formula_file);
     bool sys_first = parser.get_sys_first();
 
     Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
