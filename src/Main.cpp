@@ -45,8 +45,6 @@ int main(int argc, char ** argv) {
     Syft::Player protagonist_player = Syft::Player::Agent;
     bool realizability;
 
-
-
     Syft::InputOutputPartition partition =
             Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
