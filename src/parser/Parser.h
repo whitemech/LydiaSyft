@@ -39,7 +39,7 @@ namespace Syft {
          * \brief Obtain an LTLf formula and construct a partition from a TLSF file.
          * \param filename The name of the TLSF file.
          */
-        static Parser read_from_file(const std::string &syfco_location, const std::string &filename);
+        static Parser read_from_file(const std::string &filename);
 
         /**
          * \brief Return input variables in a vector.
