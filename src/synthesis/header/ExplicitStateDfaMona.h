@@ -7,6 +7,7 @@ extern "C" {
 #include <mona/mem.h>
 }
 
+#include "lydia/logic/ltlf/base.hpp"
 #include "lydia/dfa/mona_dfa.hpp"
 #include "VarMgr.h"
 
@@ -62,7 +63,7 @@ namespace Syft {
          * \param formula An LTLf formula.
          * \return The corresponding explicit-state DFA.
          */
-        static ExplicitStateDfaMona dfa_of_formula(const std::string& formula);
+        static ExplicitStateDfaMona dfa_of_formula(const whitemech::lydia::LTLfFormula& formula);
 
 
 

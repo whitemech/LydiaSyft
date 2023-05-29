@@ -8,6 +8,8 @@
 #include "ExplicitStateDfaMona.h"
 #include "ReachabilitySynthesizer.h"
 #include "InputOutputPartition.h"
+#include "OneStepRealizability.h"
+#include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
 #include <istream>
 
@@ -18,13 +20,10 @@ int main(int argc, char ** argv) {
             "LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)"
     };
 
-    std::string formula_file, syfco_location;
+    std::string formula_file;
 
     app.add_option("-f,--spec-file", formula_file, "Specification file")->
                     required() -> check(CLI::ExistingFile);
-
-    app.add_option("-s,--syfco-location", syfco_location, "Syfco location")->
-            required() -> check(CLI::ExistingFile);
 
     bool print_strategy = false;
     app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
@@ -37,14 +36,13 @@ int main(int argc, char ** argv) {
     aut_time_stopwatch.start();
 
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(syfco_location, formula_file);
+    // the parser assumes "syfco" is in the current working directory
+    parser = Syft::Parser::read_from_file("./syfco", formula_file);
     bool sys_first = parser.get_sys_first();
 
     Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
     bool realizability;
-
-
 
     Syft::InputOutputPartition partition =
             Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
@@ -52,10 +50,32 @@ int main(int argc, char ** argv) {
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(parser.get_formula());
-//    std::cout<<parser.get_formula()<<"\n";
+    // Parsing the formula
+    std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver;
+    driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    std::stringstream formula_stream(parser.get_formula());
+    driver->parse(formula_stream);
+    whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
+    // Apply no-empty semantics
+    auto context = driver->context;
+    auto not_end = context->makeLtlfNotEnd();
+    parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
-    Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
+    // one-step realizability check
+    auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition, *var_mgr);
+    if (one_step_realizability_check_result.has_value()) {
+      Syft::OneStepSynthesisResult result;
+      result.realizability = true;
+      result.winning_move = one_step_realizability_check_result.value();
+      std::cout << "The problem is Realizable" << std::endl;
+      CUDD::BDD move = one_step_realizability_check_result.value();
+      // TODO do something with BDD move
+      return 0;
+    }
+
+    Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
+
+    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
 
     Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
             std::move(explicit_dfa));

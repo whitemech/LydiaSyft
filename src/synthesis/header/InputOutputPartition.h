@@ -24,6 +24,16 @@ public:
    */
   InputOutputPartition();
 
+  /**
+   * \brief check if a variable is an input variable
+   */
+   bool is_input(const std::string& var_name);
+
+  /**
+   * \brief check if a variable is an output variable
+   */
+   bool is_output(const std::string& var_name);
+
    /**
     * \brief Constructs a partition from a file.
     *                                                  

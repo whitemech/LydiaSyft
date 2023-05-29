@@ -1,6 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <tuple>
+#include <sstream>
 
 #include "VarMgr.h"
 #include "utils.hpp"
@@ -10,16 +11,19 @@
 #include "SymbolicStateDfa.h"
 #include "ReachabilitySynthesizer.h"
 #include "InputOutputPartition.h"
+#include "lydia/parser/ltlf/driver.hpp"
 
 
-typedef std::vector<std::string> vars;
 
-bool get_realizability(std::string formula, std::vector<std::string> input_variables, std::vector<std::string> output_variables) {
+bool get_realizability(const std::string& formula, std::vector<std::string> input_variables, std::vector<std::string> output_variables) {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto parsed_formula = Syft::Test::parse_formula(formula, *driver);
+
   Syft::InputOutputPartition partition = Syft::InputOutputPartition::construct_from_input(input_variables, output_variables);
   std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
   var_mgr->create_named_variables(partition.input_variables);
   var_mgr->create_named_variables(partition.output_variables);
-  Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(formula);
+  Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
   Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
 
   Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(

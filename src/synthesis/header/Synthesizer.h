@@ -14,6 +14,11 @@ namespace Syft {
         std::unique_ptr<Transducer> transducer;
     };
 
+    struct OneStepSynthesisResult{
+        bool realizability;
+        CUDD::BDD winning_move;
+    };
+
 /**
  * \brief Abstract class for synthesizers.
  *
