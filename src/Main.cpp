@@ -66,6 +66,9 @@ int main(int argc, char ** argv) {
     // one-step realizability check
     auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition, *var_mgr);
     if (one_step_realizability_check_result.has_value()) {
+      Syft::OneStepSynthesisResult result;
+      result.realizability = true;
+      result.winning_move = one_step_realizability_check_result.value();
       std::cout << "The problem is Realizable" << std::endl;
       CUDD::BDD move = one_step_realizability_check_result.value();
       // TODO do something with BDD move
