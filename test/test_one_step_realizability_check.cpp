@@ -34,18 +34,157 @@ TEST_CASE("One-step realizability check of a", "[one-step-realizability-check]")
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
+    std::string formula = "a";
+
     SECTION("a controllable"){
-        auto actual = get_one_step_realizability("a", vars{}, vars{"a"}, *var_mgr, *driver);
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
         auto expected = var_mgr->name_to_variable("a");
         REQUIRE(actual == expected);
     }
 
     SECTION("a uncontrollable"){
-        auto actual = get_one_step_realizability("a", vars{"a"}, vars{}, *var_mgr, *driver);
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
         auto expected = std::nullopt;
         REQUIRE(actual == expected);
     }
 
+}
+
+TEST_CASE("One-step realizability check of X\\[\\!\\] a", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "X[!]a";
+
+    SECTION("a controllable"){
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+
+    SECTION("a uncontrollable"){
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+
+}
+
+TEST_CASE("One-step realizability check of X a", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "X a";
+
+    SECTION("a controllable"){
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+        auto expected = var_mgr->cudd_mgr()->bddOne();
+        REQUIRE(actual == expected);
+    }
+
+    SECTION("a uncontrollable"){
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = var_mgr->cudd_mgr()->bddOne();
+        REQUIRE(actual == expected);
+    }
+}
+
+TEST_CASE("One-step realizability check of a U b", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "a U b";
+
+    SECTION("a controllable, b controllable") {
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a", "b"}, *var_mgr, *driver);
+        REQUIRE(actual.has_value());
+        auto expected = var_mgr->name_to_variable("b");
+        REQUIRE(actual == expected);
+    }
+    SECTION("a controllable, b uncontrollable") {
+        auto actual = get_one_step_realizability(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+    SECTION("a uncontrollable, b controllable") {
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{"b"}, *var_mgr, *driver);
+        REQUIRE(actual.has_value());
+        auto expected = var_mgr->name_to_variable("b");
+        REQUIRE(actual == expected);
+    }
+    SECTION("a uncontrollable, b uncontrollable") {
+        auto actual = get_one_step_realizability(formula, vars{"a", "b"}, vars{}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+}
+
+TEST_CASE("One-step realizability check of a R b", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "a R b";
+
+    SECTION("a controllable, b controllable") {
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a", "b"}, *var_mgr, *driver);
+        REQUIRE(actual.has_value());
+        auto expected = var_mgr->name_to_variable("b");
+        REQUIRE(actual == expected);
+    }
+    SECTION("a controllable, b uncontrollable") {
+        auto actual = get_one_step_realizability(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+    SECTION("a uncontrollable, b controllable") {
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{"b"}, *var_mgr, *driver);
+        REQUIRE(actual.has_value());
+        auto expected = var_mgr->name_to_variable("b");
+        REQUIRE(actual == expected);
+    }
+    SECTION("a uncontrollable, b uncontrollable") {
+        auto actual = get_one_step_realizability(formula, vars{"a", "b"}, vars{}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+}
+
+TEST_CASE("One-step realizability check of F a", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "F a";
+
+    SECTION("a controllable"){
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+        auto expected = var_mgr->name_to_variable("a");
+        REQUIRE(actual == expected);
+    }
+
+    SECTION("a uncontrollable"){
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
+}
+
+TEST_CASE("One-step realizability check of G a", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "G a";
+
+    SECTION("a controllable"){
+        auto actual = get_one_step_realizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+        auto expected = var_mgr->name_to_variable("a");
+        REQUIRE(actual == expected);
+    }
+
+    SECTION("a uncontrollable"){
+        auto actual = get_one_step_realizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = std::nullopt;
+        REQUIRE(actual == expected);
+    }
 }
 
 TEST_CASE("One-step realizability check of example/001.tlsf", "[one-step-realizability-check]") {
