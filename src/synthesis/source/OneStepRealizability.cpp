@@ -1,4 +1,5 @@
 #include "OneStepRealizability.h"
+#include "Synthesizer.h"
 
 #include <lydia/logic/ltlf/base.hpp>
 
@@ -72,13 +73,13 @@ namespace Syft {
     return result;
   }
 
-  bool one_step_realizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition) {
+  std::optional<CUDD::BDD> one_step_realizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr) {
     z3::context ctx{};
     z3::solver solver{ctx};
     z3::params p(ctx);
     solver.set(p);
 
-    auto visitor = SmtOneStepRealizabilityVisitor{partition, ctx, solver};
+    auto visitor = SmtOneStepRealizabilityVisitor{partition, var_mgr, ctx, solver};
     auto result = visitor.apply(f);
 
     auto quantified = result;
@@ -93,10 +94,27 @@ namespace Syft {
     solver.add(quantified);
 
     if (!solver.check()){
-      return false;
+      return std::nullopt;
     }
 
-    // TODO extract agent move from model
-    return true;
+    // build the agent move from Z3 model
+    z3::model model = solver.get_model();
+    CUDD::BDD move = var_mgr.cudd_mgr()->bddOne();
+
+    for (const auto& controllableVar : visitor.partition.output_variables) {
+      auto evaluation = model.eval(ctx.bool_const(controllableVar.c_str()));
+      auto bdd_of_var = var_mgr.name_to_variable(controllableVar);
+      if (z3::eq(evaluation, ctx.bool_val(true))) {
+        move &= bdd_of_var;
+      }
+      else if (z3::eq(evaluation, ctx.bool_val(false))) {
+        move &= !bdd_of_var;
+      }
+      else{
+        // do nothing - variable is a don't care
+      }
+    }
+
+    return move;
   }
 }

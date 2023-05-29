@@ -64,15 +64,17 @@ int main(int argc, char ** argv) {
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
     // one-step realizability check
-    auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition);
-    if (one_step_realizability_check_result) {
+    auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition, *var_mgr);
+    if (one_step_realizability_check_result.has_value()) {
       std::cout << "The problem is Realizable" << std::endl;
+      CUDD::BDD move = one_step_realizability_check_result.value();
+      // TODO do something with BDD move
       return 0;
     }
 
     Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
 
-    Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
+    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
 
     Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
             std::move(explicit_dfa));

@@ -4,8 +4,10 @@
 #include <z3++.h>
 #include <set>
 #include <lydia/visitor.hpp>
+#include <optional>
 
 #include "InputOutputPartition.h"
+#include "VarMgr.h"
 
 namespace Syft {
 
@@ -13,13 +15,14 @@ namespace Syft {
   class SmtOneStepRealizabilityVisitor : public whitemech::lydia::Visitor {
   public:
     InputOutputPartition partition;
+    const VarMgr& var_mgr;
     z3::context& z3_context;
     z3::solver& solver;
     z3::expr result;
     std::set<std::string> uncontrollableVars;
     // dummy value for 'result' since z3::expr does not have a default constructor
-    explicit SmtOneStepRealizabilityVisitor(const InputOutputPartition &partition, z3::context& z3_context, z3::solver& solver)
-        : partition{partition}, z3_context{z3_context}, solver{solver}, result{z3_context.bool_val(true)} {}
+    explicit SmtOneStepRealizabilityVisitor(const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, z3::context& z3_context, z3::solver& solver)
+        : partition{partition}, var_mgr{var_mgr}, z3_context{z3_context}, solver{solver}, result{z3_context.bool_val(true)} {}
     ~SmtOneStepRealizabilityVisitor() {}
     void visit(const whitemech::lydia::LTLfTrue &) override;
     void visit(const whitemech::lydia::LTLfFalse &) override;
@@ -37,7 +40,7 @@ namespace Syft {
     z3::expr apply(const whitemech::lydia::LTLfFormula &f);
   };
 
-  bool one_step_realizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition);
+  std::optional<CUDD::BDD> one_step_realizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr);
 
 }
 
