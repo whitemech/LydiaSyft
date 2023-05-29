@@ -45,6 +45,17 @@ function(_find_mona_lib prefix_name header_names lib_names include_path_hints li
 
 endfunction()
 
-_find_mona_lib("MONA_MEM" "mem.h" "monamem" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
-_find_mona_lib("MONA_BDD" "bdd.h" "monabdd" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
-_find_mona_lib("MONA_DFA" "dfa.h" "monadfa" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
+if(MONA_USE_STATIC_LIBS)
+    set(MONA_MEM_LIB_HINT "libmonamem.a")
+    set(MONA_BDD_LIB_HINT "libmonabdd.a")
+    set(MONA_DFA_LIB_HINT "libmonadfa.a")
+else()
+    set(MONA_MEM_LIB_HINT "monamem")
+    set(MONA_BDD_LIB_HINT "monabdd")
+    set(MONA_DFA_LIB_HINT "monadfa")
+endif()
+
+
+_find_mona_lib("MONA_MEM" "mem.h" "${MONA_MEM_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
+_find_mona_lib("MONA_BDD" "bdd.h" "${MONA_BDD_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
+_find_mona_lib("MONA_DFA" "dfa.h" "${MONA_DFA_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
