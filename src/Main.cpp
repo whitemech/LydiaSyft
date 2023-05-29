@@ -9,6 +9,7 @@
 #include "ReachabilitySynthesizer.h"
 #include "InputOutputPartition.h"
 #include "OneStepRealizability.h"
+#include "OneStepUnrealizability.h"
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
 #include <istream>
@@ -70,6 +71,13 @@ int main(int argc, char ** argv) {
       std::cout << "The problem is Realizable" << std::endl;
       CUDD::BDD move = one_step_realizability_check_result.value();
       // TODO do something with BDD move
+      return 0;
+    }
+
+    // one-step unrealizability check
+    bool one_step_unrealizability_check_result = one_step_unrealizable(*parsed_formula, partition, *var_mgr);
+    if (one_step_unrealizability_check_result) {
+      std::cout << "The problem is Unrealizable" << std::endl;
       return 0;
     }
 
