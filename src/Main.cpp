@@ -20,13 +20,10 @@ int main(int argc, char ** argv) {
             "LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)"
     };
 
-    std::string formula_file, syfco_location;
+    std::string formula_file;
 
     app.add_option("-f,--spec-file", formula_file, "Specification file")->
                     required() -> check(CLI::ExistingFile);
-
-    app.add_option("-s,--syfco-location", syfco_location, "Syfco location")->
-            required() -> check(CLI::ExistingFile);
 
     bool print_strategy = false;
     app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
@@ -39,7 +36,8 @@ int main(int argc, char ** argv) {
     aut_time_stopwatch.start();
 
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(syfco_location, formula_file);
+    // the parser assumes "syfco" is in the current working directory
+    parser = Syft::Parser::read_from_file("./syfco", formula_file);
     bool sys_first = parser.get_sys_first();
 
     Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
@@ -66,6 +64,9 @@ int main(int argc, char ** argv) {
     // one-step realizability check
     auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition, *var_mgr);
     if (one_step_realizability_check_result.has_value()) {
+      Syft::OneStepSynthesisResult result;
+      result.realizability = true;
+      result.winning_move = one_step_realizability_check_result.value();
       std::cout << "The problem is Realizable" << std::endl;
       CUDD::BDD move = one_step_realizability_check_result.value();
       // TODO do something with BDD move

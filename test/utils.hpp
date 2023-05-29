@@ -6,8 +6,9 @@
 namespace Syft::Test {
 
   static std::string ROOT_DIRECTORY = __ROOT_DIRECTORY;
-  static std::string SYFCO_LOCATION = ROOT_DIRECTORY + "/syfco-bin/syfco";
+  static std::string SYFCO_LOCATION = ROOT_DIRECTORY + "/syfco";
   static std::string EXAMPLE_TEST_TLSF = ROOT_DIRECTORY + "/example/test.tlsf";
+  static std::string EXAMPLE_001_TLSF = ROOT_DIRECTORY + "/example/001.tlsf";
 
 }
 
