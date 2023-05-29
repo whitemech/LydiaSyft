@@ -2,6 +2,7 @@
 
 #include "OneStepRealizability.h"
 #include "utils.hpp"
+#include "Parser.h"
 
 
 std::optional<CUDD::BDD> get_one_step_realizability(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables, Syft::VarMgr& var_mgr, whitemech::lydia::parsers::ltlf::LTLfDriver& driver) {
@@ -46,3 +47,21 @@ TEST_CASE("One-step realizability check of a", "[one-step-realizability-check]")
     }
 
 }
+
+TEST_CASE("One-step realizability check of example/001.tlsf", "[one-step-realizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+    Syft::Parser parser;
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::EXAMPLE_001_TLSF);
+
+    auto formula = parser.get_formula();
+    auto input_vars = parser.get_input_variables();
+    auto output_vars = parser.get_output_variables();
+
+    auto actual = get_one_step_realizability(formula, input_vars, output_vars, *var_mgr, *driver);
+    // not null -> realizable
+    REQUIRE(actual.has_value());
+    CUDD::BDD move = actual.value();
+    REQUIRE(move.IsOne());
+}
+
