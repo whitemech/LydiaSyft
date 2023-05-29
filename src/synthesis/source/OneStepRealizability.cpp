@@ -23,7 +23,7 @@ namespace Syft {
   }
 
   void SmtOneStepRealizabilityVisitor::visit(const whitemech::lydia::LTLfNot &formula) {
-    result = !apply(formula);
+    result = !apply(*formula.get_arg());
   }
 
   void SmtOneStepRealizabilityVisitor::visit(const whitemech::lydia::LTLfAnd &formula) {
