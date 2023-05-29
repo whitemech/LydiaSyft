@@ -25,14 +25,6 @@
     sudo apt-get install flex bison
 
 
-
-==== Install SPOT ====
-
-0.5 Spot can be found at:
-
-    https://spot.lrde.epita.fr/
-
-
 ==== Install LYDIA ====
 
     cd submodules
@@ -53,7 +45,15 @@ Follow the instructions to complete the installation of lydia.
 
 4. Compile using the generated makefile:
 
-    ```make```
+    ```make -j$(nproc --ignore=1) LydiaSyft```
+
+5. Compile and Run tests:
+
+    ```
+    make -j$(nproc --ignore=1) tests
+    ./bin/tests
+   ```
+
 
 ==== Run LYDIASYFT ====
 

@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(LydiaSyft)
 
-set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-#set(CMAKE_CXX_FLAGS_RELEASE "-O0")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_definitions( -D__ROOT_DIRECTORY="${CMAKE_SOURCE_DIR}" )
 
 set(CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
@@ -16,13 +17,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 find_package(cudd REQUIRED)
 find_package(mona REQUIRED)
-find_package(spot REQUIRED)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
+set(WITH_SYFT OFF)
+set(LYDIA_ENABLE_TESTS OFF)
+set(LYDIA_ENABLE_BENCHMARK OFF)
 add_subdirectory(${LYDIA_DIR})
-set_target_properties(lydiaTest PROPERTIES EXCLUDE_FROM_ALL True)
-set_target_properties(lydiaBench PROPERTIES EXCLUDE_FROM_ALL True)
-set_target_properties(lydia-bin PROPERTIES EXCLUDE_FROM_ALL True)
 set(LYDIA_LIBRARIES lydia)
 
 set(LYDIA_INCLUDE_DIR ${LYDIA_DIR}/lib/include)
@@ -32,6 +32,8 @@ set(EXT_LIBRARIES_PATH lydia ${CUDD_LIBRARIES} ${MONA_DFA_LIBRARIES} ${MONA_BDD_
 set(EXT_INCLUDE_PATH ${LYDIA_INCLUDE_DIR} ${LYDIA_THIRD_PARTY_INCLUDE_PATH} ${CUDD_INCLUDE_DIRS} ${MONA_MEM_INCLUDE_DIRS} ${MONA_BDD_INCLUDE_DIRS} ${MONA_DFA_INCLUDE_DIRS})
 
 message(STATUS EXT_LIBRARIES_PATH ${EXT_LIBRARIES_PATH})
+
+enable_testing()
+
 add_subdirectory(src)
-
-
+add_subdirectory(test)
