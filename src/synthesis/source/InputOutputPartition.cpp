@@ -1,10 +1,9 @@
 #include "InputOutputPartition.h"
+#include "string_utilities.h"
 
+#include <algorithm>
 #include <fstream>
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace Syft {
 
@@ -29,35 +28,33 @@ InputOutputPartition InputOutputPartition::read_from_file(
   std::getline(in, line);
   
   std::vector<std::string> input_substr;
-  boost::split(input_substr, line, boost::is_any_of(":"));
+  input_substr = Syft::split(line, ":");
 
   if (input_substr.size() != 2 || input_substr[0] != ".inputs") {
     throw bad_file_format_exception(line_number);
   }
 
-  boost::trim(input_substr[1]); // remove leading and trailing whitespace
-  boost::split(partition.input_variables, input_substr[1],
-	       boost::is_any_of(" "));
+  std::string trimmed_input_substr = Syft::trim(input_substr[1]); // remove leading and trailing whitespace
+  partition.input_variables = Syft::split(trimmed_input_substr, " ");
 
   ++line_number;
   std::getline(in, line);
   
   std::vector<std::string> output_substr;
-  boost::split(output_substr, line, boost::is_any_of(":"));
+  output_substr = Syft::split(line, ":");
 
   if (output_substr.size() != 2 || output_substr[0] != ".outputs") {
     throw bad_file_format_exception(line_number);
   }
 
-  boost::trim(output_substr[1]); // remove leading and trailing whitespace
-  boost::split(partition.output_variables, output_substr[1],
-	       boost::is_any_of(" "));
+  std::string trimmed_output_substr = Syft::trim(output_substr[1]); // remove leading and trailing whitespace
+  partition.output_variables = Syft::split(trimmed_output_substr, " ");
 
   return partition;
 }
 
 InputOutputPartition InputOutputPartition::construct_from_input(const std::vector<std::string> inputs_substr,
-                                                               std::vector<std::string> outputs_substr) {
+                                                               const std::vector<std::string> outputs_substr) {
     InputOutputPartition partition;
     partition.input_variables = inputs_substr;
     partition.output_variables = outputs_substr;

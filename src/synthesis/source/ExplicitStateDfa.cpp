@@ -1,11 +1,8 @@
 #include "ExplicitStateDfa.h"
+#include "string_utilities.h"
 
 #include <algorithm>
 #include <fstream>
-
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace Syft {
 
@@ -27,7 +24,7 @@ std::vector<std::string> ExplicitStateDfa::read_mona_line(
   std::getline(in, line);
 
   std::vector<std::string> substr;
-  boost::split(substr, line, boost::is_any_of(":"));
+  substr = Syft::split(line, ":");
 
   if (substr.size() != 2) {
     throw bad_file_format_exception(line_number);
@@ -46,8 +43,8 @@ std::vector<std::string> ExplicitStateDfa::read_variable_names(
   }
 
   std::vector<std::string> variables;
-  boost::trim(substr[1]); // remove leading and trailing whitespace
-  boost::split(variables, substr[1], boost::is_any_of(" "));
+  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
+  variables = Syft::split(trimmed_substr, " ");
   
   return variables;
 }
@@ -78,8 +75,8 @@ std::vector<std::size_t> ExplicitStateDfa::read_final_states(
   }
 
   std::vector<std::string> tokens;
-  boost::trim(substr[1]); // remove leading and trailing whitespace
-  boost::split(tokens, substr[1], boost::is_any_of(" "));
+  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
+  tokens = Syft::split(trimmed_substr, " ");
 
   std::vector<std::size_t> final_states;
 
@@ -102,8 +99,8 @@ std::vector<std::size_t> ExplicitStateDfa::read_behaviour(
   }
 
   std::vector<std::string> tokens;
-  boost::trim(substr[1]); // remove leading and trailing whitespace
-  boost::split(tokens, substr[1], boost::is_any_of(" "));
+  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
+  tokens = Syft::split(trimmed_substr, " ");
 
   std::vector<std::size_t> behaviour;
 
@@ -134,8 +131,8 @@ std::vector<std::vector<int>> ExplicitStateDfa::read_node_table(
     ++line_number;
 
     std::vector<std::string> tokens;
-    boost::trim(line); // remove leading and trailing whitespace
-    boost::split(tokens, line, boost::is_any_of(" "));
+    std::string trimmed_line = Syft::trim(line); // remove leading and trailing whitespace
+    tokens = Syft::split(line, " ");
 
     std::vector<int> node_triple;
     std::transform(tokens.begin(), tokens.end(),
