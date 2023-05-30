@@ -12,9 +12,9 @@ FetchContent_MakeAvailable(Catch2)
 
 set (TEST_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 file (GLOB_RECURSE TEST_SOURCE_FILES "${TEST_MODULE_PATH}/*.cpp")
-include_directories(${PARSER_INCLUDE_PATH} ${SYNTHESIS_INCLUDE_PATH} ${EXT_INCLUDE_PATH})
+include_directories(${UTILS_INCLUDE_PATH} ${PARSER_INCLUDE_PATH} ${SYNTHESIS_INCLUDE_PATH} ${EXT_INCLUDE_PATH})
 add_executable(tests ${TEST_SOURCE_FILES} utils.hpp)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${PARSER_LIB_NAME} ${SYNTHESIS_LIB_NAME}  ${EXT_LIBRARIES_PATH})
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain ${PARSER_LIB_NAME} ${SYNTHESIS_LIB_NAME} ${UTILS_LIB_NAME} ${EXT_LIBRARIES_PATH})
 
 list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(CTest)
