@@ -38,6 +38,13 @@ jobs:
           
           # install Boost
           sudo apt-get install libboost-dev
+      - name: Install Z3
+        run: |
+          wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
+          unzip z3-4.8.12-x64-glibc-2.31.zip
+          cd z3-4.8.12-x64-glibc-2.31
+          sudo cp bin/libz3.a /usr/local/lib
+          sudo cp include/*.h /usr/local/include
       - name: Install CUDD
         run: |
           git clone --recursive https://github.com/KavrakiLab/cudd.git
