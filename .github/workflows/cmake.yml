@@ -38,6 +38,13 @@ jobs:
           
           # install Boost
           sudo apt-get install libboost-dev
+      - name: Install Z3
+        run: |
+          wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
+          unzip z3-4.8.12-x64-glibc-2.31.zip
+          cd z3-4.8.12-x64-glibc-2.31
+          sudo cp bin/libz3.a /usr/local/lib
+          sudo cp include/*.h /usr/local/include
       - name: Install CUDD
         run: |
           git clone --recursive https://github.com/KavrakiLab/cudd.git
@@ -67,7 +74,7 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DZ3_FETCH=OFF
 
       - name: Build
         # Build your program with the given configuration
