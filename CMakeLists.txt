@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(LydiaSyft)
 
+include(FetchContent)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -14,10 +16,35 @@ set(CMAKE_MODULE_PATH
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-
+if (NOT DEFINED CUDD_USE_STATIC_LIBS)
+  set(CUDD_USE_STATIC_LIBS ON)
+endif()
 find_package(cudd REQUIRED)
+
+if (NOT DEFINED MONA_USE_STATIC_LIBS)
+  set(MONA_USE_STATIC_LIBS ON)
+endif()
 find_package(mona REQUIRED)
-find_package(Z3 REQUIRED)
+
+
+if (NOT DEFINED Z3_FETCH)
+  set(Z3_FETCH ON)
+endif()
+
+if (Z3_FETCH)
+  message("-- since Z3_FETCH is ${Z3_FETCH}, the Z3 project will be fetched and built from source")
+  set(Z3_BUILD_LIBZ3_SHARED OFF)
+  FetchContent_Declare(z3
+      GIT_REPOSITORY https://github.com/Z3Prover/z3
+      GIT_TAG        z3-4.8.12
+      )
+  FetchContent_MakeAvailable(z3)
+  set(Z3_INCLUDE_DIR ${z3_SOURCE_DIR}/src/api)
+  set(Z3_LIBRARY libz3)
+else()
+  message("-- since Z3_FETCH is ${Z3_FETCH}, the Z3 project is assumed to be found in the local filesystem")
+  find_package(Z3 REQUIRED)
+endif()
 
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)

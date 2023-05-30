@@ -25,6 +25,7 @@ endif()
 
 #set(CUDD_ROOT "$ENV{HOME}/install")
 set(CUDD_ROOT "/usr/local")
+
 # Search path for nonstandard locations
 if(CUDD_ROOT)
 	set(CUDD_INCLUDE_PATH PATHS "${CUDD_ROOT}/include" NO_DEFAULT_PATH)
@@ -32,7 +33,12 @@ if(CUDD_ROOT)
 endif()
 
 find_path(CUDD_INCLUDE_DIRS NAMES cudd.h HINTS ${CUDD_INCLUDE_PATH})
-find_library(CUDD_LIBRARIES NAMES cudd HINTS ${CUDD_LIBRARY_PATH})
+
+if(CUDD_USE_STATIC_LIBS)
+	find_library(CUDD_LIBRARIES NAMES libcudd.a HINTS ${CUDD_LIBRARY_PATH})
+else()
+	find_library(CUDD_LIBRARIES NAMES cudd HINTS ${CUDD_LIBRARY_PATH})
+endif()
 
 include(FindPackageHandleStandardArgs)
 

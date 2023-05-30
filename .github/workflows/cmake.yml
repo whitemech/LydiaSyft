@@ -47,16 +47,23 @@ jobs:
           sudo make -j install
       - name: Install MONA
         run: |
-          # the following are not valid since we need some headers not present in the usual distribution
-          # git clone --recursive https://github.com/whitemech/MONA.git
-          # cd MONA
-          # git checkout v1.4-19.dev0
-          # ./configure && make -j && sudo make -j install
-          wget https://github.com/whitemech/MONA/releases/download/v1.4-19.dev0/mona_1.4-19.dev0_linux-amd64.tar.gz
-          tar -xf mona_1.4-19.dev0_linux-amd64.tar.gz
-          cd mona_1.4-19.dev0_linux-amd64
-          sudo cp -P lib/* /usr/local/lib/
-          sudo cp -Pr include/* /usr/local/include
+          git clone --recursive https://github.com/whitemech/MONA.git
+          cd MONA
+          git checkout v1.4-19.dev0
+          ./configure && make -j && sudo make -j install
+          # copy headers manually
+          sudo mkdir -p /usr/local/include/mona
+          sudo cp Mem/mem.h /usr/local/include/mona
+          sudo cp Mem/gnuc.h /usr/local/include/mona
+          sudo cp Mem/dlmalloc.h /usr/local/include/mona
+          sudo cp BDD/bdd_external.h /usr/local/include/mona
+          sudo cp BDD/bdd_dump.h /usr/local/include/mona
+          sudo cp BDD/bdd_internal.h /usr/local/include/mona
+          sudo cp BDD/bdd.h /usr/local/include/mona
+          sudo cp BDD/hash.h /usr/local/include/mona
+          sudo cp DFA/dfa.h /usr/local/include/mona
+          sudo cp GTA/gta.h /usr/local/include/mona
+          sudo cp config.h /usr/local/include/mona
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type

@@ -31,33 +31,31 @@ if(MONA_ROOT)
     set(MONA_LIBRARY_PATH PATHS "${MONA_ROOT}/lib" NO_DEFAULT_PATH)
 endif()
 
-# Search for mona_mem
-find_path(MONA_MEM_INCLUDE_DIRS NAMES mem.h HINTS ${MONA_INCLUDE_PATH})
-find_library(MONA_MEM_LIBRARIES NAMES monamem HINTS ${MONA_LIBRARY_PATH})
+function(_find_mona_lib prefix_name header_names lib_names include_path_hints library_path_hints)
 
-include(FindPackageHandleStandardArgs)
+    # Search for mona_mem
+    find_path(${prefix_name}_INCLUDE_DIRS NAMES ${header_names} HINTS ${MONA_INCLUDE_PATH})
+    find_library(${prefix_name}_LIBRARIES NAMES ${lib_names} HINTS ${MONA_LIBRARY_PATH})
 
-find_package_handle_standard_args(mona DEFAULT_MSG MONA_MEM_LIBRARIES MONA_MEM_INCLUDE_DIRS)
+    include(FindPackageHandleStandardArgs)
 
-mark_as_advanced(MONA_ROOT MONA_MEM_LIBRARIES MONA_MEM_INCLUDE_DIRS)
+    find_package_handle_standard_args(mona DEFAULT_MSG ${prefix_name}_LIBRARIES ${prefix_name}_INCLUDE_DIRS)
 
-# Search for mona_bdd
-find_path(MONA_BDD_INCLUDE_DIRS NAMES bdd.h HINTS ${MONA_INCLUDE_PATH})
-find_library(MONA_BDD_LIBRARIES NAMES monabdd HINTS ${MONA_LIBRARY_PATH})
+    mark_as_advanced(MONA_ROOT ${prefix_name}_LIBRARIES ${prefix_name}_INCLUDE_DIRS)
 
-include(FindPackageHandleStandardArgs)
+endfunction()
 
-find_package_handle_standard_args(mona DEFAULT_MSG MONA_BDD_LIBRARIES MONA_BDD_INCLUDE_DIRS)
+if(MONA_USE_STATIC_LIBS)
+    set(MONA_MEM_LIB_HINT "libmonamem.a")
+    set(MONA_BDD_LIB_HINT "libmonabdd.a")
+    set(MONA_DFA_LIB_HINT "libmonadfa.a")
+else()
+    set(MONA_MEM_LIB_HINT "monamem")
+    set(MONA_BDD_LIB_HINT "monabdd")
+    set(MONA_DFA_LIB_HINT "monadfa")
+endif()
 
-mark_as_advanced(MONA_ROOT MONA_BDD_LIBRARIES MONA_BDD_INCLUDE_DIRS)
 
-# Search for mona_dfa
-find_path(MONA_DFA_INCLUDE_DIRS NAMES dfa.h HINTS ${MONA_INCLUDE_PATH})
-find_library(MONA_DFA_LIBRARIES NAMES monadfa HINTS ${MONA_LIBRARY_PATH})
-
-include(FindPackageHandleStandardArgs)
-
-find_package_handle_standard_args(mona DEFAULT_MSG MONA_DFA_LIBRARIES MONA_DFA_INCLUDE_DIRS)
-
-mark_as_advanced(MONA_ROOT MONA_DFA_LIBRARIES MONA_DFA_INCLUDE_DIRS)
-
+_find_mona_lib("MONA_MEM" "mem.h" "${MONA_MEM_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
+_find_mona_lib("MONA_BDD" "bdd.h" "${MONA_BDD_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
+_find_mona_lib("MONA_DFA" "dfa.h" "${MONA_DFA_LIB_HINT}" "${MONA_INCLUDE_PATH}" "${MONA_LIBRARY_PATH}")
