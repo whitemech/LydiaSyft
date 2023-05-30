@@ -1,5 +1,6 @@
 #include "OneStepUnrealizability.h"
 #include "Synthesizer.h"
+#include "lydia/logic/nnf.hpp"
 
 #include <lydia/logic/ltlf/base.hpp>
 
@@ -17,14 +18,13 @@ namespace Syft {
         assert(whitemech::lydia::is_a<const whitemech::lydia::Symbol>(*formula.symbol));
         std::string varname = formula.symbol->get_name();
         result = z3_context.bool_const(varname.c_str());
-
-        if (partition.is_output(varname)) {
-            controllableVars.insert(varname);
-        }
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfNot &formula) {
-        result = !apply(*formula.get_arg());
+        if (!whitemech::lydia::is_a<const whitemech::lydia::LTLfAtom>(*formula.get_arg()))
+            throw std::logic_error("formula must be in NNF for One-Step Unrealizability Check");
+        auto atom_result = apply(*formula.get_arg());
+        result = !atom_result;
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfAnd &formula) {
@@ -90,28 +90,43 @@ namespace Syft {
 
     bool one_step_unrealizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition,
                                const Syft::VarMgr &var_mgr) {
+
+        whitemech::lydia::ltlf_ptr nnf_formula = whitemech::lydia::to_nnf(f);
+
         z3::context ctx{};
         z3::solver solver{ctx};
         z3::params p(ctx);
         solver.set(p);
 
         auto visitor = SmtOneStepUnrealizabilityVisitor{partition, var_mgr, ctx, solver};
-        auto result = visitor.apply(f);
+        auto result = visitor.apply(*nnf_formula);
 
-        auto quantified = result;
-        if (!visitor.controllableVars.empty()) {
-            z3::expr_vector uncontollables_expr(ctx);
-            for (const auto &uncontrollableVar: visitor.controllableVars) {
-                uncontollables_expr.push_back(ctx.bool_const(uncontrollableVar.c_str()));
+
+        // for all env moves...
+        z3::expr_vector forall_vars(ctx);
+        if (!partition.input_variables.empty()) {
+            for (const auto &controllable_var: partition.input_variables) {
+                forall_vars.push_back(ctx.bool_const(controllable_var.c_str()));
             }
-            quantified = z3::exists(uncontollables_expr, result);
+            result = z3::forall(forall_vars, result);
         }
-        solver.reset();
-        solver.add(quantified);
 
-        // if there does not exist Y, then the formula is unrealizable
+        // exist an agent move such that for all env moves...
+        z3::expr_vector exist_vars(ctx);
+        if (!partition.output_variables.empty()) {
+            for (const auto &controllable_var: partition.output_variables) {
+                exist_vars.push_back(ctx.bool_const(controllable_var.c_str()));
+            }
+            result = z3::exists(exist_vars, result);
+        }
+
+        solver.reset();
+        solver.add(result);
+
+        // if there does not exist Y such that, for all X, the formula is satisfiable,
+        // then the formula is unrealizable
         if (!solver.check()) {
-            // true means that the check was successful
+            // true means that the check was successful -> the formula is unrealizable
             return true;
         }
 

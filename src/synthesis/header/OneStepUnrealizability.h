@@ -19,7 +19,6 @@ namespace Syft {
     z3::context& z3_context;
     z3::solver& solver;
     z3::expr result;
-    std::set<std::string> controllableVars;
     // dummy value for 'result' since z3::expr does not have a default constructor
     explicit SmtOneStepUnrealizabilityVisitor(const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, z3::context& z3_context, z3::solver& solver)
         : partition{partition}, var_mgr{var_mgr}, z3_context{z3_context}, solver{solver}, result{z3_context.bool_val(true)} {}
