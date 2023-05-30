@@ -35,9 +35,6 @@ jobs:
           
           # install graphviz
           sudo apt-get install graphviz libgraphviz-dev
-          
-          # install Boost
-          sudo apt-get install libboost-dev
       - name: Install Z3
         run: |
           wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip

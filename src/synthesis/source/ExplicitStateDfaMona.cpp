@@ -16,10 +16,6 @@
 #include <lydia/to_dfa/strategies/compositional/base.hpp>
 #include <lydia/utils/print.hpp>
 
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string.hpp>
-
 #include "cudd.h"
 
 namespace Syft{
