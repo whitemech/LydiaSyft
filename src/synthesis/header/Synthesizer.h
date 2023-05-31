@@ -5,6 +5,8 @@
 
 #include "Transducer.h"
 #include <tuple>
+#include <optional>
+
 
 namespace Syft {
     struct SynthesisResult{
@@ -15,7 +17,7 @@ namespace Syft {
     };
 
     struct OneStepSynthesisResult{
-        bool realizability;
+        std::optional<bool> realizability = std::nullopt;
         CUDD::BDD winning_move;
     };
 
