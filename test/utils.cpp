@@ -6,6 +6,7 @@
 #include "SymbolicStateDfa.h"
 #include "Player.h"
 #include "ReachabilitySynthesizer.h"
+#include "Preprocessing.h"
 
 namespace Syft {
 namespace Test{
@@ -37,7 +38,19 @@ namespace Test{
         var_mgr->create_named_variables(partition.input_variables);
         var_mgr->create_named_variables(partition.output_variables);
 
-        Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*formula);
+        auto one_step_result = Syft::preprocessing(*formula, partition, *var_mgr);
+        bool preprocessing_success = one_step_result.realizability.has_value();
+        if (preprocessing_success and one_step_result.realizability.value()){
+          return true;
+        }
+        else if (preprocessing_success and !one_step_result.realizability.value()){
+          return false;
+        }
+        else {
+          std::cout << get_time_str() << ": Preprocessing was not successful. Continuing with full DFA construction." << std::endl;
+        }
+
+      Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*formula);
         Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
 
         Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
