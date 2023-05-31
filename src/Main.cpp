@@ -10,6 +10,7 @@
 #include "InputOutputPartition.h"
 #include "OneStepRealizability.h"
 #include "OneStepUnrealizability.h"
+#include "Preprocessing.h"
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
 #include <istream>
@@ -62,23 +63,21 @@ int main(int argc, char ** argv) {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
-    // one-step realizability check
-    auto one_step_realizability_check_result = one_step_realizable(*parsed_formula, partition, *var_mgr);
-    if (one_step_realizability_check_result.has_value()) {
-      Syft::OneStepSynthesisResult result;
-      result.realizability = true;
-      result.winning_move = one_step_realizability_check_result.value();
+    // preprocessing
+    auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr);
+    bool preprocessing_success = one_step_result.realizability.has_value();
+    if (preprocessing_success and one_step_result.realizability.value()){
       std::cout << "The problem is Realizable" << std::endl;
-      CUDD::BDD move = one_step_realizability_check_result.value();
+      CUDD::BDD move = one_step_result.winning_move;
       // TODO do something with BDD move
       return 0;
     }
-
-    // one-step unrealizability check
-    bool one_step_unrealizability_check_result = one_step_unrealizable(*parsed_formula, partition, *var_mgr);
-    if (one_step_unrealizability_check_result) {
+    else if (preprocessing_success and one_step_result.realizability.value()){
       std::cout << "The problem is Unrealizable" << std::endl;
       return 0;
+    }
+    else {
+      std::cout << "Preprocessing was not successful. Continuing with full DFA construction." << std::endl;
     }
 
     Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
