@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include "lydia/parser/ltlf/driver.hpp"
+#include "InputOutputPartition.h"
 
 typedef std::vector<std::string> vars;
 
@@ -16,6 +17,7 @@ namespace Syft::Test {
 
   whitemech::lydia::ltlf_ptr parse_formula(const std::string& formula, whitemech::lydia::parsers::ltlf::LTLfDriver& driver);
   bool get_realizability_from_input(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables);
+  bool get_realizability(const whitemech::lydia::ltlf_ptr & formula, const Syft::InputOutputPartition& partition);
 
 }
 
