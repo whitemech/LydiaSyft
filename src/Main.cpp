@@ -72,7 +72,7 @@ int main(int argc, char ** argv) {
       // TODO do something with BDD move
       return 0;
     }
-    else if (preprocessing_success and one_step_result.realizability.value()){
+    else if (preprocessing_success and !one_step_result.realizability.value()){
       std::cout << "The problem is Unrealizable" << std::endl;
       return 0;
     }
