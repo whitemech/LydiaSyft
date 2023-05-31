@@ -205,7 +205,7 @@ TEST_CASE("One-step realizability check of example/001.tlsf", "[one-step-realiza
 }
 
 
-TEST_CASE("forward synthesis of Uright pattern", "[one-step-realizability-check]") {
+TEST_CASE("One-step realizability check of Uright pattern", "[one-step-realizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -232,7 +232,7 @@ TEST_CASE("forward synthesis of Uright pattern", "[one-step-realizability-check]
 
 }
 
-TEST_CASE("forward synthesis of GF-pattern", "[one-step-realizability-check]") {
+TEST_CASE("One-step realizability check of GF-pattern", "[one-step-realizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 

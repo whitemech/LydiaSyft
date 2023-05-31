@@ -175,7 +175,7 @@ TEST_CASE("Preprocessing of F a", "[preprocessing]") {
 
     SECTION("a uncontrollable"){
         auto actual = get_preprocessing(formula, vars{"a"}, vars{}, *var_mgr, *driver);
-        REQUIRE(!actual.realizability.has_value());
+        REQUIRE(actual.realizability.has_value());
     }
 }
 
@@ -218,7 +218,7 @@ TEST_CASE("Preprocessing of example/001.tlsf", "[preprocessing]") {
 }
 
 
-TEST_CASE("forward synthesis of Uright pattern", "[preprocessing]") {
+TEST_CASE("Preprocessing of Uright pattern", "[preprocessing]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -245,7 +245,7 @@ TEST_CASE("forward synthesis of Uright pattern", "[preprocessing]") {
 
 }
 
-TEST_CASE("forward synthesis of GF-pattern", "[preprocessing]") {
+TEST_CASE("Preprocessing of GF-pattern", "[preprocessing]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -290,11 +290,11 @@ TEST_CASE("forward synthesis of GF-pattern", "[preprocessing]") {
         REQUIRE(!realizability_result.realizability.value());
     }
 
-    SECTION("inconclusive with only first var") {
+    SECTION("unrealizable with only first var") {
         const auto& input_vars = all_vars_but_first_set;
         const auto& output_vars = only_first_var_set;
         auto realizability_result = get_preprocessing(formula, input_vars, output_vars, *var_mgr, *driver);
-        REQUIRE(!realizability_result.realizability.has_value());
+        REQUIRE(realizability_result.realizability.has_value());
     }
 
 }

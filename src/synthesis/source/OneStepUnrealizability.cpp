@@ -76,7 +76,23 @@ namespace Syft {
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfEventually &formula) {
+      // this is an optimization: in case F(a) (resp. F(~a)), where "a" is atomic, return "a" (resp. F(~a)).
+      bool is_atom = whitemech::lydia::is_a<const whitemech::lydia::LTLfAtom>(*formula.get_arg());
+      bool is_not = whitemech::lydia::is_a<const whitemech::lydia::LTLfNot>(*formula.get_arg());
+      if (is_atom){
+        auto atom = std::static_pointer_cast<const whitemech::lydia::LTLfAtom>(formula.get_arg());
+        result = z3_context.bool_const(atom->symbol->get_name().c_str());
+      }
+      else if (is_not){
+        auto not_formula = std::static_pointer_cast<const whitemech::lydia::LTLfNot>(formula.get_arg());
+        if (whitemech::lydia::is_a<const whitemech::lydia::LTLfAtom>(*not_formula->get_arg())){
+          auto atom = std::static_pointer_cast<const whitemech::lydia::LTLfAtom>(not_formula->get_arg());
+          result = !z3_context.bool_const(atom->symbol->get_name().c_str());
+        }
+      }
+      else {
         result = z3_context.bool_val(true);
+      }
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfAlways &formula) {

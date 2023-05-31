@@ -159,7 +159,26 @@ TEST_CASE("One-step unrealizability check of F a", "[one-step-unrealizability-ch
 
     SECTION("a uncontrollable"){
         auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = true;
+        REQUIRE(actual == expected);
+    }
+}
+
+TEST_CASE("One-step unrealizability check of F \\! a", "[one-step-unrealizability-check]") {
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+    auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+    std::string formula = "F ~a";
+
+    SECTION("a controllable"){
+        auto actual = get_one_step_unrealizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
         auto expected = false;
+        REQUIRE(actual == expected);
+    }
+
+    SECTION("a uncontrollable"){
+        auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+        auto expected = true;
         REQUIRE(actual == expected);
     }
 }
@@ -198,7 +217,7 @@ TEST_CASE("One-step unrealizability check of example/001.tlsf", "[one-step-unrea
 }
 
 
-TEST_CASE("forward synthesis of Uright pattern", "[one-step-unrealizability-check]") {
+TEST_CASE("One-step unrealizability check of Uright pattern", "[one-step-unrealizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -222,7 +241,7 @@ TEST_CASE("forward synthesis of Uright pattern", "[one-step-unrealizability-chec
 
 }
 
-TEST_CASE("forward synthesis of GF-pattern", "[one-step-unrealizability-check]") {
+TEST_CASE("One-step unrealizability check of GF-pattern", "[one-step-unrealizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -262,7 +281,7 @@ TEST_CASE("forward synthesis of GF-pattern", "[one-step-unrealizability-check]")
         const auto& input_vars = all_vars_but_first_set;
         const auto& output_vars = only_first_var_set;
         bool unrealizability_result = get_one_step_unrealizability(formula, input_vars, output_vars, *var_mgr, *driver);
-        REQUIRE(!unrealizability_result);
+        REQUIRE(unrealizability_result);
     }
 
 }
