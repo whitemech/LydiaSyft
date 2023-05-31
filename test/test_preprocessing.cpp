@@ -175,7 +175,7 @@ TEST_CASE("Preprocessing of F a", "[preprocessing]") {
 
     SECTION("a uncontrollable"){
         auto actual = get_preprocessing(formula, vars{"a"}, vars{}, *var_mgr, *driver);
-        REQUIRE(actual.realizability.has_value());
+        REQUIRE(!actual.realizability.has_value());
     }
 }
 
@@ -199,6 +199,79 @@ TEST_CASE("Preprocessing of G a", "[preprocessing]") {
         REQUIRE(!actual.realizability.value());
     }
 }
+
+
+TEST_CASE("Preprocessing of G F a", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "G(F(a))";
+
+  SECTION("a controllable"){
+    auto actual = get_preprocessing(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+    REQUIRE(actual.realizability.has_value());
+    REQUIRE(actual.realizability.value());
+    REQUIRE(actual.winning_move == var_mgr->name_to_variable("a"));
+  }
+
+  SECTION("a uncontrollable (inconclusive)"){
+    auto actual = get_preprocessing(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+}
+
+TEST_CASE("Preprocessing of random formula 1", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "(FG !b || ((G(a || (!a U b))) && !a && (G(!b || F(a)) && GF a))) && F(true)";
+
+  SECTION("a controllable, b uncontrollable"){
+    auto actual = get_preprocessing(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+}
+
+TEST_CASE("Preprocessing of a U X\\[\\!\\]b", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "a U X[!](b)";
+
+  SECTION("a controllable, b controllable") {
+    auto actual = get_preprocessing(formula, vars{}, vars{"a", "b"}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+  SECTION("a controllable, b uncontrollable") {
+    auto actual = get_preprocessing(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+  SECTION("a uncontrollable, b controllable") {
+    auto actual = get_preprocessing(formula, vars{"a"}, vars{"b"}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+  SECTION("a uncontrollable, b uncontrollable") {
+    auto actual = get_preprocessing(formula, vars{"a", "b"}, vars{}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+}
+
+TEST_CASE("Preprocessing of F(a) && F(!a)", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "F(a) && F(!a)";
+
+  SECTION("a controllable") {
+    auto actual = get_preprocessing(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+  SECTION("a uncontrollable") {
+    auto actual = get_preprocessing(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+    REQUIRE(!actual.realizability.has_value());
+  }
+}
+
 
 TEST_CASE("Preprocessing of example/001.tlsf", "[preprocessing]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
@@ -294,7 +367,7 @@ TEST_CASE("Preprocessing of GF-pattern", "[preprocessing]") {
         const auto& input_vars = all_vars_but_first_set;
         const auto& output_vars = only_first_var_set;
         auto realizability_result = get_preprocessing(formula, input_vars, output_vars, *var_mgr, *driver);
-        REQUIRE(realizability_result.realizability.has_value());
+        REQUIRE(!realizability_result.realizability.has_value());
     }
 
 }
