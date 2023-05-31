@@ -95,22 +95,22 @@ TEST_CASE("One-step unrealizability check of a U b", "[one-step-unrealizability-
 
     std::string formula = "a U b";
 
-    SECTION("a controllable, b controllable") {
+    SECTION("a controllable, b controllable (inconclusive)") {
         auto actual = get_one_step_unrealizability(formula, vars{}, vars{"a", "b"}, *var_mgr, *driver);
         auto expected = false;
         REQUIRE(actual == expected);
     }
-    SECTION("a controllable, b uncontrollable") {
+    SECTION("a controllable, b uncontrollable (inconclusive)") {
         auto actual = get_one_step_unrealizability(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
         auto expected = false;
         REQUIRE(actual == expected);
     }
-    SECTION("a uncontrollable, b controllable") {
+    SECTION("a uncontrollable, b controllable (inconclusive)") {
         auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{"b"}, *var_mgr, *driver);
         auto expected = false;
         REQUIRE(actual == expected);
     }
-    SECTION("a uncontrollable, b uncontrollable") {
+    SECTION("a uncontrollable, b uncontrollable (unrealizable)") {
         auto actual = get_one_step_unrealizability(formula, vars{"a", "b"}, vars{}, *var_mgr, *driver);
         auto expected = true;
         REQUIRE(actual == expected);
@@ -159,7 +159,7 @@ TEST_CASE("One-step unrealizability check of F a", "[one-step-unrealizability-ch
 
     SECTION("a uncontrollable"){
         auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
-        auto expected = true;
+        auto expected = false;
         REQUIRE(actual == expected);
     }
 }
@@ -170,15 +170,15 @@ TEST_CASE("One-step unrealizability check of F \\! a", "[one-step-unrealizabilit
 
     std::string formula = "F ~a";
 
-    SECTION("a controllable"){
+    SECTION("a controllable (realizable)"){
         auto actual = get_one_step_unrealizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
         auto expected = false;
         REQUIRE(actual == expected);
     }
 
-    SECTION("a uncontrollable"){
+    SECTION("a uncontrollable (inconclusive)"){
         auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
-        auto expected = true;
+        auto expected = false;
         REQUIRE(actual == expected);
     }
 }
@@ -200,6 +200,66 @@ TEST_CASE("One-step unrealizability check of G a", "[one-step-unrealizability-ch
         auto expected = true;
         REQUIRE(actual == expected);
     }
+}
+
+TEST_CASE("One-step unrealizability check of G F a", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "G(F(a))";
+
+  SECTION("a controllable"){
+    auto actual = get_one_step_unrealizability(formula, vars{}, vars{"a"}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+
+  SECTION("a uncontrollable (inconclusive)"){
+    auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+}
+
+TEST_CASE("One-step unrealizability check of random formula 1", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "(FG !b || ((G(a || (!a U b))) && !a && (G(!b || F(a)) && GF a))) && F(true)";
+
+  SECTION("a controllable, b uncontrollable"){
+    auto actual = get_one_step_unrealizability(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+}
+
+TEST_CASE("One-step unrealizability check of a U X\\[\\!\\]b", "[one-step-unrealizability-check]") {
+  auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+  auto var_mgr = std::make_shared<Syft::VarMgr>();
+
+  std::string formula = "a U X[!](b)";
+
+  SECTION("a controllable, b controllable") {
+    auto actual = get_one_step_unrealizability(formula, vars{}, vars{"a", "b"}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+  SECTION("a controllable, b uncontrollable") {
+    auto actual = get_one_step_unrealizability(formula, vars{"b"}, vars{"a"}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+  SECTION("a uncontrollable, b controllable") {
+    auto actual = get_one_step_unrealizability(formula, vars{"a"}, vars{"b"}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
+  SECTION("a uncontrollable, b uncontrollable") {
+    auto actual = get_one_step_unrealizability(formula, vars{"a", "b"}, vars{}, *var_mgr, *driver);
+    auto expected = false;
+    REQUIRE(actual == expected);
+  }
 }
 
 TEST_CASE("One-step unrealizability check of example/001.tlsf", "[one-step-unrealizability-check]") {
@@ -232,7 +292,7 @@ TEST_CASE("One-step unrealizability check of Uright pattern", "[one-step-unreali
         REQUIRE(!unrealizability_result);
     }
 
-    SECTION("unrealizable") {
+    SECTION("inconclusive") {
         const auto& input_vars = set2;
         const auto& output_vars = set1;
         auto unrealizability_result = get_one_step_unrealizability(formula, input_vars, output_vars, *var_mgr, *driver);
@@ -277,11 +337,11 @@ TEST_CASE("One-step unrealizability check of GF-pattern", "[one-step-unrealizabi
         REQUIRE(unrealizability_result);
     }
 
-    SECTION("unrealizable with only first var") {
+    SECTION("inconclusive with only first var") {
         const auto& input_vars = all_vars_but_first_set;
         const auto& output_vars = only_first_var_set;
         bool unrealizability_result = get_one_step_unrealizability(formula, input_vars, output_vars, *var_mgr, *driver);
-        REQUIRE(unrealizability_result);
+        REQUIRE(!unrealizability_result);
     }
 
 }

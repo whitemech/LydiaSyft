@@ -70,7 +70,7 @@ void check_realizability(const problem_t &problem) {
   SynthesisResult actual_realizability = actual_realizability_bool
                                              ? SynthesisResult::REALIZABLE
                                              : SynthesisResult::UNREALIZABLE;
-  std::cout << get_time_str() << ": Result computed." << std::endl;
+  std::cout << get_time_str() << ": Result computed: " << (actual_realizability == expected_realizability? "OK." : "FAIL.") << std::endl;
   REQUIRE(actual_realizability == expected_realizability);
 }
 
