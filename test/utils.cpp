@@ -23,7 +23,7 @@ namespace Test{
         return parsed_formula;
     }
 
-    bool get_realizability(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables) {
+    bool get_realizability_from_input(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables) {
       auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
       auto parsed_formula = Syft::Test::parse_formula(formula, *driver);
 

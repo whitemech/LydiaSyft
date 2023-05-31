@@ -15,7 +15,7 @@ namespace Syft::Test {
   static std::string EXAMPLE_001_TLSF = ROOT_DIRECTORY + "/example/001.tlsf";
 
   whitemech::lydia::ltlf_ptr parse_formula(const std::string& formula, whitemech::lydia::parsers::ltlf::LTLfDriver& driver);
-  bool get_realizability(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables);
+  bool get_realizability_from_input(const std::string& formula, const std::vector<std::string>& input_variables, const std::vector<std::string>& output_variables);
 
 }
 
