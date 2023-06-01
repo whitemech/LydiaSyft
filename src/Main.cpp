@@ -92,7 +92,7 @@ int main(int argc, char ** argv) {
       return 0;
     }
     else {
-      std::cout << "Preprocessing was not successful. Continuing with full DFA construction." << std::endl;
+      // Preprocessing was not successful. Continuing with full DFA construction."
     }
 
     Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
