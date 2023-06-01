@@ -9,6 +9,10 @@
 
 
 namespace Syft {
+
+    static const std::string REALIZABLE_STR = "REALIZABLE";
+    static const std::string UNREALIZABLE_STR = "UNREALIZABLE";
+
     struct SynthesisResult{
         bool realizability;
         CUDD::BDD winning_states;

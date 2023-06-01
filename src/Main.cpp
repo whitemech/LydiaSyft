@@ -67,7 +67,7 @@ int main(int argc, char ** argv) {
     auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr);
     bool preprocessing_success = one_step_result.realizability.has_value();
     if (preprocessing_success and one_step_result.realizability.value()){
-      std::cout << "The problem is Realizable" << std::endl;
+      std::cout << Syft::REALIZABLE_STR << std::endl;
       CUDD::BDD move = one_step_result.winning_move;
       auto total_time = total_time_stopwatch.stop();
       if (print_strategy){
@@ -79,7 +79,7 @@ int main(int argc, char ** argv) {
       return 0;
     }
     else if (preprocessing_success and !one_step_result.realizability.value()){
-      std::cout << "The problem is Unrealizable" << std::endl;
+      std::cout << Syft::UNREALIZABLE_STR << std::endl;
       auto total_time = total_time_stopwatch.stop();
 
       std::cout << "Total time: "
@@ -111,7 +111,7 @@ int main(int argc, char ** argv) {
 
     realizability = result.realizability;
     if (realizability == true) {
-        std::cout << "The problem is Realizable" << std::endl;
+        std::cout << Syft::REALIZABLE_STR << std::endl;
 
         Syft::Stopwatch abstract_single_strategy_time_stopwatch; // stopwatch for abstract single strategy
         abstract_single_strategy_time_stopwatch.start();
@@ -125,7 +125,7 @@ int main(int argc, char ** argv) {
                   << abstract_single_strategy_time.count() << " ms" << std::endl;
     }
     else{
-        std::cout << "The problem is Unrealizable" << std::endl;
+        std::cout << Syft::UNREALIZABLE_STR << std::endl;
     }
 
   auto total_time = total_time_stopwatch.stop();
