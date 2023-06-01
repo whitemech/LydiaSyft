@@ -39,12 +39,7 @@ By default, the CMake configuration will fetch z3 automatically from the GitHub 
 In order to disable this behaviour, you can configure the project by setting -DZ3_FETCH=OFF.
 
 In that case, you have to have the library installed on your system.
-
-To install the shared library on Ubuntu:
-
-    sudo apt install libz3-dev
-
-If you want to link the static library of z3, you have to install z3 it manually:
+To link the static library of z3, you have to install z3 manually:
 
 ```
 wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
