@@ -1,5 +1,23 @@
 ###Compilation Instructions using CMake
 
+=== System-wide dependencies ===
+
+We assume the software will be built on a Ubuntu 22.04 machine.
+
+First, install the following system-wide dependencies:
+
+```
+sudo apt install -y \
+   automake \
+   cmake    \
+   gcc      \
+   g++      \
+   libtool  \
+   wget     \
+   unzip
+```
+
+
 ==== Install CUDD ====
 
 0.1 Make sure CUDD is installed. CUDD can be found at: 
@@ -47,6 +65,14 @@ unzip z3-4.8.12-x64-glibc-2.31.zip
 cd z3-4.8.12-x64-glibc-2.31
 cp bin/libz3.a /usr/local/lib
 cp include/*.h /usr/local/include
+```
+
+=== Graphviz ===
+
+For the graphical features (automata and strategy visualization), graphviz need to be installed:
+
+```
+sudo apt install graphviz libgraphviz-dev
 ```
 
 
