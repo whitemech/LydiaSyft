@@ -28,6 +28,9 @@ int main(int argc, char ** argv) {
     bool print_strategy = false;
     app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
 
+    bool print_times = false;
+    app.add_flag("-t, --print-times", print_times, "Print out running times of each step (default: false)");
+
     CLI11_PARSE(app, argc, argv);
     Syft::Stopwatch total_time_stopwatch; // stopwatch for end-to-end execution
     total_time_stopwatch.start();
@@ -72,16 +75,20 @@ int main(int argc, char ** argv) {
           var_mgr->dump_dot(move.Add(), "strategy.dot");
       }
 
-      std::cout << "Total time: "
+      if (print_times) {
+        std::cout << "Total time: "
                   << total_time.count() << " ms" << std::endl;
+      }
       return 0;
     }
     else if (preprocessing_success and !one_step_result.realizability.value()){
       std::cout << Syft::UNREALIZABLE_STR << std::endl;
       auto total_time = total_time_stopwatch.stop();
 
-      std::cout << "Total time: "
+      if (print_times) {
+        std::cout << "Total time: "
                   << total_time.count() << " ms" << std::endl;
+      }
       return 0;
     }
     else {
@@ -96,8 +103,10 @@ int main(int argc, char ** argv) {
             std::move(explicit_dfa));
 
     auto aut_time = aut_time_stopwatch.stop();
-    std::cout << "DFA construction time: "
-              << aut_time.count() << " ms" << std::endl;
+    if (print_times) {
+      std::cout << "DFA construction time: "
+                << aut_time.count() << " ms" << std::endl;
+    }
 
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
@@ -119,8 +128,10 @@ int main(int argc, char ** argv) {
             transducer->dump_dot("strategy.dot");
         }
         auto abstract_single_strategy_time = abstract_single_strategy_time_stopwatch.stop();
-        std::cout << "Abstract single strategy time: "
-                  << abstract_single_strategy_time.count() << " ms" << std::endl;
+        if (print_times) {
+          std::cout << "Abstract single strategy time: "
+                    << abstract_single_strategy_time.count() << " ms" << std::endl;
+        }
     }
     else{
         std::cout << Syft::UNREALIZABLE_STR << std::endl;
@@ -128,8 +139,10 @@ int main(int argc, char ** argv) {
 
   auto total_time = total_time_stopwatch.stop();
 
-  std::cout << "Total time: "
-	    << total_time.count() << " ms" << std::endl;
+  if (print_times) {
+    std::cout << "Total time: "
+              << total_time.count() << " ms" << std::endl;
+  }
 
   return 0;
 }
