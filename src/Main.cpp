@@ -69,7 +69,6 @@ int main(int argc, char ** argv) {
     if (preprocessing_success and one_step_result.realizability.value()){
       std::cout << "The problem is Realizable" << std::endl;
       CUDD::BDD move = one_step_result.winning_move;
-      // TODO do something with BDD move
       auto total_time = total_time_stopwatch.stop();
       if (print_strategy){
           var_mgr->dump_dot(move.Add(), "strategy.dot");
