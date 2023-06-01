@@ -84,5 +84,5 @@ cp include/*.h /usr/local/include
    ```cd bin```
 
 2. Run example:
-   Agn first: ```./Lydiasyft -s ../../syfco-bin/syfco -f ../../example/test.tlsf```
+   ```./Lydiasyft -f ../../example/test.tlsf```
 
