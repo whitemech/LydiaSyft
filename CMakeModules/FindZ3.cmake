@@ -12,9 +12,9 @@ else()
 endif()
 
 if (Z3_HOME)
-  find_library(Z3_LIBRARY z3 PATHS "${Z3_HOME}/lib" NO_DEFAULT_PATH)
+  find_library(Z3_LIBRARY NAMES libz3.a PATHS "${Z3_HOME}/lib" NO_DEFAULT_PATH)
 else()
-  find_library(Z3_LIBRARY z3)
+  find_library(Z3_LIBRARY NAMES libz3.a)
 endif()
 
 if(NOT Z3_LIBRARY)
