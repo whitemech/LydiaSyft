@@ -12,7 +12,10 @@ set(CMAKE_MODULE_PATH
     "${CMAKE_MODULE_PATH}"
     "${CMAKE_ROOT_DIR}/cmake/Modules"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
-  
+
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
