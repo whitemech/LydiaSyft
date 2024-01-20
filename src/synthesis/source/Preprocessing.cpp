@@ -6,7 +6,7 @@
 
 namespace Syft {
 
-  OneStepSynthesisResult preprocessing(const whitemech::lydia::LTLfFormula& formula, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr) {
+  OneStepSynthesisResult preprocessing(const whitemech::lydia::LTLfFormula& formula, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, Syft::Player starting_player) {
     Syft::OneStepSynthesisResult result;
 
     // one-step realizability check
@@ -18,7 +18,7 @@ namespace Syft {
     }
 
     // one-step unrealizability check
-    bool one_step_unrealizability_check_result = one_step_unrealizable(formula, partition, var_mgr);
+    bool one_step_unrealizability_check_result = one_step_unrealizable(formula, partition, var_mgr, starting_player);
     if (one_step_unrealizability_check_result) {
       result.realizability = false;
       return result;

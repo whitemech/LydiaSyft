@@ -7,6 +7,7 @@
 #include <optional>
 
 #include "InputOutputPartition.h"
+#include "Player.h"
 #include "VarMgr.h"
 
 namespace Syft {
@@ -19,9 +20,10 @@ namespace Syft {
     z3::context& z3_context;
     z3::solver& solver;
     z3::expr result;
+    Syft::Player starting_player;
     // dummy value for 'result' since z3::expr does not have a default constructor
-    explicit SmtOneStepUnrealizabilityVisitor(const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, z3::context& z3_context, z3::solver& solver)
-        : partition{partition}, var_mgr{var_mgr}, z3_context{z3_context}, solver{solver}, result{z3_context.bool_val(true)} {}
+    explicit SmtOneStepUnrealizabilityVisitor(const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, z3::context& z3_context, z3::solver& solver, Syft::Player starting_player)
+        : partition{partition}, var_mgr{var_mgr}, z3_context{z3_context}, solver{solver}, result{z3_context.bool_val(true)}, starting_player{starting_player} {}
     ~SmtOneStepUnrealizabilityVisitor() {}
     void visit(const whitemech::lydia::LTLfTrue &) override;
     void visit(const whitemech::lydia::LTLfFalse &) override;
@@ -39,7 +41,7 @@ namespace Syft {
     z3::expr apply(const whitemech::lydia::LTLfFormula &f);
   };
 
-  bool one_step_unrealizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr);
+  bool one_step_unrealizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, Syft::Player starting_player);
 
 }
 
