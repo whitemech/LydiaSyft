@@ -71,7 +71,7 @@ int main(int argc, char ** argv) {
     if (!maxset) {
 //         abstract single strategy
 //         preprocessing
-        auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr);
+        auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr, starting_player);
         bool preprocessing_success = one_step_result.realizability.has_value();
         if (preprocessing_success and one_step_result.realizability.value()) {
             std::cout << Syft::REALIZABLE_STR << std::endl;

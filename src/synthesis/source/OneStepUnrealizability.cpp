@@ -76,7 +76,7 @@ namespace Syft {
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfEventually &formula) {
-      result = z3_context.bool_val(true);
+        result = z3_context.bool_val(true);
     }
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfAlways &formula) {
@@ -88,8 +88,32 @@ namespace Syft {
         return result;
     }
 
+    z3::expr quantify_agent_vars_(z3::solver &solver, const InputOutputPartition &partition, z3::expr &result) {
+        // exist an agent move such that for all env moves...
+        z3::expr_vector exist_vars(solver.ctx());
+        if (!partition.output_variables.empty()) {
+            for (const auto &controllable_var: partition.output_variables) {
+                exist_vars.push_back(solver.ctx().bool_const(controllable_var.c_str()));
+            }
+            result = z3::exists(exist_vars, result);
+        }
+        return result;
+    }
+
+    z3::expr quantify_env_vars_(z3::solver &solver, const InputOutputPartition &partition, z3::expr &result) {
+        // for all env moves...
+        z3::expr_vector forall_vars(solver.ctx());
+        if (!partition.input_variables.empty()) {
+            for (const auto &controllable_var: partition.input_variables) {
+                forall_vars.push_back(solver.ctx().bool_const(controllable_var.c_str()));
+            }
+            result = z3::forall(forall_vars, result);
+        }
+        return result;
+    }
+
     bool one_step_unrealizable(const whitemech::lydia::LTLfFormula &f, const InputOutputPartition &partition,
-                               const Syft::VarMgr &var_mgr) {
+                               const Syft::VarMgr &var_mgr, Syft::Player starting_player) {
 
         whitemech::lydia::ltlf_ptr nnf_formula = whitemech::lydia::to_nnf(f);
 
@@ -98,26 +122,15 @@ namespace Syft {
         z3::params p(ctx);
         solver.set(p);
 
-        auto visitor = SmtOneStepUnrealizabilityVisitor{partition, var_mgr, ctx, solver};
+        auto visitor = SmtOneStepUnrealizabilityVisitor{partition, var_mgr, ctx, solver, starting_player};
         auto result = visitor.apply(*nnf_formula);
 
-
-        // for all env moves...
-        z3::expr_vector forall_vars(ctx);
-        if (!partition.input_variables.empty()) {
-            for (const auto &controllable_var: partition.input_variables) {
-                forall_vars.push_back(ctx.bool_const(controllable_var.c_str()));
-            }
-            result = z3::forall(forall_vars, result);
-        }
-
-        // exist an agent move such that for all env moves...
-        z3::expr_vector exist_vars(ctx);
-        if (!partition.output_variables.empty()) {
-            for (const auto &controllable_var: partition.output_variables) {
-                exist_vars.push_back(ctx.bool_const(controllable_var.c_str()));
-            }
-            result = z3::exists(exist_vars, result);
+        if (starting_player == Player::Environment) {
+            result = quantify_agent_vars_(solver, partition, result);
+            result = quantify_env_vars_(solver, partition, result);
+        } else {
+            result = quantify_env_vars_(solver, partition, result);
+            result = quantify_agent_vars_(solver, partition, result);
         }
 
         solver.reset();

@@ -10,7 +10,7 @@ bool get_one_step_unrealizability(const std::string& formula, const std::vector<
     auto partition = Syft::InputOutputPartition::construct_from_input(input_variables, output_variables);
     var_mgr.create_named_variables(partition.input_variables);
     var_mgr.create_named_variables(partition.output_variables);
-    return Syft::one_step_unrealizable(*parsed_formula, partition, var_mgr);
+    return Syft::one_step_unrealizable(*parsed_formula, partition, var_mgr, Syft::Player::Agent);
 }
 
 

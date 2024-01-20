@@ -38,7 +38,7 @@ namespace Test{
         var_mgr->create_named_variables(partition.input_variables);
         var_mgr->create_named_variables(partition.output_variables);
 
-        auto one_step_result = Syft::preprocessing(*formula, partition, *var_mgr);
+        auto one_step_result = Syft::preprocessing(*formula, partition, *var_mgr, Player::Agent);
         bool preprocessing_success = one_step_result.realizability.has_value();
         if (preprocessing_success and one_step_result.realizability.value()){
           return true;

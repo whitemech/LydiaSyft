@@ -7,7 +7,7 @@
 
 namespace Syft {
 
-  OneStepSynthesisResult preprocessing(const whitemech::lydia::LTLfFormula& formula, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr);
+  OneStepSynthesisResult preprocessing(const whitemech::lydia::LTLfFormula& formula, const InputOutputPartition &partition, const Syft::VarMgr& var_mgr, Syft::Player starting_player);
 }
 
 #endif //PREPROCESSING_HPP
