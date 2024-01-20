@@ -69,36 +69,36 @@ int main(int argc, char ** argv) {
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
     if (!maxset) {
-        // abstract single strategy
-        // preprocessing
-//        auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr);
-//        bool preprocessing_success = one_step_result.realizability.has_value();
-//        if (preprocessing_success and one_step_result.realizability.value()) {
-//            std::cout << Syft::REALIZABLE_STR << std::endl;
-//
-//            CUDD::BDD move = one_step_result.winning_move;
-//            auto total_time = total_time_stopwatch.stop();
-//            if (print_strategy) {
-//                var_mgr->dump_dot(move.Add(), "strategy.dot");
-//            }
-//
-//            if (print_times) {
-//                std::cout << "Total time: "
-//                          << total_time.count() << " ms" << std::endl;
-//            }
-//            return 0;
-//        } else if (preprocessing_success and !one_step_result.realizability.value()) {
-//            std::cout << Syft::UNREALIZABLE_STR << std::endl;
-//            auto total_time = total_time_stopwatch.stop();
-//
-//            if (print_times) {
-//                std::cout << "Total time: "
-//                          << total_time.count() << " ms" << std::endl;
-//            }
-//            return 0;
-//        } else {
-//            // Preprocessing was not successful. Continuing with full DFA construction."
-//        }
+//         abstract single strategy
+//         preprocessing
+        auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr);
+        bool preprocessing_success = one_step_result.realizability.has_value();
+        if (preprocessing_success and one_step_result.realizability.value()) {
+            std::cout << Syft::REALIZABLE_STR << std::endl;
+
+            CUDD::BDD move = one_step_result.winning_move;
+            auto total_time = total_time_stopwatch.stop();
+            if (print_strategy) {
+                var_mgr->dump_dot(move.Add(), "strategy.dot");
+            }
+
+            if (print_times) {
+                std::cout << "Total time: "
+                          << total_time.count() << " ms" << std::endl;
+            }
+            return 0;
+        } else if (preprocessing_success and !one_step_result.realizability.value()) {
+            std::cout << Syft::UNREALIZABLE_STR << std::endl;
+            auto total_time = total_time_stopwatch.stop();
+
+            if (print_times) {
+                std::cout << "Total time: "
+                          << total_time.count() << " ms" << std::endl;
+            }
+            return 0;
+        } else {
+            // Preprocessing was not successful. Continuing with full DFA construction."
+        }
 
         Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
 
