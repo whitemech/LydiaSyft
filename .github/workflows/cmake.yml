@@ -33,7 +33,22 @@ jobs:
           sudo apt-get autoremove
           
           # install graphviz
-          sudo apt-get install graphviz libgraphviz-dev
+          sudo apt-get install -y graphviz libgraphviz-dev
+          
+          echo "done"
+          ldconfig -p | grep graphviz || true 
+          ls -l /usr/local/lib/graphviz || true
+          ls -l /usr/local/include/graphviz || true
+          sudo apt install -y locate
+          sudo updatedb
+          echo "graphviz"
+          sudo locate graphviz
+          echo "libcdt"
+          sudo locate libcdt
+          echo "libcgraph"
+          sudo locate libcgraph
+          echo "libpathplan"
+          sudo locate libpathplan
       - name: Install Z3
         run: |
           wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
@@ -70,7 +85,7 @@ jobs:
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DZ3_FETCH=OFF
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -D_GRAPHVIZ_INCLUDE_DIR=/usr/include -D_GRAPHVIZ_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu/graphviz -DZ3_FETCH=OFF
 
       - name: Build
         # Build your program with the given configuration

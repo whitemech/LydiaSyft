@@ -49,6 +49,7 @@ else()
   find_package(Z3 REQUIRED)
 endif()
 
+find_package(Graphviz)
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 set(WITH_SYFT OFF)
