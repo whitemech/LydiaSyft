@@ -2,7 +2,7 @@ INFO {
   TITLE:       "Fair-LTLf-test"
   DESCRIPTION: "Fair-LTLf-test example"
   SEMANTICS:   Finite,Moore
-  TARGET:      Moore
+  TARGET:      Mealy
 }
 
 MAIN {
