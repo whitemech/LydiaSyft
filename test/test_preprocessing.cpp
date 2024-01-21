@@ -11,7 +11,7 @@ Syft::OneStepSynthesisResult get_preprocessing(const std::string& formula, const
     auto partition = Syft::InputOutputPartition::construct_from_input(input_variables, output_variables);
     var_mgr.create_named_variables(partition.input_variables);
     var_mgr.create_named_variables(partition.output_variables);
-    return Syft::preprocessing(*parsed_formula, partition, var_mgr);
+    return Syft::preprocessing(*parsed_formula, partition, var_mgr, Syft::Player::Agent);
 }
 
 
