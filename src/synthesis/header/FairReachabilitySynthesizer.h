@@ -22,6 +22,9 @@ namespace Syft {
         //fair
         CUDD::BDD assumption_;
 
+    protected:
+        CUDD::BDD load_CNF(const std::string& filename) const;
+
     public:
 
         /**
@@ -33,7 +36,7 @@ namespace Syft {
          */
         FairReachabilitySynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
                                 CUDD::BDD goal_states, CUDD::BDD state_space,
-                                    CUDD::BDD assumption);
+                                    std::string& assumption_filename);
 
 
 

@@ -1,0 +1,22 @@
+INFO {
+  TITLE:       "Fair-LTLf-test"
+  DESCRIPTION: "Fair-LTLf-test example"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Mealy
+}
+
+MAIN {
+
+  INPUTS {
+    add;
+  }
+
+  OUTPUTS {
+    c0;
+  }
+
+  GUARANTEES {
+    F(add && c0);
+  }
+
+}
