@@ -11,7 +11,7 @@ TEST_CASE( "Parse TLSF, test.tlsf", "[tlsf_parser]" ) {
   parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::EXAMPLE_TEST_TLSF);
 
   bool sys_first = parser.get_sys_first();
-  REQUIRE(!sys_first);
+  REQUIRE(sys_first);
 
   auto expected_input_vars = std::set<std::string>({"a1", "a2"});
   auto input_vars_vec = parser.get_input_variables();
