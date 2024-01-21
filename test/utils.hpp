@@ -19,6 +19,11 @@ namespace Syft::Test {
   static std::string EXAMPLE_TEST_TLSF = ROOT_DIRECTORY + "/example/test.tlsf";
   static std::string EXAMPLE_001_TLSF = ROOT_DIRECTORY + "/example/001.tlsf";
   static std::string DATASET_FOLDER = ROOT_DIRECTORY + "/example/TLSF";
+  static std::string FAIRSYNTHESIS_COUNTER_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_counter_test.tlsf";
+  static std::string FAIRSYNTHESIS_COUNTER_UNREA_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_counter_unrea_test.tlsf";
+  static std::string FAIRSYNTHESIS_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_test.tlsf";
+  static std::string FAIRSYNTHESIS_UNREA_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_unrea_test.tlsf";
+  static std::string FAIRSYNTHESIS_TEST_ASSUMPTION = ROOT_DIRECTORY + "/example/fair_test_assumption.txt";
 
   inline std::string get_time_str() {
     // Get current time as a time_point object
