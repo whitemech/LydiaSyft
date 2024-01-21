@@ -14,7 +14,7 @@
 
 TEST_CASE("Fair Synthesis test", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSYNTHESIS_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
@@ -52,7 +52,7 @@ TEST_CASE("Fair Synthesis test", "[fair synthesis]") {
 
     Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
                                                   protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSYNTHESIS_TEST_ASSUMPTION);
+                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
@@ -61,7 +61,7 @@ TEST_CASE("Fair Synthesis test", "[fair synthesis]") {
 
 TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSYNTHESIS_UNREA_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_UNREA_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
@@ -99,7 +99,7 @@ TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
 
     Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
                                                   protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSYNTHESIS_TEST_ASSUMPTION);
+                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = false;
@@ -108,7 +108,7 @@ TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
 
 TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSYNTHESIS_COUNTER_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
@@ -144,7 +144,7 @@ TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
 
     Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
                                               protagonist_player, symbolic_dfa.final_states(),
-                                              var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSYNTHESIS_TEST_ASSUMPTION);
+                                              var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
@@ -153,7 +153,7 @@ TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
 
 TEST_CASE("Fair Synthesis of unrealizable counter_1", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSYNTHESIS_COUNTER_UNREA_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
@@ -191,7 +191,7 @@ TEST_CASE("Fair Synthesis of unrealizable counter_1", "[fair synthesis]") {
 
     Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
                                                   protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSYNTHESIS_TEST_ASSUMPTION);
+                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = false;
