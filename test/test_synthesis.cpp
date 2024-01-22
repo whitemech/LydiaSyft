@@ -87,7 +87,7 @@ TEST_CASE("Synthesis of a or b", "[synthesis]") {
   }
 }
 
-TEST_CASE("Synthesis of X\\[\\!\\] a", "[synthesis]") {
+TEST_CASE("Synthesis of strongX a", "[synthesis]") {
 
   std::string formula = "X[!] a";
 

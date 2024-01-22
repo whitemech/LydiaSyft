@@ -50,7 +50,7 @@ TEST_CASE("One-step realizability check of a", "[one-step-realizability-check]")
 
 }
 
-TEST_CASE("One-step realizability check of X\\[\\!\\] a", "[one-step-realizability-check]") {
+TEST_CASE("One-step realizability check of strongX a", "[one-step-realizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -220,7 +220,7 @@ TEST_CASE("One-step realizability check of random formula 1", "[one-step-unreali
   }
 }
 
-TEST_CASE("One-step realizability check of a U X\\[\\!\\]b", "[one-step-unrealizability-check]") {
+TEST_CASE("One-step realizability check of a U strongXb", "[one-step-unrealizability-check]") {
   auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
   auto var_mgr = std::make_shared<Syft::VarMgr>();
 

@@ -55,7 +55,7 @@ TEST_CASE("Preprocessing of a", "[preprocessing]") {
 
 }
 
-TEST_CASE("Preprocessing of X\\[\\!\\] a", "[preprocessing]") {
+TEST_CASE("Preprocessing of strongX a", "[preprocessing]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
 
@@ -232,7 +232,7 @@ TEST_CASE("Preprocessing of random formula 1", "[one-step-unrealizability-check]
   }
 }
 
-TEST_CASE("Preprocessing of a U X\\[\\!\\]b", "[one-step-unrealizability-check]") {
+TEST_CASE("Preprocessing of a U strongXb", "[one-step-unrealizability-check]") {
   auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
   auto var_mgr = std::make_shared<Syft::VarMgr>();
 
