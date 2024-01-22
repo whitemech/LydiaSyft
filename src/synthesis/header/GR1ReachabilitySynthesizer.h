@@ -27,6 +27,8 @@ namespace  Syft {
 
         CUDD::BDD safe_states_ = var_mgr_->cudd_mgr()->bddOne();
 
+        std::string slugs_dir_;
+
         /**
          * \brief Prints out INPUT and OUTPUT variables in Slugs format
          * [INPUT]
@@ -80,7 +82,12 @@ namespace  Syft {
          */
         void print_liveness_constraints(const SymbolicStateDfa arena, const std::string& filename) const;
 
-
+        /**
+         * Get the path to the SLUGS binary.
+         *
+         * @return the path to the SLUGS binary.
+         */
+        std::string get_slugs_path();
 
     public:
 
@@ -91,10 +98,11 @@ namespace  Syft {
          * \param env_safety A symbolic-state DFA representing the environment safety game arena
          * \param agn_reach  A symbolic-state DFA representing the system reachability game arena
          * \param agn_safety A symbolic-state DFA representing the system safety game arena
+         * \param slugs_dir  The root directory of the SLUGS project
          *
          */
         GR1ReachabilitySynthesizer(std::shared_ptr<VarMgr> var_mgr, GR1 gr1, SymbolicStateDfa env_safety,
-                           SymbolicStateDfa agn_reach, SymbolicStateDfa agn_safety);
+                           SymbolicStateDfa agn_reach, SymbolicStateDfa agn_safety, std::string slugs_dir);
 
         const std::string exec_slugs(const std::string& slugs, const std::string& slugs_input_file,
                                      const std::string& slugs_res_file, const std::string& slugs_strategy_file);
