@@ -97,7 +97,7 @@ void VarMgr::partition_variables(const std::vector<std::string>& input_names,
 //  }
 
 
-    if (input_names.size() + output_names.size() != index_to_name_.size()) {
+    if (input_names.size() + output_names.size() != (index_to_name_.size() - state_variable_count_)) {
         throw std::runtime_error(
                 "Error: Input-output partition is the wrong size.");
     }
