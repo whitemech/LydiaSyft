@@ -1,0 +1,29 @@
+INFO {
+  TITLE:       "LTLf-test"
+  DESCRIPTION: "LTLf-test example"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Moore
+}
+
+MAIN {
+
+  INPUTS {
+    sense_nemo;
+    nemo_leaving;
+  }
+
+  OUTPUTS {
+    camera_on;
+    hallway_0; 
+    hallway_1; 
+    room_0; 
+    room_1; 
+    room_2; 
+    room_3;
+  }
+
+  GUARANTEES {
+    (F ((sense_nemo && camera_on) && X[!](F ((sense_nemo && camera_on) && X[!](F (sense_nemo && camera_on))))));
+  }
+
+}
