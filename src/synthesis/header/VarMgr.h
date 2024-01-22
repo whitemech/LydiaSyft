@@ -265,6 +265,14 @@ class VarMgr {
      *
      */
     std::size_t  automaton_num () const;
+
+    /**
+   * \brief Prints a BDD as a Boolean formula, where each variable has a specific label.
+   *
+   * \param A given BDD.
+   * \return A string that represents a Boolean formula.
+   */
+    std::string bdd_to_string(const CUDD::BDD& bdd) const;
   
 };
 

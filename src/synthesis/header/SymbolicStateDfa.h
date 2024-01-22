@@ -148,6 +148,8 @@ class SymbolicStateDfa {
 
   static std::vector<int> state_to_binary(std::size_t state,
                                             std::size_t bit_count);
+
+    void new_sink_states(const CUDD::BDD& sink_states);
 };
 
 }
