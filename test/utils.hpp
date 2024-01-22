@@ -16,6 +16,7 @@ namespace Syft::Test {
 
   static std::string ROOT_DIRECTORY = __ROOT_DIRECTORY;
   static std::string SYFCO_LOCATION = ROOT_DIRECTORY + "/syfco";
+  static std::string SLUGS_DIR_LOCATION = ROOT_DIRECTORY + "/submodules/slugs";
   static std::string EXAMPLE_TEST_TLSF = ROOT_DIRECTORY + "/example/test.tlsf";
   static std::string EXAMPLE_001_TLSF = ROOT_DIRECTORY + "/example/001.tlsf";
   static std::string DATASET_FOLDER = ROOT_DIRECTORY + "/example/TLSF";

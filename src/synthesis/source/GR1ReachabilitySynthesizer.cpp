@@ -9,9 +9,9 @@
 namespace Syft {
 
     GR1ReachabilitySynthesizer::GR1ReachabilitySynthesizer(std::shared_ptr<VarMgr> var_mgr, GR1 gr1, SymbolicStateDfa env_safety,
-                                           SymbolicStateDfa agn_reach, SymbolicStateDfa agn_safety)
+                                           SymbolicStateDfa agn_reach, SymbolicStateDfa agn_safety, std::string slugs_dir)
             : var_mgr_(var_mgr), gr1_(gr1), env_safety_(env_safety), agn_reach_(agn_reach),
-              agn_safety_(agn_safety)
+              agn_safety_(agn_safety), slugs_dir_{slugs_dir}
     {}
 
     void GR1ReachabilitySynthesizer::print_variables(const SymbolicStateDfa arena, const std::string& filename) const{
@@ -188,7 +188,7 @@ namespace Syft {
     const std::string GR1ReachabilitySynthesizer::exec_slugs(const std::string& slugs, const std::string& slugs_input_file, const std::string& slugs_res_file, const std::string& slugs_strategy_file) {
         std::string result;
 
-        std::string run_slugs = slugs+" --counterStrategy " + slugs_input_file + " > " + slugs_strategy_file + " 2> "+slugs_res_file;
+        std::string run_slugs = slugs + " --counterStrategy " + slugs_input_file + " > " + slugs_strategy_file + " 2> "+slugs_res_file;
 
         const char* cmd = run_slugs.c_str();
         system(cmd);
@@ -252,8 +252,8 @@ namespace Syft {
         std::cout << "* Start calling GR1 game solver Slugs...\n";
 
         std::string slugs_input_file = benchmark_name+".slugsin";
-        std::string slugs_parser = "StructuredSlugsParser/compiler.py";
-        std::string run_slugs_parser = "python3 "+slugs_parser+" "+to_slugs_parser+" > " + slugs_input_file;
+        std::string slugs_parser = slugs_dir_ + "/tools/StructuredSlugsParser/compiler.py";
+        std::string run_slugs_parser = "python3 "+ slugs_parser + " " + to_slugs_parser + " > " + slugs_input_file;
 
 //        std::cout<<run_slugs_parser;
         system(run_slugs_parser.c_str());
@@ -261,7 +261,7 @@ namespace Syft {
         std::string detele_to_slugs_parser = "rm "+to_slugs_parser;
         system(detele_to_slugs_parser.c_str());
 
-        std::string slugs= "./slugs";
+        std::string slugs= get_slugs_path();
         std::string slugs_strategy_file= benchmark_name+".strategy";
         std::string slugs_res_file= benchmark_name+".res";
         std::string slugs_result = exec_slugs(slugs, slugs_input_file, slugs_res_file, slugs_strategy_file);
@@ -283,6 +283,9 @@ namespace Syft {
         return result;
     }
 
+    std::string GR1ReachabilitySynthesizer::get_slugs_path() {
+        return slugs_dir_ + "/src/slugs";
+    }
 
 
 }

@@ -98,7 +98,7 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
 
     Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety);
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION);
 
     std::string benchmark_name = "hand_shake";
     Syft::SynthesisResult result = synthesizer.run(benchmark_name);
@@ -190,7 +190,7 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
 
     Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety);
+                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION);
 
     std::string benchmark_name = "finding_nemo";
 
