@@ -1,0 +1,23 @@
+INFO {
+  TITLE:       "LTLf-test"
+  DESCRIPTION: "LTLf-test example"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Moore
+}
+
+MAIN {
+
+  INPUTS {
+    syn_ack;
+  }
+
+  OUTPUTS {
+    syn;
+    ack;
+  }
+
+  GUARANTEES {
+    F (ack);
+  }
+
+}

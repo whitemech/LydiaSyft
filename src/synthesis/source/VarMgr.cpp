@@ -2,7 +2,8 @@
 
 #include <cstring>
 #include <stdexcept>
-#include <iostream>
+#include <sstream>
+#include <algorithm>
 
 namespace Syft {
 
@@ -31,12 +32,16 @@ std::size_t VarMgr::create_state_variables(std::size_t variable_count) {
   state_variables_.emplace_back();
   state_variables_[automaton_id].reserve(variable_count);
 
-  for (std::size_t i = 0; i < variable_count; ++i) {
-    // Creates a new variable at the top of the variable ordering
-    CUDD::BDD new_state_variable = mgr_->bddNewVarAtLevel(0);
-    
-    state_variables_[automaton_id].push_back(new_state_variable);
-  }
+    for (std::size_t i = 0; i < variable_count; ++i) {
+        // Creates a new variable at the top of the variable ordering
+        CUDD::BDD new_state_variable = mgr_->bddNewVarAtLevel(0);
+
+        state_variables_[automaton_id].push_back(new_state_variable);
+        int new_index = new_state_variable.NodeReadIndex();
+        std::string name = "Z"+std::to_string(state_variable_count_+i);
+        name_to_variable_[name] = new_state_variable;
+        index_to_name_[new_index] = name;
+    }
 
   state_variable_count_ += variable_count;
 
@@ -315,5 +320,45 @@ void VarMgr::dump_dot(const std::vector<CUDD::ADD>& adds,
 std::size_t VarMgr::automaton_num() const {
   return state_variables_.size();
 }
-  
+
+std::string VarMgr::bdd_to_string(const CUDD::BDD& bdd) const {
+    std::stringstream ss;
+    ss << bdd;
+    std::string s = ss.str();
+
+    // Replace x with $ in the variable representation to avoid problems if a
+    // var label happens to have the form x#. This assumes that the var labels
+    // cannot have the form $#.
+    while (true) {
+        std::size_t pos = s.find("x");
+
+        if (pos == std::string::npos) {
+            break;
+        }
+
+        s.replace(pos, 1, "$");
+    }
+
+    // Sort ids from highest to lowest so that ids with more digits get replaced
+    // before ids with fewer digits.
+    std::vector<unsigned int> ids = bdd.SupportIndices();
+    std::sort(ids.begin(), ids.end(), std::greater<unsigned int>());
+
+
+    for (unsigned int id : ids) {
+        std::string var_string = "$" + std::to_string(id);
+
+        while (true) {
+            std::size_t pos = s.find(var_string);
+
+            if (pos == std::string::npos) {
+                break;
+            }
+
+            s.replace(pos, var_string.size(), "("+index_to_name(id)+")");
+        }
+    }
+
+    return s;
+}
 }

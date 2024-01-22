@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <string>
 
 namespace Syft {
 
@@ -27,4 +28,18 @@ namespace Syft {
     }).base(), trimmed_str.end());
     return trimmed_str;
   }
+
+    std::string to_lower_copy(const std::string& str) {
+        std::string data = str;
+        std::transform(data.begin(), data.end(), data.begin(),
+                       [](unsigned char c){ return std::tolower(c); });
+        return data;
+    }
+
+    std::string to_upper_copy(const std::string& str) {
+        std::string data = str;
+        std::transform(data.begin(), data.end(), data.begin(),
+                       [](unsigned char c){ return std::toupper(c); });
+        return data;
+    }
 }

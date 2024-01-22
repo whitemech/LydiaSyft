@@ -231,5 +231,17 @@ SymbolicStateDfa SymbolicStateDfa::product(const std::vector<SymbolicStateDfa>& 
     return product_automaton;
 }
 
+    void SymbolicStateDfa::new_sink_states(const CUDD::BDD& states) {
+        int i = 0;
+        while (i < transition_function_.size()) {
+            CUDD::BDD bit_function = transition_function_[i];
+            CUDD::BDD bit = var_mgr()->state_variable(automaton_id_, i);
+//        var_mgr()->dump_dot(bit.Add(), "bit"+std::to_string(i));
+            CUDD::BDD new_bit_function = (bit_function & !states) | (states * bit);
+            transition_function_[i] = new_bit_function;
+            i++;
+        }
+    }
+
 }
 
