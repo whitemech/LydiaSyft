@@ -1,0 +1,16 @@
+--Env-Justice--
+room_1
+--Justice-End--
+--Env-Justice--
+room_3
+--Justice-End--
+--Env-Justice--
+room_5
+--Justice-End--
+--Env-Justice--
+room_7
+--Justice-End--
+--Agn-Justice--
+sense_nemo
+--Justice-End--
+End

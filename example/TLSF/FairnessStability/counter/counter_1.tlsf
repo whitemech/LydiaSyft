@@ -1,0 +1,24 @@
+INFO {
+  TITLE:       "counter_1"
+  DESCRIPTION: "counter_F"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Moore
+}
+
+MAIN {
+
+  INPUTS {
+    add;
+  }
+
+  OUTPUTS {
+    c0;
+    c1;
+    b0;
+  }
+
+  GUARANTEES {
+    ((((!(c0)) && (!(b0))) && (G((!(add)) -> (!(X[!](c0))))) && (G(((((!(c0)) && (!(b0))) -> (!(X[!](!((!(b0)) && (!(c1))))))) && (((!(c0)) && b0) -> (!(X[!](!((b0) && (!(c1))))))) && (((c0) && (!(b0))) -> (!(X[!](!((b0) && (!(c1))))))) && (((c0) && b0) -> (!(X[!](!((!(b0)) && (c1)))))))))) && (F(b0)));
+  }
+
+}
