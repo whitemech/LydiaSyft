@@ -1,0 +1,1 @@
+(G ((hallway_0 -> (!(room_0) && !(room_1))) && (room_0 -> (!(hallway_0) && !(room_1))) && (room_1 -> (!(hallway_0) && !(room_0)))) && G ((hallway_0 -> (X room_0 || X room_1 || X hallway_0 || X hallway_0 || X hallway_0)) && (room_0 -> (X room_0 || X hallway_0)) && (room_1 -> (X room_1 || X hallway_0))) && G (!(sense_nemo) -> !(camera_on)))

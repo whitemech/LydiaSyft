@@ -20,21 +20,21 @@ namespace Syft::Test {
   static std::string EXAMPLE_TEST_TLSF = ROOT_DIRECTORY + "/example/test.tlsf";
   static std::string EXAMPLE_001_TLSF = ROOT_DIRECTORY + "/example/001.tlsf";
   static std::string DATASET_FOLDER = ROOT_DIRECTORY + "/example/TLSF";
-  static std::string FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_stable_counter_test.tlsf";
-  static std::string FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_stable_counter_unrea_test.tlsf";
+  static std::string FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF = ROOT_DIRECTORY + "/example/TLSF/FairnessStability/counter/counter_5.tlsf";
+  static std::string FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF = ROOT_DIRECTORY + "/example/TLSF/FairnessStability/counter_unrea/counter_unrea_5.tlsf";
   static std::string FAIRSTABLESYNTHESIS_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_stable_test.tlsf";
   static std::string FAIRSTABLESYNTHESIS_UNREA_TEST_TLSF = ROOT_DIRECTORY + "/example/fair_stable_unrea_test.tlsf";
   static std::string FAIRSTABLESYNTHESIS_TEST_ASSUMPTION = ROOT_DIRECTORY + "/example/fair_stable_test_assumption.txt";
 
-  static std::string GR1SYNTHESIS_TEST_ENV_GR1 = ROOT_DIRECTORY + "/example/GR1benchmarks/tcp_handshake_env_gr1.txt";
-  static std::string GR1SYNTHESIS_TEST_ENV_SAFETY = ROOT_DIRECTORY + "/example/GR1benchmarks/tcp_handshake_env_safety.ltlf";
-  static std::string GR1SYNTHESIS_TEST_AGN_SAFETY = ROOT_DIRECTORY + "/example/GR1benchmarks/tcp_handshake_agn_safety.ltlf";
-  static std::string GR1SYNTHESIS_TEST_AGN_GOAL = ROOT_DIRECTORY + "/example/GR1benchmarks/tcp_handshake_agn_goal.tlsf";
+  static std::string GR1SYNTHESIS_TEST_ENV_GR1 = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/tcp_handshake/tcp_handshake_env_gr1.txt";
+  static std::string GR1SYNTHESIS_TEST_ENV_SAFETY = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/tcp_handshake/tcp_handshake_env_safety.ltlf";
+  static std::string GR1SYNTHESIS_TEST_AGN_SAFETY = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/tcp_handshake/tcp_handshake_agn_safety.ltlf";
+  static std::string GR1SYNTHESIS_TEST_AGN_GOAL = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/tcp_handshake/tcp_handshake.tlsf";
 
-    static std::string GR1SYNTHESIS_FINDING_NEMO_ENV_GR1 = ROOT_DIRECTORY + "/example/GR1benchmarks/finding_nemo_env_gr1.txt";
-    static std::string GR1SYNTHESIS_FINDING_NEMO_ENV_SAFETY = ROOT_DIRECTORY + "/example/GR1benchmarks/finding_nemo_env_safety.ltlf";
-    static std::string GR1SYNTHESIS_FINDING_NEMO_AGN_SAFETY = ROOT_DIRECTORY + "/example/GR1benchmarks/finding_nemo_agn_safety.ltlf";
-    static std::string GR1SYNTHESIS_FINDING_NEMO_AGN_GOAL = ROOT_DIRECTORY + "/example/GR1benchmarks/finding_nemo_agn_goal.tlsf";
+    static std::string GR1SYNTHESIS_FINDING_NEMO_ENV_GR1 = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_2_env_gr1.txt";
+    static std::string GR1SYNTHESIS_FINDING_NEMO_ENV_SAFETY = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_2_env_safety.ltlf";
+    static std::string GR1SYNTHESIS_FINDING_NEMO_AGN_SAFETY = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_2_agn_safety.ltlf";
+    static std::string GR1SYNTHESIS_FINDING_NEMO_AGN_GOAL = ROOT_DIRECTORY + "/example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_2.tlsf";
 
   inline std::string get_time_str() {
     // Get current time as a time_point object

@@ -1,0 +1,33 @@
+INFO {
+  TITLE:       "finding_nemo_3"
+  DESCRIPTION: "finding_nemo"
+  SEMANTICS:   Finite,Moore
+  TARGET:      Moore
+}
+
+MAIN {
+
+  INPUTS {
+    sense_nemo;
+    nemo_leaving;
+  }
+
+  OUTPUTS {
+    camera_on;
+    hallway_0;
+    hallway_1;
+    hallway_2;
+    room_0;
+    room_1;
+    room_2;
+    room_3;
+    room_4;
+    room_5;
+  }
+
+  GUARANTEES {
+    F ((sense_nemo && camera_on) && X[!] F ((sense_nemo && camera_on) && X[!] F (sense_nemo && camera_on)))
+;
+  }
+
+}
