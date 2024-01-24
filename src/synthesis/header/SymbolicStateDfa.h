@@ -108,23 +108,23 @@ class SymbolicStateDfa {
   std::vector<CUDD::BDD> transition_function() const;
 
   /**
-   * \brief Turns the set of invalid states into a sink.
+   * \brief Turns the set of invalid states into a sink (assuming that the initial state is a valid state).
    *
    * All transitions out of the invalid states are redirected to the sink state
    * 0, and the invalid states are removed from the set of final states.
    *
    * \param invalid_states A BDD representing the set of invalid states.
    */
-  void prune_invalid_states(const CUDD::BDD& invalid_states);
+  void prune_dfa_with_states(const CUDD::BDD& invalid_states);
 
   /**
-   * \brief Restricts the DFA to a set of feasible moves, by turning the set of infeasible ones into a sink.
+   * \brief Prune the DFA removing a set of infeasible moves, by turning them into a sink.
    *
-   * All transitions out of the set of feasible moves are redirected to the sink state 0.
+   * All transitions out of the set of infeasible moves are redirected to the sink state 0.
    *
-   * \param feasible_moves A BDD representing the set of feasible moves.
+   * \param infeasible_moves A BDD representing the set of infeasible moves.
    */
-    void restrict_transitions(const CUDD::BDD& feasible_moves);
+    void prune_dfa_with_transitions(const CUDD::BDD& infeasible_moves);
 
   /**
    * \brief Saves the symbolic representation of the DFA in a .dot file.
@@ -137,19 +137,33 @@ class SymbolicStateDfa {
   void dump_dot(const std::string& filename) const;
 
     /**
-     * \brief Returns a product of two symbolic DFAs.
+     * \brief Returns a product AND of two symbolic DFAs.
      *
      * \param first_dfa The first DFA.
      * \param second_dfa The second DFA.
-     * \return A symbolic DFA of the product.
+     * \return A symbolic DFA of the product AND.
      */
-  static SymbolicStateDfa product(const std::vector<SymbolicStateDfa>& dfa_vector);
+  static SymbolicStateDfa product_AND(const std::vector<SymbolicStateDfa>& dfa_vector);
 
 
   static std::vector<int> state_to_binary(std::size_t state,
                                             std::size_t bit_count);
 
     void new_sink_states(const CUDD::BDD& sink_states);
+
+    /**
+* \brief Returns a product AND of two symbolic DFAs.
+*
+* \param first_dfa The first DFA.
+* \param second_dfa The second DFA.
+* \return A symbolic DFA of the product OR.
+*/
+    static SymbolicStateDfa product_OR(const std::vector<SymbolicStateDfa>& dfa_vector);
+
+
+//  void complement();
+
+        static SymbolicStateDfa complement(const SymbolicStateDfa dfa);
 };
 
 }
