@@ -141,7 +141,7 @@ std::vector<CUDD::BDD> SymbolicStateDfa::transition_function() const {
   return transition_function_;
 }
 
-void SymbolicStateDfa::prune_invalid_states(const CUDD::BDD& invalid_states) {
+void SymbolicStateDfa::prune_dfa_with_states(const CUDD::BDD& invalid_states) {
   for (CUDD::BDD& bit_function : transition_function_) {
     // If the current state is an invalid state, send every transition to
     // the sink state 0
@@ -152,10 +152,10 @@ void SymbolicStateDfa::prune_invalid_states(const CUDD::BDD& invalid_states) {
   final_states_ &= !invalid_states;
 }
 
-void SymbolicStateDfa::restrict_transitions(const CUDD::BDD &feasible_moves) {
+void SymbolicStateDfa::prune_dfa_with_transitions(const CUDD::BDD& infeasible_moves) {
     for (CUDD::BDD& bit_function : transition_function_) {
         // Every transition has to be a feasible move
-        bit_function &= feasible_moves;
+        bit_function &= !infeasible_moves;
     }
 }
 
@@ -195,7 +195,7 @@ SymbolicStateDfa SymbolicStateDfa::from_predicates(
   return dfa;
 }
 
-SymbolicStateDfa SymbolicStateDfa::product(const std::vector<SymbolicStateDfa>& dfa_vector) {
+SymbolicStateDfa SymbolicStateDfa::product_AND(const std::vector<SymbolicStateDfa>& dfa_vector) {
     if (dfa_vector.size() < 1) {
         throw std::runtime_error("Incorrect usage of automata product");
     }
@@ -241,6 +241,62 @@ SymbolicStateDfa SymbolicStateDfa::product(const std::vector<SymbolicStateDfa>& 
             transition_function_[i] = new_bit_function;
             i++;
         }
+    }
+
+    SymbolicStateDfa SymbolicStateDfa::product_OR(const std::vector<SymbolicStateDfa> &dfa_vector) {
+        if (dfa_vector.size() < 1) {
+            throw std::runtime_error("Incorrect usage of automata union");
+        }
+
+        std::shared_ptr<VarMgr> var_mgr = dfa_vector[0].var_mgr();
+
+        std::vector<std::size_t> automaton_ids;
+
+        std::vector<int> initial_state;
+
+        CUDD::BDD final_states = var_mgr->cudd_mgr()->bddZero();
+        std::vector<CUDD::BDD> transition_function;
+
+        for (SymbolicStateDfa dfa : dfa_vector) {
+            automaton_ids.push_back(dfa.automaton_id());
+
+            std::vector<int> dfa_initial_state = dfa.initial_state();
+            initial_state.insert(initial_state.end(), dfa_initial_state.begin(), dfa_initial_state.end());
+
+            final_states = final_states | dfa.final_states();
+            std::vector<CUDD::BDD> dfa_transition_function = dfa.transition_function();
+            transition_function.insert(transition_function.end(), dfa_transition_function.begin(), dfa_transition_function.end());
+        }
+
+        std::size_t union_automaton_id = var_mgr->create_product_state_space(automaton_ids);
+
+        SymbolicStateDfa product_automaton(var_mgr);
+        product_automaton.automaton_id_ = union_automaton_id;
+        product_automaton.initial_state_ = std::move(initial_state);
+        product_automaton.final_states_ = std::move(final_states);
+        product_automaton.transition_function_ = std::move(transition_function);
+
+        return product_automaton;
+    }
+
+
+    SymbolicStateDfa SymbolicStateDfa::complement(const SymbolicStateDfa dfa) {
+        std::shared_ptr<VarMgr> var_mgr = dfa.var_mgr();
+
+        std::size_t complement_automaton_id = var_mgr->create_complement_state_space(dfa.automaton_id());
+
+        std::vector<int> initial_state = dfa.initial_state();
+
+        CUDD::BDD final_states = !dfa.final_states();
+
+
+        SymbolicStateDfa complement_automaton(std::move(var_mgr));
+        complement_automaton.automaton_id_ = complement_automaton_id;
+        complement_automaton.initial_state_ = std::move(initial_state);
+        complement_automaton.transition_function_ = std::move(dfa.transition_function());
+        complement_automaton.final_states_ = std::move(final_states);
+
+        return complement_automaton;
     }
 
 }

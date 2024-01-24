@@ -66,6 +66,9 @@ class VarMgr {
   std::size_t create_product_state_space(
       const std::vector<std::size_t>& automaton_ids);
 
+    std::size_t create_complement_state_space(
+            const std::size_t automaton_id);
+
   /**
    * \brief Returns the i-th state variable for a given automaton.
    */
