@@ -225,14 +225,14 @@ namespace Syft {
         reduction_to_gr1_stopwatch.start();
         std::cout << "* Start reducing to GR1 game...\n";
 
-        SymbolicStateDfa reach_safe = SymbolicStateDfa::product({agn_reach_, agn_safety_});
+        SymbolicStateDfa reach_safe = SymbolicStateDfa::product_AND({agn_reach_, agn_safety_});
 
         CUDD::BDD reach_goal_t1 = agn_reach_.final_states();
         CUDD::BDD safe_region_t2 = agn_safety_.final_states() | agn_safety_.initial_state_bdd();
 
         reach_safe.new_sink_states(!safe_region_t2);
 
-        SymbolicStateDfa arena = SymbolicStateDfa::product({env_safety_, reach_safe});
+        SymbolicStateDfa arena = SymbolicStateDfa::product_AND({env_safety_, reach_safe});
         CUDD::BDD arena_initial_state_bdd = agn_reach_.initial_state_bdd() & agn_safety_.initial_state_bdd() & env_safety_.initial_state_bdd();
 
         safe_states_ = (env_safety_.final_states() & !(reach_safe.final_states())) | arena_initial_state_bdd;
