@@ -111,16 +111,6 @@ namespace Syft {
 
     }
 
-    std::unique_ptr<Transducer> StableReachabilitySynthesizer::AbstractSingleStrategy(SynthesisResult result) const {
-        std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
-                result.winning_moves);
-
-        auto transducer = std::make_unique<Transducer>(
-                var_mgr_, initial_vector_, strategy, spec_.transition_function(),
-                starting_player_);
-        return transducer;
-    }
-
     CUDD::BDD StableReachabilitySynthesizer::load_CNF(const std::string& filename) const{
         std::ifstream f(filename.c_str());
         CUDD::BDD assumption = var_mgr_->cudd_mgr()->bddOne();

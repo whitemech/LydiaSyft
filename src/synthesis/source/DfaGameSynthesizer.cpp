@@ -73,12 +73,12 @@ bool DfaGameSynthesizer::includes_initial_state(
   return winning_states.Eval(copy.data()).IsOne();
 }
 
-std::unordered_map<int, CUDD::BDD> DfaGameSynthesizer::synthesize_strategy(
-    const CUDD::BDD& winning_moves) const {
+std::unordered_map<int, CUDD::BDD> synthesize_strategy(const CUDD::BDD& winning_moves,
+                                                       const std::shared_ptr<VarMgr>& var_mgr){
   std::vector<CUDD::BDD> parameterized_output_function;
   int* output_indices;
-  CUDD::BDD output_cube = var_mgr_->output_cube();
-  std::size_t output_count = var_mgr_->output_variable_count();
+  CUDD::BDD output_cube = var_mgr->output_cube();
+  std::size_t output_count = var_mgr->output_variable_count();
 
   // Need to negate the BDD because b.SolveEqn(...) solves the equation b = 0
   CUDD::BDD pre = (!winning_moves).SolveEqn(output_cube,
@@ -117,7 +117,7 @@ std::unordered_map<int, CUDD::BDD> DfaGameSynthesizer::synthesize_strategy(
           int parameter_index = index_copy[j];
 
 	  // Can be anything, set to the constant 1 for simplicity
-	  CUDD::BDD parameter_value = var_mgr_->cudd_mgr()->bddOne();
+	  CUDD::BDD parameter_value = var_mgr->cudd_mgr()->bddOne();
 
 	  output_function[output_index] =
 	    output_function[output_index].Compose(parameter_value,
@@ -126,6 +126,21 @@ std::unordered_map<int, CUDD::BDD> DfaGameSynthesizer::synthesize_strategy(
   }
 
   return output_function;
+}
+
+std::unique_ptr<Transducer> DfaGameSynthesizer::AbstractSingleStrategy(const SynthesisResult& result) const  {
+    return abstract_single_strategy(result.winning_moves, var_mgr_, initial_vector_, spec_.transition_function(), starting_player_);
+}
+
+std::unique_ptr<Transducer> abstract_single_strategy(
+    const CUDD::BDD& winning_moves,
+    const std::shared_ptr<VarMgr>& var_mgr,
+    const std::vector<int>& initial_vector,
+    const std::vector<CUDD::BDD>& transition_vector,
+    Player starting_player) {
+    std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(winning_moves, var_mgr);
+    auto transducer = std::make_unique<Transducer>(var_mgr, initial_vector, strategy, transition_vector, starting_player);
+    return transducer;
 }
 
 }

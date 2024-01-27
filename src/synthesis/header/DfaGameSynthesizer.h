@@ -8,6 +8,13 @@
 
 namespace Syft {
 
+std::unique_ptr<Transducer> abstract_single_strategy(const CUDD::BDD& winning_moves,
+                                                     const std::shared_ptr<VarMgr>& var_mgr,
+                                                     const std::vector<int>& initial_vector,
+                                                     const std::vector<CUDD::BDD>& transition_vector,
+                                                     Player starting_player);
+std::unordered_map<int, CUDD::BDD> synthesize_strategy(const CUDD::BDD& winning_moves, const std::shared_ptr<VarMgr>& var_mgr);
+
 /**
  * \brief A synthesizer for a game whose arena is a symbolic-state DFA.
  */
@@ -25,10 +32,7 @@ class DfaGameSynthesizer : public Synthesizer<SymbolicStateDfa> {
   CUDD::BDD preimage(const CUDD::BDD& winning_states) const;
 
   CUDD::BDD project_into_states(const CUDD::BDD& winning_moves) const;
-  
-  std::unordered_map<int, CUDD::BDD> synthesize_strategy(
-      const CUDD::BDD& winning_moves) const;
-  
+
   bool includes_initial_state(const CUDD::BDD& winning_states) const;
   
  public:
@@ -40,6 +44,7 @@ class DfaGameSynthesizer : public Synthesizer<SymbolicStateDfa> {
    *
    * \param spec A symbolic-state DFA representing the game's arena.
    * \param starting_player The player that moves first each turn.
+   * \param protagonist_player The player for which we aim to find the winning strategy.
    */
   DfaGameSynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player);
 
@@ -51,6 +56,8 @@ class DfaGameSynthesizer : public Synthesizer<SymbolicStateDfa> {
    */
   virtual SynthesisResult run()
       const override = 0;
+
+  std::unique_ptr<Transducer> AbstractSingleStrategy(const SynthesisResult& result) const;
 };
 
 }

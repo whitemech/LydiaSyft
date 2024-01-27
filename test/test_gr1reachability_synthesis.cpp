@@ -1,9 +1,6 @@
 //
 // Created by shuzhu on 21/01/24.
 //
-//
-// Created by shuzhu on 21/01/24.
-//
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
@@ -97,11 +94,11 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
 
 
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION);
-
     std::string benchmark_name = "hand_shake";
-    Syft::SynthesisResult result = synthesizer.run(benchmark_name);
+    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
+
+    Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
     REQUIRE(result.realizability == expected);
@@ -189,12 +186,11 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
 
 
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION);
-
     std::string benchmark_name = "finding_nemo";
+    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
 
-    Syft::SynthesisResult result = synthesizer.run(benchmark_name);
+    Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
     REQUIRE(result.realizability == expected);

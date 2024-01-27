@@ -4,18 +4,18 @@
 
 namespace Syft {
 
-Transducer::Transducer(std::shared_ptr<VarMgr> var_mgr,
-                       std::vector<int> initial_vector,
-                       std::unordered_map<int, CUDD::BDD> output_function,
-                       std::vector<CUDD::BDD> transition_function,
+Transducer::Transducer(const std::shared_ptr<VarMgr>& var_mgr,
+                       const std::vector<int>& initial_vector,
+                       const std::unordered_map<int, CUDD::BDD>& output_function,
+                       const std::vector<CUDD::BDD>& transition_function,
                        Player starting_player,
                        Player protagonist_player)
-    : var_mgr_(std::move(var_mgr))
-    , initial_vector_(std::move(initial_vector))
-    , output_function_(std::move(output_function))
-    , transition_function_(std::move(transition_function))
-    , starting_player_(starting_player)
-    , protagonist_player_(protagonist_player)
+    : var_mgr_(var_mgr),
+    initial_vector_(initial_vector),
+    output_function_(output_function),
+    transition_function_(transition_function),
+    starting_player_(starting_player),
+    protagonist_player_(protagonist_player)
 {}
 
 void Transducer::dump_dot(const std::string& filename) const {

@@ -36,8 +36,6 @@ namespace Syft {
          */
         virtual SynthesisResult run() const final;
 
-        std::unique_ptr<Transducer> AbstractSingleStrategy(SynthesisResult result) const;
-
     };
 
 }

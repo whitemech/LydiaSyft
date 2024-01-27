@@ -102,10 +102,60 @@ sudo apt install graphviz libgraphviz-dev
 
 ## Run LYDIASYFT
 
-1. Reach executable file LydiaSyft
+Usage:
+```
+LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)
+Usage: ./cmake-build-debug/bin/LydiaSyft [OPTIONS] SUBCOMMAND
 
-   ```cd bin```
+Options:
+  -h,--help                   Print this help message and exit
+  --help-all                  Expand all help
+  -p,--print-strategy         Print out the synthesized strategy (default: false)
+  -t,--print-times            Print out running times of each step (default: false)
 
-2. Run example:
-   ```./Lydiasyft -f ../../example/test.tlsf```
+Subcommands:
+  synthesis                   solve a classical LTLf synthesis problem
+  maxset                      solve LTLf synthesis with maximally permissive strategies
+  fairness                    solve LTLf synthesis with fairness assumptions
+  stability                   solve LTLf synthesis with stability assumptions
+  gr1                         Solve LTLf synthesis with GR(1) conditions
+```
 
+To see the options of each subcommand, run:
+
+```
+LydiaSyft [SUBCOMMAND] --help
+```
+
+Examples (run commands from the root directory of the project):
+
+- Classical synthesis:
+
+```
+./build/bin/LydiaSyft synthesis -f example/test.tlsf   # UNREALIZABLE
+./build/bin/LydiaSyft synthesis -f example/test1.tlsf  # REALIZABLE
+```
+
+- Maxset synthesis:
+
+```
+./build/bin/LydiaSyft maxset -f example/test.tlsf
+```
+
+- Fairness synthesis:
+
+```
+./build/bin/LydiaSyft .fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+```
+
+- Stability synthesis:
+
+```
+./build/bin/LydiaSyft stability -f example/fair_stable_counter_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+```
+
+- GR(1) synthesis:
+
+```
+./cmake-build-debug/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
+```

@@ -11,21 +11,19 @@
 #include "Stopwatch.h"
 #include "SymbolicStateDfa.h"
 #include "Synthesizer.h"
-
+#include "DfaGameSynthesizer.h"
 
 
 namespace  Syft {
 
-    class GR1ReachabilitySynthesizer{
+    class GR1ReachabilitySynthesizer {
     private:
-        std::shared_ptr<VarMgr> var_mgr_;
-        GR1 gr1_;
-        SymbolicStateDfa env_safety_;
-        SymbolicStateDfa agn_safety_;
-        SymbolicStateDfa agn_reach_;
-        Player starting_player_;
-
-        CUDD::BDD safe_states_ = var_mgr_->cudd_mgr()->bddOne();
+        const std::shared_ptr<VarMgr>& var_mgr_;
+        const GR1& gr1_;
+        const SymbolicStateDfa& env_safety_;
+        const SymbolicStateDfa& agn_safety_;
+        const SymbolicStateDfa& agn_reach_;
+        const std::string& benchmark_name_;
 
         std::string slugs_dir_;
 
@@ -42,7 +40,7 @@ namespace  Syft {
          * \param GR1 game arena
          * \param The file that should be written to
          */
-        void print_variables(const SymbolicStateDfa arena, const std::string& filename) const;
+        void print_variables(const SymbolicStateDfa& arena, const std::string& filename) const;
 
         /**
          * \brief Prints out INITIAL conditions in Slugs format
@@ -66,9 +64,10 @@ namespace  Syft {
          * c | d
          *
          * \param GR1 game arena
+         * \param var_mgr var manager
          * \param The file that should be written to
          */
-        void print_transitions(const SymbolicStateDfa arena, const std::string& filename) const;
+        void print_transitions(const SymbolicStateDfa& arena, const CUDD::BDD& safe_states, const std::string& filename) const;
 
         /**
          * \brief Prints out LIVENESS constraints in Slugs format
@@ -77,17 +76,16 @@ namespace  Syft {
          * [SYS_LIVENESS]
          * d
          * c = 2
-         * \param GR1 game arena
          * \param The file that should be written to
          */
-        void print_liveness_constraints(const SymbolicStateDfa arena, const std::string& filename) const;
+        void print_liveness_constraints(const std::string& filename) const;
 
         /**
          * Get the path to the SLUGS binary.
          *
          * @return the path to the SLUGS binary.
          */
-        std::string get_slugs_path();
+        std::string get_slugs_path() const;
 
     public:
 
@@ -101,11 +99,12 @@ namespace  Syft {
          * \param slugs_dir  The root directory of the SLUGS project
          *
          */
-        GR1ReachabilitySynthesizer(std::shared_ptr<VarMgr> var_mgr, GR1 gr1, SymbolicStateDfa env_safety,
-                           SymbolicStateDfa agn_reach, SymbolicStateDfa agn_safety, std::string slugs_dir);
+        GR1ReachabilitySynthesizer(const std::shared_ptr<VarMgr>& var_mgr, const GR1& gr1, const SymbolicStateDfa& env_safety,
+                           const SymbolicStateDfa& agn_reach, const SymbolicStateDfa& agn_safety, const std::string& slugs_dir,
+                           const std::string& benchmark_name);
 
         const std::string exec_slugs(const std::string& slugs, const std::string& slugs_input_file,
-                                     const std::string& slugs_res_file, const std::string& slugs_strategy_file);
+                                     const std::string& slugs_res_file, const std::string& slugs_strategy_file) const;
 
         /**
          * \brief Solves the LTLf/GR(1) game.
@@ -115,7 +114,8 @@ namespace  Syft {
          * a set of agent winning states
          * a transducer representing a winning strategy or nullptr if the game is unrealizable.
          */
-        SynthesisResult run(std::string& benchmark_name);
+        SynthesisResult run() const;
+
     };
 }
 #endif //LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H

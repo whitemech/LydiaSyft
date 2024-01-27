@@ -34,9 +34,9 @@ namespace Syft {
          * \param starting_player The player that moves first each turn.
          * \param goal_states The set of states that the agent must reach to win.
          */
-        FairReachabilitySynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
-                                CUDD::BDD goal_states, CUDD::BDD state_space,
-                                    std::string& assumption_filename);
+        FairReachabilitySynthesizer(const SymbolicStateDfa& spec, Player starting_player, Player protagonist_player,
+                                    const CUDD::BDD& goal_states, const CUDD::BDD& state_space,
+                                    const std::string& assumption_filename);
 
 
 
@@ -49,8 +49,6 @@ namespace Syft {
          * a transducer representing a winning strategy or nullptr if the game is unrealizable.
          */
         virtual SynthesisResult run() const final;
-
-        std::unique_ptr<Transducer> AbstractSingleStrategy(SynthesisResult result) const;
 
     };
 
