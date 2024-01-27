@@ -1,6 +1,8 @@
-###Compilation Instructions using CMake
+# LydiaSyft: A Compositional Symbolic Synthesis Framework for LTLf Specification
 
-=== System-wide dependencies ===
+## Compilation Instructions using CMake
+
+### System-wide dependencies
 
 We assume the software will be built on a Ubuntu 22.04 machine.
 
@@ -18,7 +20,7 @@ sudo apt install -y \
 ```
 
 
-==== Install CUDD ====
+### Install CUDD
 
 0.1 Make sure CUDD is installed. CUDD can be found at: 
 
@@ -36,14 +38,14 @@ sudo apt install -y \
         autoreconf -i
 
 
-==== Install FLEX, BISON ====
+### Install FLEX, BISON
 
 0.3 Install flex and bison:
 
     sudo apt-get install flex bison
 
 
-==== Install LYDIA ====
+### Install LYDIA
 
     cd submodules
     cd lydia
@@ -51,7 +53,7 @@ sudo apt install -y \
 Follow the instructions to complete the installation of lydia.
 
 
-==== Install Z3 ====
+### Install Z3
 
 By default, the CMake configuration will fetch z3 automatically from the GitHub repository.
 In order to disable this behaviour, you can configure the project by setting -DZ3_FETCH=OFF.
@@ -67,7 +69,7 @@ cp bin/libz3.a /usr/local/lib
 cp include/*.h /usr/local/include
 ```
 
-=== Graphviz ===
+### Graphviz
 
 For the graphical features (automata and strategy visualization), graphviz need to be installed:
 
@@ -76,7 +78,7 @@ sudo apt install graphviz libgraphviz-dev
 ```
 
 
-==== Build LYDIASYFT ====
+## Build LYDIASYFT
 
 1. Make build folder so your directory is not flooded with build files:
 
@@ -98,7 +100,7 @@ sudo apt install graphviz libgraphviz-dev
    ```
 
 
-==== Run LYDIASYFT ====
+## Run LYDIASYFT
 
 1. Reach executable file LydiaSyft
 
