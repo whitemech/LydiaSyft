@@ -18,6 +18,7 @@ namespace Syft {
         CUDD::BDD winning_states;
         CUDD::BDD winning_moves;
         std::unique_ptr<Transducer> transducer;
+        CUDD::BDD safe_states;
     };
 
     struct OneStepSynthesisResult{

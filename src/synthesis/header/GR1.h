@@ -54,7 +54,7 @@ namespace Syft {
         /**
          * \brief Stores a player justice
          */
-        static CUDD::BDD read_gr1_justice(std::shared_ptr<VarMgr>& var_mgr,
+        static CUDD::BDD read_gr1_justice(const std::shared_ptr<VarMgr>& var_mgr,
                                           std::istream& in,
                                           std::size_t& line_number){
             std::string line;
@@ -103,7 +103,7 @@ namespace Syft {
          * \param gr1_filename The name of the file to read the GR(1) condition from.
          * \return The GR(1) condition stored in the file
          */
-        static GR1 read_from_gr1_file(std::shared_ptr<VarMgr>& var_mgr,
+        static GR1 read_from_gr1_file(const std::shared_ptr<VarMgr>& var_mgr,
                                       const std::string& gr1_filename) {
             GR1 gr1;
             std::ifstream in(gr1_filename);

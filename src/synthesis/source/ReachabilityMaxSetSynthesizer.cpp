@@ -60,7 +60,7 @@ namespace Syft {
     }
 
 
-    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(SynthesisResult result) const {
+    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(const SynthesisResult& result) const {
         MaxSet maxset;
         maxset.nondeferring_strategy = result.winning_moves;
         maxset.deferring_strategy = result.winning_moves | (result.winning_states & preimage(result.winning_states));

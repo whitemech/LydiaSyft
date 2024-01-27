@@ -4,203 +4,96 @@
 
 #include "Stopwatch.h"
 
-#include "parser/Parser.h"
-#include "ExplicitStateDfaMona.h"
-#include "ReachabilitySynthesizer.h"
-#include "ReachabilityMaxSetSynthesizer.h"
+#include "cli/base.hpp"
+#include "cli/fairness.hpp"
+#include "cli/gr1.hpp"
+#include "cli/stability.hpp"
+#include "cli/synthesis.hpp"
+#include "cli/maxset.hpp"
 #include "InputOutputPartition.h"
 #include "Preprocessing.h"
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
-#include <istream>
 
 
 int main(int argc, char ** argv) {
 
     CLI::App app {
-            "LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)"
+        "LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)"
     };
+    app.set_help_all_flag("--help-all", "Expand all help");
 
-    std::string formula_file;
-
-    app.add_option("-f,--spec-file", formula_file, "Specification file")->
-                    required() -> check(CLI::ExistingFile);
-
+    // shared arguments
     bool print_strategy = false;
     app.add_flag("-p, --print-strategy", print_strategy, "Print out the synthesized strategy (default: false)");
 
     bool print_times = false;
     app.add_flag("-t, --print-times", print_times, "Print out running times of each step (default: false)");
 
-    bool maxset = false;
-    app.add_flag("-m,--maxset", maxset, "Maxset flag (Default: false)");
+    std::string formula_file;
+    std::string path_to_syfco;
+    std::string assumption_file;
+    std::string gr1_file;
+    std::optional<std::string> env_safety_file;
+    std::optional<std::string> agent_safety_file;
+    std::string path_to_slugs;
+
+    // 'synthesis' subcommand
+    CLI::App *synthesis = app.add_subcommand("synthesis", "solve a classical LTLf synthesis problem");
+    Syft::add_spec_file_option(synthesis, formula_file);
+    Syft::add_syfco_option(synthesis, path_to_syfco);
+
+    // 'maxset' subcommand
+    CLI::App *maxset = app.add_subcommand("maxset", "solve LTLf synthesis with maximally permissive strategies");
+    Syft::add_spec_file_option(maxset, formula_file);
+    Syft::add_syfco_option(maxset, path_to_syfco);
+
+    // 'fairness' subcommand
+    CLI::App *fairness = app.add_subcommand("fairness", "solve LTLf synthesis with fairness assumptions");
+    Syft::add_spec_file_option(fairness, formula_file);
+    Syft::add_syfco_option(fairness, path_to_syfco);
+    Syft::add_assumption_file_option(fairness, assumption_file);
+
+    // 'stability' subcommand
+    CLI::App *stability = app.add_subcommand("stability", "solve LTLf synthesis with stability assumptions");
+    Syft::add_spec_file_option(stability, formula_file);
+    Syft::add_syfco_option(stability, path_to_syfco);
+    Syft::add_assumption_file_option(stability, assumption_file);
+
+    // 'gr1' subcommand
+    CLI::App *gr1 = app.add_subcommand("gr1", "Solve LTLf synthesis with GR(1) conditions");
+    Syft::add_spec_file_option(gr1, formula_file);
+    Syft::add_syfco_option(gr1, path_to_syfco);
+    Syft::add_slugs_option(gr1, path_to_slugs);
+    Syft::add_gr1_file_option(gr1, gr1_file);
+    Syft::add_env_safety_file_option(gr1, env_safety_file);
+    Syft::add_agent_safety_file_option(gr1, agent_safety_file);
+
+    app.require_subcommand(1);
 
     CLI11_PARSE(app, argc, argv);
-    Syft::Stopwatch total_time_stopwatch; // stopwatch for end-to-end execution
-    total_time_stopwatch.start();
 
-    Syft::Stopwatch aut_time_stopwatch; // stopwatch for abstract single strategy
-    aut_time_stopwatch.start();
+    std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
 
-    Syft::Parser parser;
-    // the parser assumes "syfco" is in the current working directory
-    parser = Syft::Parser::read_from_file("./syfco", formula_file);
-    bool sys_first = parser.get_sys_first();
-
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
-    Syft::Player protagonist_player = Syft::Player::Agent;
-    bool realizability;
-
-    Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
-    std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
-    var_mgr->create_named_variables(partition.input_variables);
-    var_mgr->create_named_variables(partition.output_variables);
-
-    // Parsing the formula
-    std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver;
-    driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
-    std::stringstream formula_stream(parser.get_formula());
-    driver->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
-    // Apply no-empty semantics
-    auto context = driver->context;
-    auto not_end = context->makeLtlfNotEnd();
-    parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
-
-    if (!maxset) {
-//         abstract single strategy
-//         preprocessing
-        auto one_step_result = preprocessing(*parsed_formula, partition, *var_mgr, starting_player);
-        bool preprocessing_success = one_step_result.realizability.has_value();
-        if (preprocessing_success and one_step_result.realizability.value()) {
-            std::cout << Syft::REALIZABLE_STR << std::endl;
-
-            CUDD::BDD move = one_step_result.winning_move;
-            auto total_time = total_time_stopwatch.stop();
-            if (print_strategy) {
-                var_mgr->dump_dot(move.Add(), "strategy.dot");
-            }
-
-            if (print_times) {
-                std::cout << "Total time: "
-                          << total_time.count() << " ms" << std::endl;
-            }
-            return 0;
-        } else if (preprocessing_success and !one_step_result.realizability.value()) {
-            std::cout << Syft::UNREALIZABLE_STR << std::endl;
-            auto total_time = total_time_stopwatch.stop();
-
-            if (print_times) {
-                std::cout << "Total time: "
-                          << total_time.count() << " ms" << std::endl;
-            }
-            return 0;
-        } else {
-            // Preprocessing was not successful. Continuing with full DFA construction."
-        }
-
-        Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
-
-        Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
-
-        Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
-                std::move(explicit_dfa));
-
-        auto aut_time = aut_time_stopwatch.stop();
-        if (print_times) {
-            std::cout << "DFA construction time: "
-                      << aut_time.count() << " ms" << std::endl;
-        }
-
-        var_mgr->partition_variables(partition.input_variables,
-                                     partition.output_variables);
-
-        Syft::ReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne());
-        Syft::SynthesisResult result = synthesizer.run();
-
-        realizability = result.realizability;
-        if (realizability == true) {
-            std::cout << Syft::REALIZABLE_STR << std::endl;
-
-            Syft::Stopwatch abstract_single_strategy_time_stopwatch; // stopwatch for abstract single strategy
-            abstract_single_strategy_time_stopwatch.start();
-
-            auto transducer = synthesizer.AbstractSingleStrategy(std::move(result));
-            if (print_strategy) {
-                transducer->dump_dot("strategy.dot");
-            }
-            auto abstract_single_strategy_time = abstract_single_strategy_time_stopwatch.stop();
-            if (print_times) {
-                std::cout << "Abstract single strategy time: "
-                          << abstract_single_strategy_time.count() << " ms" << std::endl;
-            }
-        } else {
-            std::cout << Syft::UNREALIZABLE_STR << std::endl;
-        }
-    } else {
-        // abstract max strategy
-        Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
-        Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
-
-        Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
-                std::move(explicit_dfa));
-
-        auto aut_time = aut_time_stopwatch.stop();
-        if (print_times) {
-            std::cout << "DFA construction time: "
-                      << aut_time.count() << " ms" << std::endl;
-        }
-
-        Syft::Stopwatch nondef_strategy_time_stopwatch; // stopwatch for strategy_generator construction
-        nondef_strategy_time_stopwatch.start();
-
-        var_mgr->partition_variables(partition.input_variables,
-                                     partition.output_variables);
-
-        Syft::ReachabilityMaxSetSynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                        protagonist_player, symbolic_dfa.final_states(),
-                                                        var_mgr->cudd_mgr()->bddOne());
-        Syft::SynthesisResult result = synthesizer.run();
-
-        realizability = result.realizability;
-        if (realizability == true) {
-
-            auto nondef_strategy_time = nondef_strategy_time_stopwatch.stop();
-            if (print_times) {
-                std::cout << "Nondeferring strategy generator construction time: "
-                          << nondef_strategy_time.count() << " ms" << std::endl;
-            }
-
-            Syft::Stopwatch def_strategy_time_stopwatch; // stopwatch for abstract max-deferring strategy
-            def_strategy_time_stopwatch.start();
-
-            Syft::MaxSet maxset_strategy = synthesizer.AbstractMaxSet(std::move(result));
-
-            auto def_strategy_time = def_strategy_time_stopwatch.stop();
-            if (print_times) {
-                std::cout << "Deferring strategy generator construction time: "
-                          << def_strategy_time.count() << " ms" << std::endl;
-            }
-            std::cout << Syft::REALIZABLE_STR << std::endl;
-            if (print_strategy) {
-                synthesizer.dump_dot(maxset_strategy, "def_strategy.dot", "nondef_strategy.dot");
-            }
-        }
-        else{
-        std::cout << Syft::UNREALIZABLE_STR << std::endl;
-        }
+    if (app.got_subcommand(synthesis)){
+        Syft::SynthesisRunner(driver, formula_file, path_to_syfco, print_strategy, print_times).run();
+    }
+    else if (app.got_subcommand(maxset)){
+        Syft::MaxSetRunner(driver, formula_file, path_to_syfco, print_strategy, print_times).run();
+    }
+    else if (app.got_subcommand(fairness)) {
+        Syft::FairnessRunner(driver, formula_file, path_to_syfco, assumption_file, print_strategy, print_times).run();
+    }
+    else if (app.got_subcommand(stability)) {
+        Syft::StabilityRunner(driver, formula_file, path_to_syfco, assumption_file, print_times, print_times).run();
+    }
+    else if (app.got_subcommand(gr1)) {
+        Syft::GR1Runner(driver, formula_file, path_to_syfco, path_to_slugs, gr1_file, env_safety_file, agent_safety_file, print_strategy, print_times).run();
+    }
+    else {
+        assert(false && "CLI Parsing Error");
     }
 
-  auto total_time = total_time_stopwatch.stop();
-
-  if (print_times) {
-    std::cout << "Total time: "
-              << total_time.count() << " ms" << std::endl;
-  }
-
-  return 0;
+    return 0;
 }
 

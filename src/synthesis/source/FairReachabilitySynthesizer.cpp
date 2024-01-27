@@ -10,11 +10,9 @@
 
 namespace Syft {
 
-    FairReachabilitySynthesizer::FairReachabilitySynthesizer(SymbolicStateDfa spec,
-                                                     Player starting_player, Player protagonist_player,
-                                                     CUDD::BDD goal_states,
-                                                     CUDD::BDD state_space,
-                                                     std::string& assumption_filename)
+    FairReachabilitySynthesizer::FairReachabilitySynthesizer(const SymbolicStateDfa& spec, Player starting_player, Player protagonist_player,
+                                                             const CUDD::BDD& goal_states, const CUDD::BDD& state_space,
+                                                             const std::string& assumption_filename)
             : DfaGameSynthesizer(spec, starting_player, protagonist_player)
             , goal_states_(goal_states), state_space_(state_space)
     {
@@ -103,16 +101,6 @@ namespace Syft {
             c++;
         }
 
-    }
-
-    std::unique_ptr<Transducer> FairReachabilitySynthesizer::AbstractSingleStrategy(SynthesisResult result) const {
-        std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(
-                result.winning_moves);
-
-        auto transducer = std::make_unique<Transducer>(
-                var_mgr_, initial_vector_, strategy, spec_.transition_function(),
-                starting_player_);
-        return transducer;
     }
 
     CUDD::BDD FairReachabilitySynthesizer::load_CNF(const std::string& filename) const{

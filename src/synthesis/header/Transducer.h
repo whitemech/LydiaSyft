@@ -20,20 +20,19 @@ namespace Syft {
 class Transducer {
  private:
 
-  std::shared_ptr<VarMgr> var_mgr_;
-
-  std::vector<int> initial_vector_;
-  std::unordered_map<int, CUDD::BDD> output_function_;
-  std::vector<CUDD::BDD> transition_function_;
-  Player starting_player_;
-  Player protagonist_player_;
+  const std::shared_ptr<VarMgr>& var_mgr_;
+  const std::vector<int>& initial_vector_;
+  const std::unordered_map<int, CUDD::BDD>& output_function_;
+  const std::vector<CUDD::BDD>& transition_function_;
+  const Player starting_player_;
+  const Player protagonist_player_;
 
  public:
 
-  Transducer(std::shared_ptr<VarMgr> var_mgr,
-             std::vector<int> initial_vector,
-             std::unordered_map<int, CUDD::BDD> output_function,
-             std::vector<CUDD::BDD> transition_function,
+  Transducer(const std::shared_ptr<VarMgr>& var_mgr,
+             const std::vector<int>& initial_vector,
+             const std::unordered_map<int, CUDD::BDD>& output_function,
+             const std::vector<CUDD::BDD>& transition_function,
              Player starting_player,
              Player protagonist_player = Player::Agent);
 

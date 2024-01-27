@@ -44,7 +44,7 @@ namespace Syft {
          */
         virtual SynthesisResult run() const final;
 
-        MaxSet AbstractMaxSet(SynthesisResult result) const;
+        MaxSet AbstractMaxSet(const SynthesisResult&) const;
 
         void dump_dot(MaxSet maxset, const std::string& def_filename, const std::string& nondef_filename) const;
 
