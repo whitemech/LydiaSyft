@@ -80,27 +80,34 @@ sudo apt install graphviz libgraphviz-dev
 
 1. Make build folder so your directory is not flooded with build files:
 
-    ```mkdir build && cd build```
+```
+mkdir build && cd build
+```
 
 3. Run CMake to generate the makefile:
 
-    ```cmake -DCMAKE_BUILD_TYPE=Release ..```
+```
+cmake -DCMAKE_BUILD_TYPE=Release ..
+```
 
 4. Compile using the generated makefile:
 
-    ```make -j$(nproc --ignore=1) LydiaSyft```
+```
+make -j$(nproc --ignore=1) LydiaSyft
+```
 
 5. Compile and Run tests:
 
-    ```
-    make -j$(nproc --ignore=1) tests
-    ./bin/tests
-   ```
+```
+make -j$(nproc --ignore=1) tests
+./bin/tests
+```
 
 
 ## Run LYDIASYFT
 
 Usage:
+
 ```
 LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)
 Usage: ./cmake-build-debug/bin/LydiaSyft [OPTIONS] SUBCOMMAND
@@ -156,4 +163,18 @@ Examples (run commands from the root directory of the project):
 
 ```
 ./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
+```
+
+## Documentation
+
+The documentation is built using Doxygen. First, install `doxygen`:
+
+```
+sudo apt install doxygen
+```
+
+Then:
+
+```
+doxygen Doxyfile
 ```
