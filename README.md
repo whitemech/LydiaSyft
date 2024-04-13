@@ -47,11 +47,9 @@ sudo apt install -y \
 
 ### Install LYDIA
 
-    cd submodules
-    cd lydia
+The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
 
-Follow the instructions to complete the installation of lydia.
-
+However, if you want to install Lydia manually, you can co into `submodules/lydia` and follow the installation instructions in the `README.md`.
 
 ### Install Z3
 
@@ -157,5 +155,5 @@ Examples (run commands from the root directory of the project):
 - GR(1) synthesis:
 
 ```
-./cmake-build-debug/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
+./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
 ```
