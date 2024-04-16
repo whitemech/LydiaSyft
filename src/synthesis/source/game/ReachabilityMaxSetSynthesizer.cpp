@@ -1,7 +1,7 @@
 //
 // Created by shuzhu on 20/01/24.
 //
-#include "ReachabilityMaxSetSynthesizer.h"
+#include "game/ReachabilityMaxSetSynthesizer.h"
 
 #include <cassert>
 

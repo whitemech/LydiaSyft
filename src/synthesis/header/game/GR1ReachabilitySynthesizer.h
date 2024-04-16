@@ -4,26 +4,27 @@
 
 #ifndef LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
 #define LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
-#include "ExplicitStateDfaAdd.h"
+
+#include "automata/ExplicitStateDfaAdd.h"
 #include "InputOutputPartition.h"
 #include "Player.h"
 #include "GR1.h"
 #include "Stopwatch.h"
-#include "SymbolicStateDfa.h"
+#include "automata/SymbolicStateDfa.h"
 #include "Synthesizer.h"
-#include "DfaGameSynthesizer.h"
+#include "game/DfaGameSynthesizer.h"
 
 
-namespace  Syft {
+namespace Syft {
 
     class GR1ReachabilitySynthesizer {
     private:
-        const std::shared_ptr<VarMgr>& var_mgr_;
-        const GR1& gr1_;
-        const SymbolicStateDfa& env_safety_;
-        const SymbolicStateDfa& agn_safety_;
-        const SymbolicStateDfa& agn_reach_;
-        const std::string& benchmark_name_;
+        const std::shared_ptr<VarMgr> &var_mgr_;
+        const GR1 &gr1_;
+        const SymbolicStateDfa &env_safety_;
+        const SymbolicStateDfa &agn_safety_;
+        const SymbolicStateDfa &agn_reach_;
+        const std::string &benchmark_name_;
 
         std::string slugs_dir_;
 
@@ -40,7 +41,7 @@ namespace  Syft {
          * \param GR1 game arena
          * \param The file that should be written to
          */
-        void print_variables(const SymbolicStateDfa& arena, const std::string& filename) const;
+        void print_variables(const SymbolicStateDfa &arena, const std::string &filename) const;
 
         /**
          * \brief Prints out INITIAL conditions in Slugs format
@@ -53,7 +54,7 @@ namespace  Syft {
          * \param GR1 game arena
          * \param The file that should be written to
          */
-        void print_initial_conditions(const CUDD::BDD& arena_initial_state_bdd, const std::string& filename) const;
+        void print_initial_conditions(const CUDD::BDD &arena_initial_state_bdd, const std::string &filename) const;
 
         /**
          * \brief Prints out TRANSITIONS in Slugs format
@@ -67,7 +68,8 @@ namespace  Syft {
          * \param var_mgr var manager
          * \param The file that should be written to
          */
-        void print_transitions(const SymbolicStateDfa& arena, const CUDD::BDD& safe_states, const std::string& filename) const;
+        void print_transitions(const SymbolicStateDfa &arena, const CUDD::BDD &safe_states,
+                               const std::string &filename) const;
 
         /**
          * \brief Prints out LIVENESS constraints in Slugs format
@@ -78,7 +80,7 @@ namespace  Syft {
          * c = 2
          * \param The file that should be written to
          */
-        void print_liveness_constraints(const std::string& filename) const;
+        void print_liveness_constraints(const std::string &filename) const;
 
         /**
          * Get the path to the SLUGS binary.
@@ -99,12 +101,14 @@ namespace  Syft {
          * \param slugs_dir  The root directory of the SLUGS project
          *
          */
-        GR1ReachabilitySynthesizer(const std::shared_ptr<VarMgr>& var_mgr, const GR1& gr1, const SymbolicStateDfa& env_safety,
-                           const SymbolicStateDfa& agn_reach, const SymbolicStateDfa& agn_safety, const std::string& slugs_dir,
-                           const std::string& benchmark_name);
+        GR1ReachabilitySynthesizer(const std::shared_ptr<VarMgr> &var_mgr, const GR1 &gr1,
+                                   const SymbolicStateDfa &env_safety,
+                                   const SymbolicStateDfa &agn_reach, const SymbolicStateDfa &agn_safety,
+                                   const std::string &slugs_dir,
+                                   const std::string &benchmark_name);
 
-        const std::string exec_slugs(const std::string& slugs, const std::string& slugs_input_file,
-                                     const std::string& slugs_res_file, const std::string& slugs_strategy_file) const;
+        const std::string exec_slugs(const std::string &slugs, const std::string &slugs_input_file,
+                                     const std::string &slugs_res_file, const std::string &slugs_strategy_file) const;
 
         /**
          * \brief Solves the LTLf/GR(1) game.

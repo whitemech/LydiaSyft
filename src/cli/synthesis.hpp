@@ -9,7 +9,7 @@
 #include "VarMgr.h"
 #include "Stopwatch.h"
 #include "base.hpp"
-#include "ReachabilitySynthesizer.h"
+#include "game/ReachabilitySynthesizer.h"
 
 
 namespace Syft {

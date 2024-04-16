@@ -2,7 +2,7 @@
 #define PREPROCESSING_HPP
 
 #include "Synthesizer.h"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include <lydia/logic/ltlf/base.hpp>
 
 namespace Syft {

@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Transducer.h"
+#include "game/Transducer.h"
 #include <tuple>
 #include <optional>
 

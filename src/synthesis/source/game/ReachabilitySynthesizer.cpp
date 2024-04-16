@@ -1,4 +1,4 @@
-#include "ReachabilitySynthesizer.h"
+#include "game/ReachabilitySynthesizer.h"
 
 #include <cassert>
 

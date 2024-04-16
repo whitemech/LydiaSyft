@@ -4,7 +4,7 @@
 
 #include "synthesis.hpp"
 #include "Stopwatch.h"
-#include "ReachabilitySynthesizer.h"
+#include "game/ReachabilitySynthesizer.h"
 #include "Preprocessing.h"
 #include <lydia/parser/ltlf/driver.hpp>
 

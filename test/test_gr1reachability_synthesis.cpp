@@ -4,9 +4,9 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
-#include "ExplicitStateDfa.h"
-#include "InputOutputPartition.h"
-#include "GR1ReachabilitySynthesizer.h"
+#include "automata/ExplicitStateDfa.h"
+#include "game/InputOutputPartition.h"
+#include "game/GR1ReachabilitySynthesizer.h"
 #include "GR1.h"
 #include "Preprocessing.h"
 #include "Parser.h"

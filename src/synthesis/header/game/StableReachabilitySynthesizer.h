@@ -5,7 +5,7 @@
 #ifndef LYDIASYFT_STABLEREACHABILITYSYNTHESIZER_H
 #define LYDIASYFT_STABLEREACHABILITYSYNTHESIZER_H
 
-#include "DfaGameSynthesizer.h"
+#include "game/DfaGameSynthesizer.h"
 
 namespace Syft {
 
@@ -23,7 +23,7 @@ namespace Syft {
         CUDD::BDD assumption_;
 
     protected:
-        CUDD::BDD load_CNF(const std::string& filename) const;
+        CUDD::BDD load_CNF(const std::string &filename) const;
 
     public:
 
@@ -35,9 +35,8 @@ namespace Syft {
          * \param goal_states The set of states that the agent must reach to win.
          */
         StableReachabilitySynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
-                                    CUDD::BDD goal_states, CUDD::BDD state_space,
-                                    std::string& assumption_filename);
-
+                                      CUDD::BDD goal_states, CUDD::BDD state_space,
+                                      std::string &assumption_filename);
 
 
         /**

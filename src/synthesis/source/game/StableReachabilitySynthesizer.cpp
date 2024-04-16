@@ -3,7 +3,7 @@
 //
 
 
-#include "StableReachabilitySynthesizer.h"
+#include "game/StableReachabilitySynthesizer.h"
 #include "string_utilities.h"
 
 #include <fstream>

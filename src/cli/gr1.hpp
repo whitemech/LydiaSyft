@@ -6,7 +6,7 @@
 #define LYDIASYFT_CLI_GR1_H
 
 #include <CLI/CLI.hpp>
-#include "GR1ReachabilitySynthesizer.h"
+#include "game/GR1ReachabilitySynthesizer.h"
 
 
 namespace Syft {

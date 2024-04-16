@@ -6,7 +6,7 @@
 #include <lydia/visitor.hpp>
 #include <optional>
 
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "VarMgr.h"
 
 namespace Syft {

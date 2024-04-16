@@ -8,13 +8,13 @@
 
 #include "Stopwatch.h"
 
-#include "ExplicitStateDfa.h"
-#include "ReachabilityMaxSetSynthesizer.h"
-#include "InputOutputPartition.h"
+#include "automata/ExplicitStateDfa.h"
+#include "game/ReachabilityMaxSetSynthesizer.h"
+#include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "gr1.hpp"
 #include "GR1.h"
-#include "GR1ReachabilitySynthesizer.h"
+#include "game/GR1ReachabilitySynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 

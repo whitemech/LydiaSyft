@@ -4,7 +4,7 @@
 
 #include "synthesis.hpp"
 #include "Stopwatch.h"
-#include "ReachabilityMaxSetSynthesizer.h"
+#include "game/ReachabilityMaxSetSynthesizer.h"
 #include "Preprocessing.h"
 #include "maxset.hpp"
 #include <lydia/parser/ltlf/driver.hpp>

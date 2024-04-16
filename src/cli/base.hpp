@@ -11,11 +11,11 @@
 #include "Player.h"
 #include "VarMgr.h"
 #include "Parser.h"
-#include "InputOutputPartition.h"
-#include "Transducer.h"
+#include "game/InputOutputPartition.h"
+#include "game/Transducer.h"
 #include "Stopwatch.h"
 #include "Synthesizer.h"
-#include "ReachabilityMaxSetSynthesizer.h"
+#include "game/ReachabilityMaxSetSynthesizer.h"
 #include "lydia/parser/ltlf/driver.hpp"
 
 

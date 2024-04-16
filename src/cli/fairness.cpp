@@ -12,13 +12,13 @@
 #include "Stopwatch.h"
 
 #include "../parser/Parser.h"
-#include "ExplicitStateDfa.h"
-#include "ReachabilitySynthesizer.h"
-#include "ReachabilityMaxSetSynthesizer.h"
-#include "InputOutputPartition.h"
+#include "automata/ExplicitStateDfa.h"
+#include "game/ReachabilitySynthesizer.h"
+#include "game/ReachabilityMaxSetSynthesizer.h"
+#include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "fairness.hpp"
-#include "FairReachabilitySynthesizer.h"
+#include "game/FairReachabilitySynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>

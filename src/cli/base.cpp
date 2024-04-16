@@ -4,7 +4,7 @@
 
 #include "base.hpp"
 #include "lydia/parser/ltlf/driver.hpp"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "Synthesizer.h"
 #include "Preprocessing.h"
 

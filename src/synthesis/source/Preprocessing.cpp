@@ -1,5 +1,5 @@
 #include "Synthesizer.h"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "OneStepRealizability.h"
 #include "OneStepUnrealizability.h"
 #include <lydia/logic/ltlf/base.hpp>

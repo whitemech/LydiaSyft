@@ -5,10 +5,10 @@
 #ifndef SYFT_REACHABILITYMAXSETSYNTHESIZER_H
 #define SYFT_REACHABILITYMAXSETSYNTHESIZER_H
 
-#include "DfaGameSynthesizer.h"
+#include "game/DfaGameSynthesizer.h"
 
 namespace Syft {
-    struct MaxSet{
+    struct MaxSet {
         CUDD::BDD deferring_strategy;
         CUDD::BDD nondeferring_strategy;
     };
@@ -44,9 +44,9 @@ namespace Syft {
          */
         virtual SynthesisResult run() const final;
 
-        MaxSet AbstractMaxSet(const SynthesisResult&) const;
+        MaxSet AbstractMaxSet(const SynthesisResult &) const;
 
-        void dump_dot(MaxSet maxset, const std::string& def_filename, const std::string& nondef_filename) const;
+        void dump_dot(MaxSet maxset, const std::string &def_filename, const std::string &nondef_filename) const;
 
     };
 

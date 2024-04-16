@@ -1,4 +1,4 @@
-#include "SymbolicStateDfa.h"
+#include "automata/SymbolicStateDfa.h"
 
 namespace Syft {
 

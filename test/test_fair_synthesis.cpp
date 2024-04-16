@@ -4,9 +4,9 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
-#include "ExplicitStateDfa.h"
-#include "InputOutputPartition.h"
-#include "FairReachabilitySynthesizer.h"
+#include "automata/ExplicitStateDfa.h"
+#include "game/InputOutputPartition.h"
+#include "game/FairReachabilitySynthesizer.h"
 #include "Preprocessing.h"
 #include "Parser.h"
 #include "utils.hpp"
@@ -177,9 +177,9 @@ TEST_CASE("Fair Synthesis of unrealizable counter_1", "[fair synthesis]") {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
-    Syft::ExplicitStateDfa explicit_state_dfa = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula);
+    Syft::ExplicitStateDfa explicit_dfa_mona = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_state_dfa);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona);
 //    explicit_dfa.dump_dot("explicit_dfa.dot");
 
     Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
