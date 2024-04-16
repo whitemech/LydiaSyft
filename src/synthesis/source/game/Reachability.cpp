@@ -1,18 +1,18 @@
-#include "synthesizer/ReachabilitySynthesizer.h"
+//
+// Created by shuzhu on 16/04/24.
+//
 
-#include <cassert>
+#include "game/Reachability.hpp"
 
 namespace Syft {
-
-    ReachabilitySynthesizer::ReachabilitySynthesizer(SymbolicStateDfa spec,
-                                                     Player starting_player, Player protagonist_player,
-                                                     CUDD::BDD goal_states,
-                                                     CUDD::BDD state_space)
+    Reachability::Reachability(const SymbolicStateDfa &spec, Player starting_player,
+                               Player protagonist_player, const CUDD::BDD &goal_states,
+                               const CUDD::BDD &state_space)
             : DfaGameSynthesizer(spec, starting_player, protagonist_player), goal_states_(goal_states),
-              state_space_(state_space) {}
+              state_space_(state_space) {
+    }
 
-
-    SynthesisResult ReachabilitySynthesizer::run() const {
+    SynthesisResult Reachability::run() const {
         SynthesisResult result;
         CUDD::BDD winning_states = state_space_ & goal_states_;
         CUDD::BDD winning_moves = winning_states;
@@ -52,7 +52,7 @@ namespace Syft {
             winning_moves = new_winning_moves;
             winning_states = new_winning_states;
         }
-
     }
 
 }
+

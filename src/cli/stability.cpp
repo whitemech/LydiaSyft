@@ -13,7 +13,7 @@
 
 #include "../parser/Parser.h"
 #include "automata/ExplicitStateDfa.h"
-#include "synthesizer/ReachabilitySynthesizer.h"
+#include "synthesizer/LTLfSynthesizer.h"
 #include "synthesizer/ReachabilityMaxSetSynthesizer.h"
 #include "game/InputOutputPartition.h"
 #include "Preprocessing.h"

@@ -9,7 +9,7 @@
 #include "VarMgr.h"
 #include "Stopwatch.h"
 #include "base.hpp"
-#include "synthesizer/ReachabilitySynthesizer.h"
+#include "synthesizer/LTLfSynthesizer.h"
 
 
 namespace Syft {

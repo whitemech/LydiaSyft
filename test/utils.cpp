@@ -5,7 +5,7 @@
 #include "automata/ExplicitStateDfaAdd.h"
 #include "automata/SymbolicStateDfa.h"
 #include "Player.h"
-#include "synthesizer/ReachabilitySynthesizer.h"
+#include "synthesizer/LTLfSynthesizer.h"
 #include "Preprocessing.h"
 
 namespace Syft {
@@ -63,9 +63,9 @@ namespace Syft {
 
             Syft::Player starting_player = Syft::Player::Agent;
             Syft::Player protagonist_player = Syft::Player::Agent;
-            Syft::ReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                      protagonist_player, symbolic_dfa.final_states(),
-                                                      var_mgr->cudd_mgr()->bddOne());
+            Syft::LTLfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                              protagonist_player, symbolic_dfa.final_states(),
+                                              var_mgr->cudd_mgr()->bddOne());
             Syft::SynthesisResult result = synthesizer.run();
 
             return result.realizability;
