@@ -9,8 +9,7 @@ namespace Syft {
 /**
  * \brief A single-strategy-synthesizer for an LTLf formula given as a symbolic-state DFA.
  *
- * 	Shufang Zhu, Lucas M. Tabajara, Jianwen Li, Geguang Pu, Moshe Y. Vardi:
- *  Symbolic LTLf Synthesis. IJCAI 2017: 1362-1369
+ * 	Shufang Zhu, Lucas M. Tabajara, Jianwen Li, Geguang Pu, Moshe Y. Vardi: Symbolic LTLf Synthesis. IJCAI 2017: 1362-1369
  */
     class LTLfSynthesizer {
     private:

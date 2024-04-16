@@ -14,8 +14,7 @@ namespace Syft {
  * \brief A single-strategy-synthesizer for an LTLf formula given as a symbolic-state DFA, considering environment simple Fairness assumption.
  * The simple Fairness assumption is in the form of GF\alpha, where \alpha is a Boolean formula over environment variables.
  *
- * 	Shufang Zhu, Giuseppe De Giacomo, Geguang Pu, Moshe Y. Vardi:
- *  LTLƒ Synthesis with Fairness and Stability Assumptions. AAAI 2020: 3088-3095
+ * 	Shufang Zhu, Giuseppe De Giacomo, Geguang Pu, Moshe Y. Vardi: LTLƒ Synthesis with Fairness and Stability Assumptions. AAAI 2020: 3088-3095
  */
     class FairnessLtlfSynthesizer {
     private:

@@ -13,6 +13,8 @@ namespace Syft {
 
 /**
  * \brief A maxset-synthesizer for a reachability game given as a symbolic-state DFA.
+ *
+ * Shufang Zhu, Giuseppe De Giacomo: Synthesis of Maximally Permissive Strategies for LTLf Specifications. IJCAI 2022: 2783-2789
  */
     class LTLfMaxSetSynthesizer {
     private:
