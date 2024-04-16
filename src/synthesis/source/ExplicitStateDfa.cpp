@@ -1,394 +1,521 @@
 #include "ExplicitStateDfa.h"
-#include "string_utilities.h"
 
-#include <algorithm>
-#include <fstream>
+#include <iostream>
+#include <istream>
+#include <queue>
+#include <set>
+#include <bits/stdc++.h>
+#include <tuple>
+#include <unordered_map>
+#include <lydia/mona_ext/mona_ext_base.hpp>
+#include <lydia/dfa/mona_dfa.hpp>
+#include <lydia/logic/to_ldlf.hpp>
+#include <lydia/parser/ldlf/driver.cpp>
+#include <lydia/parser/ltlf/driver.cpp>
+#include <lydia/to_dfa/core.hpp>
+#include <lydia/to_dfa/strategies/compositional/base.hpp>
+#include <lydia/utils/print.hpp>
 
-namespace Syft {
+#include "cudd.h"
 
-ExplicitStateDfa::ExplicitStateDfa(std::shared_ptr<VarMgr> var_mgr)
-  : var_mgr_(std::move(var_mgr))
-{}
+namespace Syft{
 
-std::runtime_error ExplicitStateDfa::bad_file_format_exception(
-    std::size_t line_number) {
-  return std::runtime_error("Incorrect format in line " +
-			    std::to_string(line_number) +
-			    " of the DFA file.");
-}
+    void ExplicitStateDfa::dfa_print() {
+        std::cout<< "Number of states " +
+                    std::to_string(get_nb_states())<<"\n";
 
-std::vector<std::string> ExplicitStateDfa::read_mona_line(
-    std::istream& in,
-    std::size_t line_number) {
-  std::string line;
-  std::getline(in, line);
 
-  std::vector<std::string> substr;
-  substr = Syft::split(line, ":");
 
-  if (substr.size() != 2) {
-    throw bad_file_format_exception(line_number);
-  }
-
-  return substr;
-}
-
-std::vector<std::string> ExplicitStateDfa::read_variable_names(
-    std::istream& in,
-    std::size_t line_number) {
-  std::vector<std::string> substr = read_mona_line(in, line_number);
-  
-  if (substr[0] != "variables") {
-    throw bad_file_format_exception(line_number);
-  }
-
-  std::vector<std::string> variables;
-  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
-  variables = Syft::split(trimmed_substr, " ");
-  
-  return variables;
-}
-
-std::size_t ExplicitStateDfa::read_state_count(std::istream& in,
-						      std::size_t line_number) {
-  std::vector<std::string> substr = read_mona_line(in, line_number);
-  
-  if (substr[0] != "states") {
-    throw bad_file_format_exception(line_number);
-  }
-  
-  try {
-    return std::stoi(substr[1]);
-  }
-  catch (const std::exception& e) {
-    throw bad_file_format_exception(line_number);
-  }
-}
-
-std::vector<std::size_t> ExplicitStateDfa::read_final_states(
-    std::istream& in,
-    std::size_t line_number) {
-  std::vector<std::string> substr = read_mona_line(in, line_number);
-  
-  if (substr[0] != "final") {
-    throw bad_file_format_exception(line_number);
-  }
-
-  std::vector<std::string> tokens;
-  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
-  tokens = Syft::split(trimmed_substr, " ");
-
-  std::vector<std::size_t> final_states;
-
-  for (std::size_t i = 0; i < tokens.size(); ++i) {
-    if (tokens[i] == "1") {
-      final_states.push_back(i);
-    }
-  }
-  
-  return final_states;
-}
-
-std::vector<std::size_t> ExplicitStateDfa::read_behaviour(
-    std::istream& in,
-    std::size_t line_number) {
-  std::vector<std::string> substr = read_mona_line(in, line_number);
-  
-  if (substr[0] != "behaviour") {
-    throw bad_file_format_exception(line_number);
-  }
-
-  std::vector<std::string> tokens;
-  std::string trimmed_substr = Syft::trim(substr[1]); // remove leading and trailing whitespace
-  tokens = Syft::split(trimmed_substr, " ");
-
-  std::vector<std::size_t> behaviour;
-
-  try {
-    std::transform(tokens.begin(), tokens.end(), std::back_inserter(behaviour),
-		   [] (const std::string& token) { return std::stoi(token); });
-  }
-  catch (const std::exception& e) {
-    throw bad_file_format_exception(line_number);
-  }
-  
-  return behaviour;
-}
-
-std::vector<std::vector<int>> ExplicitStateDfa::read_node_table(
-    std::istream& in,
-    std::size_t line_number) {
-  std::string line;
-  std::getline(in, line);
-
-  if (line != "bdd:") {
-    throw bad_file_format_exception(line_number);
-  }
-
-  std::vector<std::vector<int>> node_table;
-  
-  while (std::getline(in, line) && line != "end") {
-    ++line_number;
-
-    std::vector<std::string> tokens;
-    std::string trimmed_line = Syft::trim(line); // remove leading and trailing whitespace
-    tokens = Syft::split(line, " ");
-
-    std::vector<int> node_triple;
-    std::transform(tokens.begin(), tokens.end(),
-		   std::back_inserter(node_triple),
-		   [] (const std::string& token) { return std::stoi(token); });
-
-    if (node_triple.size() != 3) {
-      throw bad_file_format_exception(line_number);
+        std::cout<<"Computed automaton: ";
+        whitemech::lydia::dfaPrint(get_dfa(),
+                                   get_nb_variables(),
+                                   names, indices.data());
     }
 
-    node_table.push_back(std::move(node_triple));
-  }
 
-  if (line != "end") {
-    throw bad_file_format_exception(line_number + 1);
-  }
+    ExplicitStateDfa ExplicitStateDfa::dfa_of_formula(const whitemech::lydia::LTLfFormula& formula) {
+//        std::string formula_formatted = boost::algorithm::replace_all_copy(formula, "X", "X[!]");
 
-  return node_table;
-}
+        auto dfa_strategy = whitemech::lydia::CompositionalStrategy();
+        auto translator = whitemech::lydia::Translator(dfa_strategy);
 
-CUDD::ADD ExplicitStateDfa::build_add(
-    std::size_t node_index,
-    const std::shared_ptr<VarMgr>& var_mgr,
-    const std::vector<std::string>& variable_names,
-    const std::vector<std::vector<int>>& node_table,
-    std::unordered_map<std::size_t, CUDD::ADD>& add_table) {
-  auto it = add_table.find(node_index);
-  
-  if (it != add_table.end()) {
-    return it->second;
-  }
-  else {
-    int name_index = node_table[node_index][0];
-    int low_child = node_table[node_index][1];
-    int high_child = node_table[node_index][2];
 
-    if (name_index == -1) {
-      add_table[node_index] = var_mgr->cudd_mgr()->constant(low_child);
-    }
-    else {
-      std::string variable_name = variable_names[name_index];
-      CUDD::ADD root_node = var_mgr->name_to_variable(variable_name).Add();
-      CUDD::ADD low_node = build_add(low_child, var_mgr, variable_names,
-				     node_table, add_table);
-      CUDD::ADD high_node = build_add(high_child, var_mgr, variable_names,
-				      node_table, add_table);
+        auto t_start = std::chrono::high_resolution_clock::now();
 
-      add_table[node_index] = root_node.Ite(high_node, low_node);
+//        logger.info("Transforming to DFA...");
+        auto t_dfa_start = std::chrono::high_resolution_clock::now();
+
+        auto ldlf_formula = whitemech::lydia::to_ldlf(formula);
+        auto my_dfa = translator.to_dfa(*ldlf_formula);
+
+        auto my_mona_dfa =
+                std::dynamic_pointer_cast<whitemech::lydia::mona_dfa>(my_dfa);
+
+        DFA* d = dfaCopy(my_mona_dfa->dfa_);
+
+        ExplicitStateDfa exp_dfa(d, my_mona_dfa->names);
+
+
+//        std::cout<< "Number of states " +
+//                    std::to_string(exp_dfa.get_nb_variables())<<"\n";
+
+
+        return exp_dfa;
     }
 
-    return add_table[node_index];
-  }
-}
+    // the input d is a bad prefix DFA and agent_winning is the set of winning states that should be kept
+    ExplicitStateDfa ExplicitStateDfa::prune_dfa_with_states(ExplicitStateDfa& d, std::vector<size_t> agent_winning) {
+//		std::cout << "Before prunning:\n";
+//		d.dfa_print();
+//        std::cout << "here ....\n";
+        int d_ns = d.get_nb_states();
+        int new_ns = agent_winning.size();
+        int n = d.get_nb_variables();
+        int new_len = d.names.size();
 
-std::string ExplicitStateDfa::ltlf_to_dfa_file(const std::string& ltlf_filename) {
-    std::string fol_filename = ltlf_filename + ".mona";
-    std::string ltlf_to_fol_command = "./ltlf2fol NNF " + ltlf_filename + " >" + fol_filename;
-    system(ltlf_to_fol_command.c_str());
+//         std::cout << "here ...." << d_ns << ", " << new_ns << ", " << n << ", "<< (n == new_len) << "\n";
 
-    std::string dfa_filename = ltlf_filename + ".dfa";
-    std::string run_mona_command = "mona -xw " + fol_filename + " >" + dfa_filename;
-    system(run_mona_command.c_str());
+        bool safe_states[d_ns];
+        int state_map[d_ns];
+        memset(safe_states, false, sizeof(safe_states));
+        memset(state_map, -1, sizeof(state_map));
 
-    return dfa_filename;
-}
-
-std::string ExplicitStateDfa::safetyltl_to_dfa_file(const std::string& safetyltl_filename) {
-    std::string fol_filename = safetyltl_filename + ".mona";
-    std::string ltlf_to_fol_command = "./safe2fol NNF " + safetyltl_filename + " >" + fol_filename;
-    system(ltlf_to_fol_command.c_str());
-
-    std::string dfa_filename = safetyltl_filename + ".dfa";
-    std::string run_mona_command = "mona -xw -u " + fol_filename + " >" + dfa_filename;
-    system(run_mona_command.c_str());
-
-    return dfa_filename;
-}
-
-ExplicitStateDfa ExplicitStateDfa::from_dfa_mona(std::shared_ptr<VarMgr> var_mgr,
-                                                 const ExplicitStateDfaMona &explicit_dfa) {
-    std::size_t initial_state = explicit_dfa.get_initial_state();
-
-    std::vector<std::string> variable_names = explicit_dfa.names;
-    var_mgr->create_named_variables(variable_names);
-
-    std::size_t state_count = explicit_dfa.get_nb_states();
-    std::vector<std::size_t> final_states;
-    for (int i = 0; i < state_count; i++) {
-        std::size_t curr_state = explicit_dfa.get_initial_state() + i;
-        if(explicit_dfa.is_final(curr_state)){
-            final_states.push_back(curr_state);
+        for(auto s : agent_winning) {
+            safe_states[s] = true;
         }
+
+        int index = 0;
+        for(int i = 0; i < d_ns; i ++) {
+            if(! safe_states[i]) continue;
+            state_map[i] = index ++;
+        }
+
+        DFA* a = d.dfa_;
+        DFA* result;
+        paths state_paths, pp;
+        std::string statuses;
+
+        int indices[new_len];
+        for(int i = 0; i < d.indices.size(); i ++) {
+            indices[i] = d.indices[i];
+        }
+
+        dfaSetup(new_ns + 1, new_len, indices);
+
+        for(int i = 0; i < a->ns; i ++) {
+            // ignore non-safe_states
+            if(! safe_states[i]) continue;
+            int next_state;
+            std::string next_guard;
+
+            auto transitions = std::vector<std::pair<int, std::string>>();
+            state_paths = pp = make_paths(a->bddm, a->q[i]);
+            while(pp) {
+                auto guard = whitemech::lydia::get_path_guard(n, pp->trace);
+                // ignore non safe_states
+                if(safe_states[pp->to]) {
+                    transitions.emplace_back(pp->to, guard);
+                }
+                pp = pp->next;
+            }
+
+            statuses += "-";
+            // transitions
+            int nb_transitions = transitions.size();
+            dfaAllocExceptions(nb_transitions);
+            for(const auto& p: transitions) {
+                std::tie(next_state, next_guard) = p;
+                dfaStoreException(state_map[next_state], next_guard.data());
+            }
+            dfaStoreState(new_ns);
+            kill_paths(state_paths);
+        }
+
+        statuses += "+";
+        dfaAllocExceptions(0);
+        dfaStoreState(new_ns);
+
+        DFA* tmp = dfaBuild(statuses.data());
+
+//        std::cout << "Pruned DFA:\n" << statuses << "\n";
+        ExplicitStateDfa res1(tmp, d.names);
+//        res1.dfa_print();
+        result = dfaMinimize(tmp);
+        //dfaFree(tmp);
+
+        ExplicitStateDfa res(result, d.names);
+        return res;
     }
-    std::unordered_map<std::size_t, CUDD::ADD> add_table;
-    std::vector<CUDD::ADD> transition_function(state_count);
 
-    for (std::size_t i = 0; i < state_count; ++i) {
-        transition_function[i] = build_add_from_dfa_mona(explicit_dfa.dfa_->q[i], var_mgr, variable_names,
-                                           explicit_dfa, add_table);
-    }
+    std::vector<std::string> ExplicitStateDfa::traverse_bdd(CUDD::BDD curr, std::shared_ptr<VarMgr> var_mgr, std::vector<std::string>& names, std::string guard_str) {
+        // guard_str passed by a copy not a reference
+        std::vector<std::string> result;
+        //    while(!curr.IsZero()){
+        if (curr.IsZero()) { // no guard that leads to zero
+            return result;
+        }
 
-    ExplicitStateDfa dfa(std::move(var_mgr));
-    dfa.initial_state_ = initial_state;
-    dfa.state_count_ = state_count;
-    dfa.final_states_ = std::move(final_states);
-    dfa.transition_function_ = std::move(transition_function);
+        if (curr.IsOne()) { // return current guard
+            result.push_back(guard_str);
+            return result;
+        }
 
-    return dfa;
-
-}
-
-CUDD::ADD ExplicitStateDfa::build_add_from_dfa_mona(unsigned node_index, const std::shared_ptr<VarMgr> &var_mgr,
-                                                    const std::vector<std::string> &variable_names,
-                                                    const ExplicitStateDfaMona& explicit_dfa,
-                                                    std::unordered_map<std::size_t, CUDD::ADD> &add_table) {
-    bdd_manager* mgr = explicit_dfa.dfa_->bddm;
-    auto it = add_table.find(node_index);
-
-    if (it != add_table.end()) {
-        return it->second;
-    }
-    else {
-        unsigned name_index, low_child, high_child;
-        LOAD_lri(&mgr->node_table[node_index], low_child, high_child,
-                 name_index);
-
-        if (name_index == BDD_LEAF_INDEX) {
-            add_table[node_index] = var_mgr->cudd_mgr()->constant(low_child);
+        //std::cout << "curr.NodeReadIndex: " << curr.NodeReadIndex() << std::endl;
+        std::string bdd_var_name = var_mgr->index_to_name(curr.NodeReadIndex());
+        std::vector<std::string>::iterator itr = std::find(names.begin(), names.end(), bdd_var_name);
+        int var_index;
+        if (itr != names.cend()) {
+            var_index = std::distance(names.begin(), itr);
         }
         else {
-            std::string variable_name = variable_names[name_index];
-            CUDD::ADD root_node = var_mgr->name_to_variable(variable_name).Add();
-            CUDD::ADD low_node = build_add_from_dfa_mona(low_child, var_mgr, variable_names,
-                                           explicit_dfa, add_table);
-            CUDD::ADD high_node = build_add_from_dfa_mona(high_child, var_mgr, variable_names,
-                                            explicit_dfa, add_table);
-
-            add_table[node_index] = root_node.Ite(high_node, low_node);
+            throw std::runtime_error(
+                    "Error: Incorrect winning move.");
         }
-
-        return add_table[node_index];
-    }
-
-}
-
-ExplicitStateDfa ExplicitStateDfa::read_from_file(
-    std::shared_ptr<VarMgr> var_mgr,
-    const std::string& filename) {
-  std::string explicit_state_dfa_filename = safetyltl_to_dfa_file(filename);
-  std::ifstream in(explicit_state_dfa_filename);
-
-  std::size_t line_number = 1;
-  std::string line;
-  std::getline(in, line);
-
-  if (line != "MONA DFA") {
-    throw bad_file_format_exception(line_number);
-  }
-
-  ++line_number;
-  std::getline(in, line); // variable count; can be ignored
-  
-  ++line_number;
-  std::vector<std::string> variable_names =
-    read_variable_names(in, line_number);
-  var_mgr->create_named_variables(variable_names);
-  
-  ++line_number;
-  std::getline(in, line); // variable orders; can be ignored
-
-  ++line_number;
-  std::size_t state_count = read_state_count(in, line_number);
-
-  ++line_number;
-  std::getline(in, line); // initial state; can be ignored (always 0)
-  std::size_t initial_state = 1; // state 0 is a dummy state, so ignore it
-
-  ++line_number;
-  std::getline(in, line); // node count; can be ignored
-
-  ++line_number;
-  std::vector<std::size_t> final_states = read_final_states(in, line_number);
-
-  ++line_number;
-  std::vector<std::size_t> behaviour = read_behaviour(in, line_number);
-
-  ++line_number;
-  std::vector<std::vector<int>> node_table = read_node_table(in, line_number);
-
-  std::unordered_map<std::size_t, CUDD::ADD> add_table;
-  std::vector<CUDD::ADD> transition_function(state_count);
-
-  for (std::size_t i = 0; i < state_count; ++i) {
-    transition_function[i] = build_add(behaviour[i], var_mgr, variable_names,
-				       node_table, add_table);
-  }
-
-  // Turn state 0 into a sink state
-  transition_function[0] = var_mgr->cudd_mgr()->constant(0);
-
-  ExplicitStateDfa dfa(std::move(var_mgr));
-  dfa.initial_state_ = initial_state;
-  dfa.state_count_ = state_count;
-  dfa.final_states_ = std::move(final_states);
-  dfa.transition_function_ = std::move(transition_function);
-
-  return dfa;
-}
-
-ExplicitStateDfa ExplicitStateDfa::complement_dfa(ExplicitStateDfa& d) {
-    std::vector<size_t> final_states;
-    std::vector<size_t> current_final_states = d.final_states();
-    for (size_t i = d.initial_state(); i < d.state_count(); i++){
-        if(std::find(current_final_states.begin(), current_final_states.end(), i) == current_final_states.end()){
-            final_states.push_back(i);
+        //std::cout << "name: " << bdd_var_name << " index: "<< var_index << std::endl;
+        CUDD::BDD bdd_var = var_mgr->name_to_variable(bdd_var_name);
+        CUDD::BDD high_cofactor = curr.Cofactor(bdd_var);
+        std::vector<std::string> res_high = traverse_bdd(high_cofactor, var_mgr, names, guard_str);
+        for (std::string res : res_high)
+        {
+            res[var_index] = '1';
+            result.push_back(res);
         }
+        CUDD::BDD low_cofactor = curr.Cofactor(! bdd_var);
+        std::vector<std::string> res_low = traverse_bdd(low_cofactor, var_mgr, names,  guard_str);
+        for (std::string res : res_low)
+        {
+            res[var_index] = '0';
+            result.push_back(res);
+        }
+        return result;
     }
 
 
-    ExplicitStateDfa dfa(d.var_mgr());
-    dfa.initial_state_ = d.initial_state();
-    dfa.state_count_ = d.state_count();
-    dfa.final_states_ = std::move(final_states);
-    dfa.transition_function_ = d.transition_function();
+    // the input d is a bad prefix DFA and agent_winning is the set of winning transitions that should be kept
+    ExplicitStateDfa ExplicitStateDfa::prune_dfa_with_transitions(ExplicitStateDfa &d,
+                                                                  std::unordered_map<size_t, CUDD::BDD> winning_moves,
+                                                                  std::shared_ptr<VarMgr> var_mgr) {
+//        std::cout << "here ....\n";
+        int d_ns = d.get_nb_states();
+        int new_ns = winning_moves.size();
+        int n = d.get_nb_variables();
+        int new_len = d.names.size();
+        std::vector<std::string> names = d.names;
 
-    return dfa;
+//        std::cout << "Starting pruning ....\n";
+//        d.dfa_print();
+
+        std::vector<bool> safe_states;
+        safe_states.resize(d_ns, false);
+
+        std::vector<int> state_map;
+        state_map.resize(d_ns, -1);
+
+//        bool safe_states[d_ns];
+//        int state_map[d_ns];
+//        memset(safe_states, false, sizeof(safe_states));
+//        memset(state_map, -1, sizeof(state_map));
+
+        for(auto s : winning_moves) {
+            safe_states[s.first] = true;
+        }
+
+        int index = 0;
+        for(int i = 0; i < d_ns; i ++) {
+            if(! safe_states[i]) continue;
+            state_map[i] = index ++;
+        }
+
+        DFA* a = d.dfa_;
+        DFA* result;
+        paths state_paths, pp;
+        std::string statuses;
+
+        int indices[new_len];
+        for(int i = 0; i < d.indices.size(); i ++) {
+            indices[i] = d.indices[i];
+        }
+
+        dfaSetup(new_ns + 1, new_len, indices);
+
+        for(int i = 0; i < a->ns; i ++) {
+
+            // ignore non-safe_states
+            if(! safe_states[i]) continue;
+            int next_state;
+            std::string next_guard;
+
+            auto transitions = std::vector<std::pair<int, std::string>>();
+            state_paths = pp = make_paths(a->bddm, a->q[i]);
+            while(pp) {
+                auto guard = whitemech::lydia::get_path_guard(n, pp->trace);
+                //std::cout<<"current_state: "<<i<<", guard: "<<guard<<", succ_state: "<<pp->to<<"\n";
+                CUDD::BDD guard_bdd = var_mgr->cudd_mgr()->bddOne();
+                for(int k = 0; k < guard.length(); k++){
+                    auto name = d.names[k];
+                    auto value = guard.at(k);
+                    if(value == '0'){
+                        guard_bdd *= !(var_mgr->name_to_variable(name));
+                    }
+                    else if(value == '1'){
+                        guard_bdd *= (var_mgr->name_to_variable(name));
+                    }
+                    else if(value == 'X'){
+                        guard_bdd *= var_mgr->cudd_mgr()->bddOne();
+                    }
+                    else{
+                        throw std::runtime_error(
+                                "Error: Incorrect guard.");
+                    }
+                }
+                // ignore non safe_states
+                if(safe_states[pp->to]) {
+                    //std::cout<<guard_bdd<< ", " << winning_moves[i] <<"\n";
+                    CUDD::BDD winning_move = guard_bdd * winning_moves[i];
+                    //std::cout<<winning_move<<"\n";
+                    auto winning_guard = std::string(n, 'X');
+                    //assert(winning_move.IsCube() || winning_move.IsZero() || winning_move.IsOne());
+                    if(winning_move.IsZero()){
+//                        std::cout<<"current_state: "<<i<<", winning_guard: "<<winning_move<<", succ_state: "<<pp->to<<"\n";
+                    } else if(winning_move.IsOne()){
+                        transitions.emplace_back(pp->to, winning_guard);
+//                        std::cout<<"current_state: "<<i<<", winning_guard: "<<winning_guard<<", succ_state: "<<pp->to<<"\n";
+                    } else{
+                        CUDD::BDD curr = winning_move;
+                        assert (! curr.IsZero() && ! curr.IsOne());
+
+                        std::vector<std::string> result_guards = traverse_bdd(curr, var_mgr, d.names, winning_guard);
+                        for (std::string winning_guard: result_guards) {
+                            transitions.emplace_back(pp->to, winning_guard);
+                            //std::cout << "to: " << (pp->to ) << " guard: " << winning_guard << std::endl;
+                        }
+
+                    }
+                }
+                pp = pp->next;
+            }
+
+            statuses += "-";
+            // transitions
+            int nb_transitions = transitions.size();
+            dfaAllocExceptions(nb_transitions);
+            for(const auto& p: transitions) {
+                std::tie(next_state, next_guard) = p;
+                dfaStoreException(state_map[next_state], next_guard.data());
+            }
+            dfaStoreState(new_ns);
+            kill_paths(state_paths);
+        }
+
+        statuses += "+";
+        dfaAllocExceptions(0);
+        dfaStoreState(new_ns);
+
+        DFA* tmp = dfaBuild(statuses.data());
+
+//        std::cout << "Pruned DFA:\n" << statuses << "\n";
+        ExplicitStateDfa res1(tmp, d.names);
+//        res1.dfa_print();
+        result = dfaMinimize(tmp);
+        //dfaFree(tmp);
+
+        ExplicitStateDfa res(result, d.names);
+        return res;
+    }
+
+    // all the names may not be the same, needs a map for right indices
+    ExplicitStateDfa ExplicitStateDfa::dfa_product_and(const std::vector<ExplicitStateDfa>& dfa_vector) {
+        // first record all variables, as they may not have the same alphabet
+        std::unordered_map<std::string, int> name_to_index = {};
+        std::vector<std::string> name_vector;
+        std::set<std::string> names;
+        std::vector<DFA* > renamed_dfa_vector;
+        std::vector<std::vector<int>> mappings;
+
+        //1. first collect all names
+        for(auto dfa : dfa_vector) {
+            // for each DFA, record its names and assign with global indices
+            for(int i = 0; i < dfa.names.size(); i ++) {
+                if(names.find(dfa.names[i]) == names.end()) {
+                    // not found
+                    names.insert(dfa.names[i]);
+                    name_vector.push_back(dfa.names[i]);
+                }
+            }
+        }
+        //2. order the names alphabetically
+        // Note: MONA DFA needs the names to be ordered alphabetically
+        auto str_cmp = [](const std::string& s1, const std::string& s2) { return s1 > s2; };
+        std::priority_queue<std::string, std::vector<std::string>, decltype(str_cmp)>
+                str_queue(name_vector.begin(), name_vector.end(), str_cmp);
+        int index = 0;
+        std::vector<std::string> ordered_name_vector;
+        while(str_queue.size()  > 0) {
+            std::string name = str_queue.top();
+            str_queue.pop();
+            name_to_index[name] = index;
+            ordered_name_vector.push_back(name);
+            index ++;
+        }
+
+        for(auto dfa : dfa_vector) {
+            // for each DFA, record its names and assign with global indices
+            // local index to global index
+            int map[ordered_name_vector.size()];
+            std::set<int> used_indices;
+            std::unordered_map<int, int> bimap = {};
+            for(int i = 0; i < dfa.names.size(); i ++) {
+                int name_index = name_to_index[dfa.names[i]];
+                map[i] = name_index;
+                used_indices.insert(name_index);
+                bimap[name_index] = i;
+            }
+            // unused indices
+            for(int j = dfa.names.size(); j < ordered_name_vector.size(); j ++) {
+                /*if(used_indices.find(j) == used_indices.end()) {
+                    // not found
+                    map[j] = j;
+                }else {
+                    // already being used
+                    map[j] = bimap[j];
+                }*/
+                map[j] = -1;
+            }
+            //4. replace indices
+            DFA* copy = dfaCopy(dfa.dfa_);
+            dfaReplaceIndices(copy, map);
+            renamed_dfa_vector.push_back(copy);
+
+        }
+
+        auto cmp = [](const DFA* d1, const DFA* d2) { return d1->ns > d2->ns; };
+        std::priority_queue<DFA*, std::vector<DFA*>, decltype(cmp)>
+                queue(renamed_dfa_vector.begin(), renamed_dfa_vector.end(), cmp);
+        while(queue.size() > 1) {
+            DFA* lhs = queue.top();
+            queue.pop();
+            DFA* rhs = queue.top();
+            queue.pop();
+            // Bug: tmp could be a nondeterministic automaton if alphabet is not organized alphabetically
+            DFA* tmp = dfaProduct(lhs, rhs, dfaProductType::dfaAND);
+            dfaFree(lhs);
+            dfaFree(rhs);
+            DFA* res = dfaMinimize(tmp);
+            dfaFree(tmp);
+            queue.push(res);
+        }
+
+        ExplicitStateDfa res_dfa(queue.top(), ordered_name_vector);
+        /*std::cout << "Product Or: (minimized) \n";
+        res_dfa.dfa_print();*/
+        return res_dfa;
+    }
+
+
+    // all the names may not be the same, needs a map for right indices
+    ExplicitStateDfa ExplicitStateDfa::dfa_product_or(const std::vector<ExplicitStateDfa>& dfa_vector) {
+        // first record all variables, as they may not have the same alphabet
+        std::unordered_map<std::string, int> name_to_index = {};
+        std::vector<std::string> name_vector;
+        std::set<std::string> names;
+        std::vector<DFA* > renamed_dfa_vector;
+        std::vector<std::vector<int>> mappings;
+
+        //1. first collect all names
+        for(auto dfa : dfa_vector) {
+            // for each DFA, record its names and assign with global indices
+            for(int i = 0; i < dfa.names.size(); i ++) {
+                if(names.find(dfa.names[i]) == names.end()) {
+                    // not found
+                    names.insert(dfa.names[i]);
+                    name_vector.push_back(dfa.names[i]);
+                }
+            }
+        }
+        //2. order the names alphabetically
+        // Note: MONA DFA needs the names to be ordered alphabetically
+        auto str_cmp = [](const std::string& s1, const std::string& s2) { return s1 > s2; };
+        std::priority_queue<std::string, std::vector<std::string>, decltype(str_cmp)>
+                str_queue(name_vector.begin(), name_vector.end(), str_cmp);
+        int index = 0;
+        std::vector<std::string> ordered_name_vector;
+        while(str_queue.size()  > 0) {
+            std::string name = str_queue.top();
+            str_queue.pop();
+            name_to_index[name] = index;
+            ordered_name_vector.push_back(name);
+            index ++;
+        }
+
+        for(auto dfa : dfa_vector) {
+            // for each DFA, record its names and assign with global indices
+            // local index to global index
+            int map[ordered_name_vector.size()];
+            std::set<int> used_indices;
+            std::unordered_map<int, int> bimap = {};
+            for(int i = 0; i < dfa.names.size(); i ++) {
+                int name_index = name_to_index[dfa.names[i]];
+                map[i] = name_index;
+                used_indices.insert(name_index);
+                bimap[name_index] = i;
+            }
+            // unused indices
+            for(int j = dfa.names.size(); j < ordered_name_vector.size(); j ++) {
+                /*if(used_indices.find(j) == used_indices.end()) {
+                    // not found
+                    map[j] = j;
+                }else {
+                    // already being used
+                    map[j] = bimap[j];
+                }*/
+                map[j] = -1;
+            }
+            //4. replace indices
+            DFA* copy = dfaCopy(dfa.dfa_);
+            dfaReplaceIndices(copy, map);
+            renamed_dfa_vector.push_back(copy);
+
+        }
+
+        auto cmp = [](const DFA* d1, const DFA* d2) { return d1->ns > d2->ns; };
+        std::priority_queue<DFA*, std::vector<DFA*>, decltype(cmp)>
+                queue(renamed_dfa_vector.begin(), renamed_dfa_vector.end(), cmp);
+        while(queue.size() > 1) {
+            DFA* lhs = queue.top();
+            queue.pop();
+            DFA* rhs = queue.top();
+            queue.pop();
+            // Bug: tmp could be a nondeterministic automaton if alphabet is not organized alphabetically
+            DFA* tmp = dfaProduct(lhs, rhs, dfaProductType::dfaOR);
+            dfaFree(lhs);
+            dfaFree(rhs);
+            DFA* res = dfaMinimize(tmp);
+            dfaFree(tmp);
+            queue.push(res);
+        }
+
+        ExplicitStateDfa res_dfa(queue.top(), ordered_name_vector);
+        /*std::cout << "Product Or: (minimized) \n";
+        res_dfa.dfa_print();*/
+        return res_dfa;
+    }
+
+
+
+    ExplicitStateDfa ExplicitStateDfa::dfa_minimize(const ExplicitStateDfa& d) {
+        //logger.info("Determinizing DFA...");
+        DFA* res = dfaMinimize(d.dfa_);
+        ExplicitStateDfa res_dfa(res, d.names);
+        return res_dfa;
+    }
+
+
+    ExplicitStateDfa ExplicitStateDfa::dfa_complement(ExplicitStateDfa &d) {
+        dfaNegation(d.dfa_);
+        ExplicitStateDfa res_dfa(d.dfa_, d.names);
+        return res_dfa;
+    }
+
+
+
 }
-
-std::shared_ptr<VarMgr> ExplicitStateDfa::var_mgr() const {
-  return var_mgr_;
-}
-
-std::size_t ExplicitStateDfa::initial_state() const {
-  return initial_state_;
-}
-
-std::size_t ExplicitStateDfa::state_count() const {
-  return state_count_;
-}
-
-std::vector<std::size_t> ExplicitStateDfa::final_states() const {
-  return final_states_;
-}
-
-std::vector<CUDD::ADD> ExplicitStateDfa::transition_function() const {
-  return transition_function_;
-}
-
-void ExplicitStateDfa::dump_dot(const std::string& filename) const {
-  std::vector<std::string> function_labels(state_count_);
-
-  for (std::size_t i = 0; i < state_count_; ++i) {
-	  function_labels[i] = "S" + std::to_string(i);
-  }
-
-  var_mgr_->dump_dot(transition_function_, function_labels, filename);
-}
-
-};

@@ -96,6 +96,8 @@ cmake -DCMAKE_BUILD_TYPE=Release ..
 make -j$(nproc --ignore=1) LydiaSyft
 ```
 
+4.1. For solving LTLf synthesis with GR(1) conditions, please install `slugs` following submodules/slugs/README.md
+
 5. Compile and Run tests:
 
 ```
@@ -144,13 +146,13 @@ Examples (run commands from the root directory of the project):
 - Maxset synthesis:
 
 ```
-./build/bin/LydiaSyft maxset -f example/test.tlsf
+./build/bin/LydiaSyft maxset -f example/test1.tlsf
 ```
 
 - Fairness synthesis:
 
 ```
-./build/bin/LydiaSyft .fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - Stability synthesis:
@@ -160,9 +162,8 @@ Examples (run commands from the root directory of the project):
 ```
 
 - GR(1) synthesis:
-
 ```
-./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
+./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/
 ```
 
 ## Documentation

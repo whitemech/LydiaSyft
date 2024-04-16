@@ -12,7 +12,7 @@
 #include "Stopwatch.h"
 
 #include "../parser/Parser.h"
-#include "ExplicitStateDfaMona.h"
+#include "ExplicitStateDfa.h"
 #include "ReachabilitySynthesizer.h"
 #include "ReachabilityMaxSetSynthesizer.h"
 #include "InputOutputPartition.h"
@@ -42,6 +42,7 @@ namespace Syft {
     }
 
     void StabilityRunner::do_stability_synthesis_(const Syft::SymbolicStateDfa &symbolic_dfa) {
+        var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
         Syft::StableReachabilitySynthesizer synthesizer(symbolic_dfa, args_.starting_player,
                                                         args_.protagonist_player, symbolic_dfa.final_states(),
                                                         var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);

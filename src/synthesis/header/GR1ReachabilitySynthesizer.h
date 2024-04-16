@@ -4,7 +4,7 @@
 
 #ifndef LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
 #define LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
-#include "ExplicitStateDfa.h"
+#include "ExplicitStateDfaAdd.h"
 #include "InputOutputPartition.h"
 #include "Player.h"
 #include "GR1.h"

@@ -8,7 +8,7 @@
 
 #include "Stopwatch.h"
 
-#include "ExplicitStateDfaMona.h"
+#include "ExplicitStateDfa.h"
 #include "ReachabilityMaxSetSynthesizer.h"
 #include "InputOutputPartition.h"
 #include "Preprocessing.h"
@@ -48,6 +48,7 @@ namespace Syft {
 
     void GR1Runner::do_gr1_synthesis_(const SymbolicStateDfa& agent_safety_dfa, const SymbolicStateDfa& env_safety_dfa, const SymbolicStateDfa& agent_goal_dfa) const {
         Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr_, gr1_file_);
+        var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
         Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr_, gr1, env_safety_dfa,
                                                      agent_goal_dfa, agent_safety_dfa, path_to_slugs_, "problem");
         Syft::SynthesisResult result = synthesizer.run();

@@ -1,134 +1,139 @@
-#ifndef EXPLICIT_STATE_DFA_H
-#define EXPLICIT_STATE_DFA_H
+#ifndef EXPLICITSTATEDFA_H
+#define EXPLICITSTATEDFA_H
 
-#include <exception>
-#include <istream>
-#include <memory>
-#include <unordered_map>
-#include <vector>
+extern "C" {
+#include <mona/bdd.h>
+#include <mona/dfa.h>
+#include <mona/mem.h>
+}
 
+#include "lydia/logic/ltlf/base.hpp"
+#include "lydia/dfa/mona_dfa.hpp"
 #include "VarMgr.h"
-#include "ExplicitStateDfaMona.h"
 
 namespace Syft {
 
-/**
- * \brief A DFA with explicit states and symbolic transitions.
+/*
+ * Wrapper to Lydia DFA.
  */
-class ExplicitStateDfa {
- private:
+    class ExplicitStateDfa : public whitemech::lydia::mona_dfa {
+    public:
 
-  std::shared_ptr<VarMgr> var_mgr_;
+        ExplicitStateDfa(DFA* dfa, int nb_variables)
+        : whitemech::lydia::mona_dfa(dfa, nb_variables) {
+        }
 
-  size_t initial_state_;
-  size_t state_count_;
-  std::vector<size_t> final_states_;
-  std::vector<CUDD::ADD> transition_function_;
+        ExplicitStateDfa(DFA* dfa, const std::vector<std::string>& names)
+                : whitemech::lydia::mona_dfa(dfa, names) {
+        }
 
-  ExplicitStateDfa(std::shared_ptr<VarMgr> var_mgr);
+        ExplicitStateDfa(const ExplicitStateDfa& other)
+        : whitemech::lydia::mona_dfa(dfaCopy(other.dfa_), other.names) {
 
-  static std::runtime_error bad_file_format_exception(std::size_t line_number);
+        }
 
-  static std::string ltlf_to_dfa_file(const std::string& ltlf_filename);
+        ExplicitStateDfa& operator=(ExplicitStateDfa other)
+        {
+//            std::cout << "copy assignment of ExplicitStateDfa\n";
+            this->names = other.names;
+            this->dfa_ = dfaCopy(other.get_dfa());
+            return *this;
+        }
+        // ExplicitStateDfa& operator=(const ExplicitStateDfa& other);
 
-  static std::string safetyltl_to_dfa_file(const std::string& safetyltl_filename);
+        ~ExplicitStateDfa(){
+            
+        }
 
-  static std::vector<std::string> read_mona_line(std::istream& in,
-						 std::size_t line_number);
+        // rewrite this function, since nb_vairiables_ in mona_dfa is private
+        int get_nb_variables() {
+            return this->names.size();
+        }
 
-  static std::vector<std::string> read_variable_names(std::istream& in,
-						      std::size_t line_number);
-  
-  static std::size_t read_state_count(std::istream& in,
-				      std::size_t line_number);
+        /**
+         * \brief Print the DFA.
+         */
+        void dfa_print();
 
-  static std::vector<std::size_t> read_final_states(std::istream& in,
-						    std::size_t line_number);
 
-  static std::vector<std::size_t> read_behaviour(std::istream& in,
-						 std::size_t line_number);
+        /**
+         * \brief Construct DFA from a given formula
+         *
+         *
+         * \param formula An LTLf formula.
+         * \return The corresponding explicit-state DFA.
+         */
+        static ExplicitStateDfa dfa_of_formula(const whitemech::lydia::LTLfFormula& formula);
 
-  static std::vector<std::vector<int>> read_node_table(std::istream& in,
-						       std::size_t line_number);
+        /**
+         * \brief Take the product AND of a vector of DFAs.
+         *
+         * \param dfa_vector The DFAs to be processed.
+         * \return The product DFA.
+         */
+        static ExplicitStateDfa dfa_product_and(const std::vector<ExplicitStateDfa>& dfa_vector);
 
-  static CUDD::ADD build_add(
-      std::size_t node_index,
-      const std::shared_ptr<VarMgr>& var_mgr,
-      const std::vector<std::string>& variable_names,
-      const std::vector<std::vector<int>>& node_table,
-      std::unordered_map<std::size_t, CUDD::ADD>& add_table);
+        /**
+         * \brief Take the product AND of a vector of DFAs.
+         *
+         * \param dfa_vector The DFAs to be processed.
+         * \return The product DFA.
+         */
+        static ExplicitStateDfa dfa_product_or(const std::vector<ExplicitStateDfa>& dfa_vector);
 
-    static CUDD::ADD build_add_from_dfa_mona(
-            unsigned node_index,
-            const std::shared_ptr<VarMgr>& var_mgr,
-            const std::vector<std::string>& variable_names,
-            const ExplicitStateDfaMona& explicit_dfa,
-            std::unordered_map<std::size_t, CUDD::ADD>& add_table);
+        /**
+         * \brief Minimize a given DFA.
+         *
+         * \param d The DFA to be minimized.
+         * \return The minimal DFA.
+         */
+        static ExplicitStateDfa dfa_minimize(const ExplicitStateDfa& d);
 
- public:
 
-  /**
-   * \brief Constructs a DFA from a MONA output file.
-   *
-   * Assumes that the DFA is in MONA's external format and that state 0 is a
-   * dummy initial state with a transition to state 1. State 1 is set as the
-   * initial state in the returned DFA.
-   *
-   * \param var_mgr The variable manager for managing transition variables.
-   * \param filename The name of the file to read the DFA from.
-   * \return The DFA described in the file.
-   */
-  static ExplicitStateDfa read_from_file(std::shared_ptr<VarMgr> var_mgr,
-					 const std::string& filename);
+        /**
+         * \brief Construct DFA from a given formula
+         *
+         *
+         * \param formula An LTLf formula.
+         * \return The corresponding explicit-state DFA.
+         */
+        static ExplicitStateDfa dfa_of_formula(const std::string& formula);
 
-  static ExplicitStateDfa from_dfa_mona(std::shared_ptr<VarMgr> var_mgr,
-                                           const ExplicitStateDfaMona& explicit_dfa);
+        /**
+      * \brief Prune a DFA with given set of states.
+      *
+      * Basically remove a set of states from the DFA, and return a minimized one.
+      *
+      * \param d The DFA to be pruned.
+      * \param states The set of states to be removed.
+      * \return The pruned DFA.
+      */
+        static ExplicitStateDfa prune_dfa_with_states(ExplicitStateDfa& d, std::vector<size_t> states);
 
-    /**
-     * \brief Complements a DFA.
-     *
-     * Basically exchange accepting states and non-accepting states.
-     *
-     * \param var_mgr The variable manager for managing transition variables.
-     * \return The complemented DFA.
-     */
-  static ExplicitStateDfa complement_dfa(ExplicitStateDfa& d);
+        /**
+         * \brief Prune a DFA with given transitions.
+         *
+         * Basically remove a set of transitions from the DFA, and return a minimized one.
+         *
+         * \param d The DFA to be pruned.
+         * \param transitions The set of transitions to be removed.
+         * \return The pruned DFA.
+         */
+        static ExplicitStateDfa prune_dfa_with_transitions(ExplicitStateDfa& d, std::unordered_map<size_t, CUDD::BDD> transitions, std::shared_ptr<VarMgr> var_mgr);
 
-  /**
-   * \brief Returns the variable manager.
-   */
-  std::shared_ptr<VarMgr> var_mgr() const;
+        /**
+         * \brief Complement a DFA.
+         *
+         * Basically exchange the accepting states and the non-accepting states.
+         *
+         * \param d The DFA to be complemented.
+         * \return The complement DFA.
+         */
+        static ExplicitStateDfa dfa_complement(ExplicitStateDfa& d);
 
-  /**
-   * \brief Returns the initial state of the DFA.
-   */
-  std::size_t initial_state() const;
-
-  /**
-   * \brief Returns the number of states in the DFA.
-   */
-  std::size_t state_count() const;
-
-  /**
-   * \brief Returns the list of indices of final states of the DFA.
-   */
-  std::vector<std::size_t> final_states() const;
-
-  /**
-   * \brief Returns the transition function of the DFA as a vector of ADDs.
-   *
-   * The ADD in index \a i represents the transition function for state \a i.
-   */
-  std::vector<CUDD::ADD> transition_function() const;
-
-  /**
-   * \brief Saves the transition function of the DFA in a .dot file.
-   *
-   * \param filename The name of the file to save the transition function to.
-   */
-  void dump_dot(const std::string& filename) const;
-};
+    private:
+        static std::vector<std::string> traverse_bdd(CUDD::BDD dd, std::shared_ptr<VarMgr> var_mgr, std::vector<std::string>& names, std::string guard_str);
+    };
 
 }
-
-#endif // EXPLICIT_STATE_DFA_H
+#endif //EXPLICITSTATEDFA_H
