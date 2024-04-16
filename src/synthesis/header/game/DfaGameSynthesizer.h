@@ -3,7 +3,7 @@
 
 #include "Quantification.h"
 #include "automata/SymbolicStateDfa.h"
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "Transducer.h"
 
 namespace Syft {

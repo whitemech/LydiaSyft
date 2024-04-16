@@ -5,7 +5,7 @@
 #include "base.hpp"
 #include "lydia/parser/ltlf/driver.hpp"
 #include "game/InputOutputPartition.h"
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "Preprocessing.h"
 
 namespace Syft {

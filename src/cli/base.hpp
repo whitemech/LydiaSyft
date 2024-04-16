@@ -14,7 +14,7 @@
 #include "game/InputOutputPartition.h"
 #include "game/Transducer.h"
 #include "Stopwatch.h"
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "synthesizer/LTLfMaxSetSynthesizer.h"
 #include "lydia/parser/ltlf/driver.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef PREPROCESSING_HPP
 #define PREPROCESSING_HPP
 
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "game/InputOutputPartition.h"
 #include <lydia/logic/ltlf/base.hpp>
 

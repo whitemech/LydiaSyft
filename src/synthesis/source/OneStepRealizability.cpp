@@ -1,5 +1,5 @@
 #include "OneStepRealizability.h"
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 
 #include <lydia/logic/ltlf/base.hpp>
 

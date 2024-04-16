@@ -1,4 +1,4 @@
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "game/InputOutputPartition.h"
 #include "OneStepRealizability.h"
 #include "OneStepUnrealizability.h"

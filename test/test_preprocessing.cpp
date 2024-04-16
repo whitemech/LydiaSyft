@@ -2,7 +2,7 @@
 
 #include "utils.hpp"
 #include "Parser.h"
-#include "synthesizer/Synthesizer.h"
+#include "Synthesizer.h"
 #include "Preprocessing.h"
 
 
