@@ -1,4 +1,4 @@
-#include "game/ReachabilitySynthesizer.h"
+#include "synthesizer/ReachabilitySynthesizer.h"
 
 #include <cassert>
 
@@ -8,9 +8,8 @@ namespace Syft {
                                                      Player starting_player, Player protagonist_player,
                                                      CUDD::BDD goal_states,
                                                      CUDD::BDD state_space)
-            : DfaGameSynthesizer(spec, starting_player, protagonist_player)
-            , goal_states_(goal_states), state_space_(state_space)
-    {}
+            : DfaGameSynthesizer(spec, starting_player, protagonist_player), goal_states_(goal_states),
+              state_space_(state_space) {}
 
 
     SynthesisResult ReachabilitySynthesizer::run() const {
@@ -21,10 +20,10 @@ namespace Syft {
         while (true) {
             CUDD::BDD new_winning_states, new_winning_moves;
 
-            if (starting_player_ == Player::Agent){
+            if (starting_player_ == Player::Agent) {
                 CUDD::BDD quantified_X_transitions_to_winning_states = preimage(winning_states);
                 new_winning_moves = winning_moves |
-                                          (state_space_ & (!winning_states) & quantified_X_transitions_to_winning_states);
+                                    (state_space_ & (!winning_states) & quantified_X_transitions_to_winning_states);
 
                 new_winning_states = project_into_states(new_winning_moves);
             } else {
@@ -32,7 +31,7 @@ namespace Syft {
                 CUDD::BDD new_collected_winning_states = project_into_states(transitions_to_winning_states);
                 new_winning_states = winning_states | new_collected_winning_states;
                 new_winning_moves = winning_moves |
-                        ((!winning_states) & new_collected_winning_states & transitions_to_winning_states);
+                                    ((!winning_states) & new_collected_winning_states & transitions_to_winning_states);
             }
 
             if (includes_initial_state(new_winning_states)) {

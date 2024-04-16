@@ -1,7 +1,7 @@
 //
 // Created by shuzhu on 20/01/24.
 //
-#include "game/ReachabilityMaxSetSynthesizer.h"
+#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
 
 #include <cassert>
 
@@ -11,9 +11,8 @@ namespace Syft {
                                                                  Player starting_player, Player protagonist_player,
                                                                  CUDD::BDD goal_states,
                                                                  CUDD::BDD state_space)
-            : DfaGameSynthesizer(spec, starting_player, protagonist_player)
-            , goal_states_(goal_states), state_space_(state_space)
-    {}
+            : DfaGameSynthesizer(spec, starting_player, protagonist_player), goal_states_(goal_states),
+              state_space_(state_space) {}
 
 
     SynthesisResult ReachabilityMaxSetSynthesizer::run() const {
@@ -24,7 +23,7 @@ namespace Syft {
         while (true) {
             CUDD::BDD new_winning_states, new_winning_moves;
 
-            if (starting_player_ == Player::Agent){
+            if (starting_player_ == Player::Agent) {
                 CUDD::BDD quantified_X_transitions_to_winning_states = preimage(winning_states);
                 new_winning_moves = winning_moves |
                                     (state_space_ & (!winning_states) & quantified_X_transitions_to_winning_states);
@@ -60,7 +59,7 @@ namespace Syft {
     }
 
 
-    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(const SynthesisResult& result) const {
+    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(const SynthesisResult &result) const {
         MaxSet maxset;
         maxset.nondeferring_strategy = result.winning_moves;
         maxset.deferring_strategy = result.winning_moves | (result.winning_states & preimage(result.winning_states));

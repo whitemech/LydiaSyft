@@ -1,31 +1,36 @@
 //
-// Created by shuzhu on 20/01/24.
+// Created by shuzhu on 21/01/24.
 //
 
-#include "game/FairReachabilitySynthesizer.h"
-#include "game/coBuchiReachability.hpp"
+
+#include "synthesizer/StabilityLtlfSynthesizer.h"
+#include "game/BuchiReachability.hpp"
 #include "string_utilities.h"
 
 #include <fstream>
 
 namespace Syft {
 
-    FairReachabilitySynthesizer::FairReachabilitySynthesizer(const SymbolicStateDfa &spec, Player starting_player,
-                                                             Player protagonist_player,
-                                                             const CUDD::BDD &goal_states, const CUDD::BDD &state_space,
-                                                             const std::string &assumption_filename)
-            : DfaGameSynthesizer(spec, starting_player, protagonist_player), goal_states_(goal_states),
+    StabilityLtlfSynthesizer::StabilityLtlfSynthesizer(SymbolicStateDfa spec,
+                                                       Player starting_player, Player protagonist_player,
+                                                       CUDD::BDD goal_states,
+                                                       CUDD::BDD state_space,
+                                                       std::string &assumption_filename)
+            : spec_(spec), starting_player_(starting_player), protagonist_player_(protagonist_player),
+              goal_states_(goal_states),
               state_space_(state_space) {
+        var_mgr_ = spec_.var_mgr();
         assumption_ = load_CNF(assumption_filename);
     }
 
-    SynthesisResult FairReachabilitySynthesizer::run() const {
-        coBuchiReachability solver(spec_, starting_player_, protagonist_player_,
-                                   goal_states_, !assumption_, state_space_);
+
+    SynthesisResult StabilityLtlfSynthesizer::run() const {
+        BuchiReachability solver(spec_, starting_player_, protagonist_player_,
+                                 goal_states_, !assumption_, state_space_);
         return solver.run();
     }
 
-    CUDD::BDD FairReachabilitySynthesizer::load_CNF(const std::string &filename) const {
+    CUDD::BDD StabilityLtlfSynthesizer::load_CNF(const std::string &filename) const {
         std::ifstream f(filename.c_str());
         CUDD::BDD assumption = var_mgr_->cudd_mgr()->bddOne();
         std::vector<std::string> clause_line;

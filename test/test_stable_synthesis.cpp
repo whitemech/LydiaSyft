@@ -6,7 +6,7 @@
 
 #include "automata/ExplicitStateDfa.h"
 #include "game/InputOutputPartition.h"
-#include "game/StableReachabilitySynthesizer.h"
+#include "synthesizer/StabilityLtlfSynthesizer.h"
 #include "Preprocessing.h"
 #include "Parser.h"
 #include "utils.hpp"
@@ -15,15 +15,17 @@
 
 TEST_CASE("Stable Synthesis of realizable counter_1", "[stable synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION,
+                                          Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -49,9 +51,10 @@ TEST_CASE("Stable Synthesis of realizable counter_1", "[stable synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::StableReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+    Syft::StabilityLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                               protagonist_player, symbolic_dfa.final_states(),
+                                               var_mgr->cudd_mgr()->bddOne(),
+                                               Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
@@ -60,15 +63,17 @@ TEST_CASE("Stable Synthesis of realizable counter_1", "[stable synthesis]") {
 
 TEST_CASE("Stable Synthesis of unrealizable counter_1", "[stable synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION,
+                                          Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -96,9 +101,10 @@ TEST_CASE("Stable Synthesis of unrealizable counter_1", "[stable synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::StableReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+    Syft::StabilityLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                               protagonist_player, symbolic_dfa.final_states(),
+                                               var_mgr->cudd_mgr()->bddOne(),
+                                               Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = false;

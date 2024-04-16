@@ -6,7 +6,7 @@
 
 #include "automata/ExplicitStateDfa.h"
 #include "game/InputOutputPartition.h"
-#include "game/FairReachabilitySynthesizer.h"
+#include "synthesizer/FairnessLtlfSynthesizer.h"
 #include "Preprocessing.h"
 #include "Parser.h"
 #include "utils.hpp"
@@ -18,11 +18,12 @@ TEST_CASE("Fair Synthesis test", "[fair synthesis]") {
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -50,9 +51,10 @@ TEST_CASE("Fair Synthesis test", "[fair synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+    Syft::FairnessLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                              protagonist_player, symbolic_dfa.final_states(),
+                                              var_mgr->cudd_mgr()->bddOne(),
+                                              Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
@@ -65,11 +67,12 @@ TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -97,9 +100,10 @@ TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+    Syft::FairnessLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                              protagonist_player, symbolic_dfa.final_states(),
+                                              var_mgr->cudd_mgr()->bddOne(),
+                                              Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = false;
@@ -108,15 +112,17 @@ TEST_CASE("Fair Synthesis unrealizability test", "[fair synthesis]") {
 
 TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION,
+                                          Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -142,9 +148,10 @@ TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
+    Syft::FairnessLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
                                               protagonist_player, symbolic_dfa.final_states(),
-                                              var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+                                              var_mgr->cudd_mgr()->bddOne(),
+                                              Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = true;
@@ -153,15 +160,17 @@ TEST_CASE("Fair Synthesis of realizable counter_1", "[fair synthesis]") {
 
 TEST_CASE("Fair Synthesis of unrealizable counter_1", "[fair synthesis]") {
     Syft::Parser parser;
-    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION, Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF);
+    parser = Syft::Parser::read_from_file(Syft::Test::SYFCO_LOCATION,
+                                          Syft::Test::FAIRSTABLESYNTHESIS_COUNTER_UNREA_TEST_TLSF);
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -189,9 +198,10 @@ TEST_CASE("Fair Synthesis of unrealizable counter_1", "[fair synthesis]") {
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
 
-    Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, starting_player,
-                                                  protagonist_player, symbolic_dfa.final_states(),
-                                                  var_mgr->cudd_mgr()->bddOne(), Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
+    Syft::FairnessLtlfSynthesizer synthesizer(symbolic_dfa, starting_player,
+                                              protagonist_player, symbolic_dfa.final_states(),
+                                              var_mgr->cudd_mgr()->bddOne(),
+                                              Syft::Test::FAIRSTABLESYNTHESIS_TEST_ASSUMPTION);
     Syft::SynthesisResult result = synthesizer.run();
 
     bool expected = false;

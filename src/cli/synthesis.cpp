@@ -4,14 +4,14 @@
 
 #include "synthesis.hpp"
 #include "Stopwatch.h"
-#include "game/ReachabilitySynthesizer.h"
+#include "synthesizer/ReachabilitySynthesizer.h"
 #include "Preprocessing.h"
 #include <lydia/parser/ltlf/driver.hpp>
 
 
 namespace Syft {
 
-    void SynthesisRunner::do_synthesis_(const  SymbolicStateDfa& symbolic_dfa) {
+    void SynthesisRunner::do_synthesis_(const SymbolicStateDfa &symbolic_dfa) {
         var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
         Syft::ReachabilitySynthesizer synthesizer(symbolic_dfa, args_.starting_player,
                                                   args_.protagonist_player, symbolic_dfa.final_states(),

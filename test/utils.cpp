@@ -5,7 +5,7 @@
 #include "automata/ExplicitStateDfaAdd.h"
 #include "automata/SymbolicStateDfa.h"
 #include "Player.h"
-#include "game/ReachabilitySynthesizer.h"
+#include "synthesizer/ReachabilitySynthesizer.h"
 #include "Preprocessing.h"
 
 namespace Syft {

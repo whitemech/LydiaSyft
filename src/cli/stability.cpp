@@ -13,12 +13,12 @@
 
 #include "../parser/Parser.h"
 #include "automata/ExplicitStateDfa.h"
-#include "game/ReachabilitySynthesizer.h"
-#include "game/ReachabilityMaxSetSynthesizer.h"
+#include "synthesizer/ReachabilitySynthesizer.h"
+#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
 #include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "stability.hpp"
-#include "game/StableReachabilitySynthesizer.h"
+#include "synthesizer/StabilityLtlfSynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
@@ -43,9 +43,9 @@ namespace Syft {
 
     void StabilityRunner::do_stability_synthesis_(const Syft::SymbolicStateDfa &symbolic_dfa) {
         var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
-        Syft::StableReachabilitySynthesizer synthesizer(symbolic_dfa, args_.starting_player,
-                                                        args_.protagonist_player, symbolic_dfa.final_states(),
-                                                        var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);
+        Syft::StabilityLtlfSynthesizer synthesizer(symbolic_dfa, args_.starting_player,
+                                                   args_.protagonist_player, symbolic_dfa.final_states(),
+                                                   var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);
         Syft::SynthesisResult result = synthesizer.run();
         handle_synthesis_result_(synthesizer, result);
     }

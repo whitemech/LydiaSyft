@@ -9,19 +9,21 @@
 #include "VarMgr.h"
 #include "Stopwatch.h"
 #include "base.hpp"
-#include "game/ReachabilitySynthesizer.h"
+#include "synthesizer/ReachabilitySynthesizer.h"
 
 
 namespace Syft {
 
     class SynthesisRunner : public BaseRunner {
-        private:
+    private:
 
         void do_synthesis_(const SymbolicStateDfa &symbolic_dfa);
 
-        public:
-        SynthesisRunner(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver>& driver, const std::string &formula_file, const std::string &path_to_syfco, bool print_strategy,
-                        bool print_times) : BaseRunner(driver, formula_file, path_to_syfco, print_strategy, print_times) {}
+    public:
+        SynthesisRunner(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
+                        const std::string &formula_file, const std::string &path_to_syfco, bool print_strategy,
+                        bool print_times) : BaseRunner(driver, formula_file, path_to_syfco, print_strategy,
+                                                       print_times) {}
 
         void run();
 

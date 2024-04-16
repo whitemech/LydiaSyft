@@ -4,7 +4,7 @@
 
 #include "synthesis.hpp"
 #include "Stopwatch.h"
-#include "game/ReachabilityMaxSetSynthesizer.h"
+#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
 #include "Preprocessing.h"
 #include "maxset.hpp"
 #include <lydia/parser/ltlf/driver.hpp>
@@ -26,7 +26,7 @@ namespace Syft {
         printer_.print_times_if_enabled("Total time", total_time);
     }
 
-    void MaxSetRunner::do_maxset_synthesis(const SymbolicStateDfa& symbolic_dfa) {
+    void MaxSetRunner::do_maxset_synthesis(const SymbolicStateDfa &symbolic_dfa) {
         Syft::Stopwatch nondef_strategy_time_stopwatch; // stopwatch for strategy_generator construction
         nondef_strategy_time_stopwatch.start();
 
@@ -50,8 +50,7 @@ namespace Syft {
             printer_.print_times_if_enabled("Deferring strategy generator construction time", def_strategy_time);
 
             printer_.dump_maxset_if_enabled(synthesizer, maxset_strategy, "def_strategy.dot", "nondef_strategy.dot");
-        }
-        else{
+        } else {
             printer_.print_unrealizable();
         }
     }

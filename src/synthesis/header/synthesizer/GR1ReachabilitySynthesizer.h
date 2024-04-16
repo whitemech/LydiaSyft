@@ -6,7 +6,7 @@
 #define LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
 
 #include "automata/ExplicitStateDfaAdd.h"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "Player.h"
 #include "GR1.h"
 #include "Stopwatch.h"

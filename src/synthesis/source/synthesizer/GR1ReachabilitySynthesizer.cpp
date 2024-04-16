@@ -1,7 +1,7 @@
 //
 // Created by shuzhu on 21/01/24.
 //
-#include "game/GR1ReachabilitySynthesizer.h"
+#include "synthesizer/GR1ReachabilitySynthesizer.h"
 #include "string_utilities.h"
 #include <iostream>
 
