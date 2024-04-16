@@ -1,21 +1,18 @@
 //
-// Created by shuzhu on 20/01/24.
+// Created by shuzhu on 16/04/24.
 //
-#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
 
-#include <cassert>
+#include "game/ReachabilityMaxSet.hpp"
 
 namespace Syft {
-
-    ReachabilityMaxSetSynthesizer::ReachabilityMaxSetSynthesizer(SymbolicStateDfa spec,
-                                                                 Player starting_player, Player protagonist_player,
-                                                                 CUDD::BDD goal_states,
-                                                                 CUDD::BDD state_space)
+    ReachabilityMaxSet::ReachabilityMaxSet(const SymbolicStateDfa &spec, Player starting_player,
+                                           Player protagonist_player, const CUDD::BDD &goal_states,
+                                           const CUDD::BDD &state_space)
             : DfaGameSynthesizer(spec, starting_player, protagonist_player), goal_states_(goal_states),
-              state_space_(state_space) {}
+              state_space_(state_space) {
+    }
 
-
-    SynthesisResult ReachabilityMaxSetSynthesizer::run() const {
+    SynthesisResult ReachabilityMaxSet::run() const {
         SynthesisResult result;
         CUDD::BDD winning_states = state_space_ & goal_states_;
         CUDD::BDD winning_moves = winning_states;
@@ -55,22 +52,26 @@ namespace Syft {
             winning_moves = new_winning_moves;
             winning_states = new_winning_states;
         }
-
     }
 
-
-    MaxSet ReachabilityMaxSetSynthesizer::AbstractMaxSet(const SynthesisResult &result) const {
-        MaxSet maxset;
-        maxset.nondeferring_strategy = result.winning_moves;
-        maxset.deferring_strategy = result.winning_moves | (result.winning_states & preimage(result.winning_states));
+    MaxSetSynthesisResult ReachabilityMaxSet::run_maxset() const {
+        SynthesisResult result = run();
+        MaxSetSynthesisResult maxset;
+        maxset.realizability = result.realizability;
+        if (result.realizability) {
+            maxset.nondeferring_strategy = result.winning_moves;
+            maxset.deferring_strategy =
+                    result.winning_moves | (result.winning_states & preimage(result.winning_states));
+        } else {
+            maxset.nondeferring_strategy = var_mgr_->cudd_mgr()->bddZero();
+            maxset.deferring_strategy = var_mgr_->cudd_mgr()->bddZero();
+        }
         return maxset;
     }
 
-    void ReachabilityMaxSetSynthesizer::dump_dot(MaxSet maxset, const std::string &def_filename,
-                                                 const std::string &nondef_filename) const {
+    void ReachabilityMaxSet::dump_dot(MaxSetSynthesisResult maxset, const std::string &def_filename,
+                                      const std::string &nondef_filename) const {
         var_mgr_->dump_dot(maxset.deferring_strategy.Add(), def_filename);
         var_mgr_->dump_dot(maxset.nondeferring_strategy.Add(), nondef_filename);
     }
-
-
 }

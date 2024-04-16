@@ -9,7 +9,7 @@
 #include "Stopwatch.h"
 
 #include "automata/ExplicitStateDfa.h"
-#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
+#include "synthesizer/LTLfMaxSetSynthesizer.h"
 #include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "gr1.hpp"

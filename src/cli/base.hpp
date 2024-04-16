@@ -14,8 +14,8 @@
 #include "game/InputOutputPartition.h"
 #include "game/Transducer.h"
 #include "Stopwatch.h"
-#include "Synthesizer.h"
-#include "synthesizer/ReachabilityMaxSetSynthesizer.h"
+#include "synthesizer/Synthesizer.h"
+#include "synthesizer/LTLfMaxSetSynthesizer.h"
 #include "lydia/parser/ltlf/driver.hpp"
 
 
@@ -49,7 +49,8 @@ namespace Syft {
                                  const std::string &output_file) const;
 
         void
-        dump_maxset_if_enabled(const ReachabilityMaxSetSynthesizer &maxset_synthesizer, const MaxSet &maxset_strategy,
+        dump_maxset_if_enabled(const LTLfMaxSetSynthesizer &maxset_synthesizer,
+                               const MaxSetSynthesisResult &maxset_strategy,
                                const std::string &def_strategy_output_file = "def_strategy.dot",
                                const std::string &nondef_strategy_output_file = "nondef_strategy.dot") const;
 

@@ -52,12 +52,9 @@ namespace Syft {
         /**
          * \brief Solves the synthesis problem of LTLf with simple Stability environment assumption.
          *
-         * \return The result consists of
-         * realizability
-         * a set of agent winning states
-         * a transducer representing a winning strategy or nullptr if the game is unrealizable.
+         * \return The synthesis result.
          */
-        virtual SynthesisResult run() const final;
+        SynthesisResult run() const;
 
     };
 

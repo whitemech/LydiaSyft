@@ -34,7 +34,7 @@ namespace Syft {
     public:
 
         /**
-         * \brief Construct an FairnessLtlfSynthesizer.
+         * \brief Construct a FairnessLtlfSynthesizer.
          *
          * \param spec A symbolic-state DFA representing the LTLf formula.
          * \param starting_player The player that moves first each turn.
@@ -50,10 +50,7 @@ namespace Syft {
         /**
          * \brief Solves the synthesis problem of LTLf with simple Fairness environment assumption.
          *
-         * \return The result consists of
-         * realizability
-         * a set of agent winning states
-         * a transducer representing a winning strategy or nullptr if the game is unrealizable.
+         * \return The synthesis result.
          */
         SynthesisResult run() const;
 
