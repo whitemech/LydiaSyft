@@ -8,12 +8,7 @@
 
 namespace Syft {
 
-std::unique_ptr<Transducer> abstract_single_strategy(const CUDD::BDD& winning_moves,
-                                                     const std::shared_ptr<VarMgr>& var_mgr,
-                                                     const std::vector<int>& initial_vector,
-                                                     const std::vector<CUDD::BDD>& transition_vector,
-                                                     Player starting_player);
-std::unordered_map<int, CUDD::BDD> synthesize_strategy(const CUDD::BDD& winning_moves, const std::shared_ptr<VarMgr>& var_mgr);
+
 
 /**
  * \brief A synthesizer for a game whose arena is a symbolic-state DFA.
@@ -58,6 +53,15 @@ class DfaGameSynthesizer : public Synthesizer<SymbolicStateDfa> {
       const override = 0;
 
   std::unique_ptr<Transducer> AbstractSingleStrategy(const SynthesisResult& result) const;
+
+private:
+    std::unique_ptr<Transducer> abstract_single_strategy(const CUDD::BDD& winning_moves,
+                                                         const std::shared_ptr<VarMgr>& var_mgr,
+                                                         const std::vector<int>& initial_vector,
+                                                         const std::vector<CUDD::BDD>& transition_vector,
+                                                         Player starting_player) const;
+
+    std::unordered_map<int, CUDD::BDD> synthesize_strategy(const CUDD::BDD& winning_moves, const std::shared_ptr<VarMgr>& var_mgr) const;
 };
 
 }

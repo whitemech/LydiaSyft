@@ -73,8 +73,8 @@ bool DfaGameSynthesizer::includes_initial_state(
   return winning_states.Eval(copy.data()).IsOne();
 }
 
-std::unordered_map<int, CUDD::BDD> synthesize_strategy(const CUDD::BDD& winning_moves,
-                                                       const std::shared_ptr<VarMgr>& var_mgr){
+std::unordered_map<int, CUDD::BDD> DfaGameSynthesizer::synthesize_strategy(const CUDD::BDD& winning_moves,
+                                                       const std::shared_ptr<VarMgr>& var_mgr) const {
   std::vector<CUDD::BDD> parameterized_output_function;
   int* output_indices;
   CUDD::BDD output_cube = var_mgr->output_cube();
@@ -131,12 +131,12 @@ std::unique_ptr<Transducer> DfaGameSynthesizer::AbstractSingleStrategy(const Syn
     return abstract_single_strategy(result.winning_moves, var_mgr_, initial_vector_, spec_.transition_function(), starting_player_);
 }
 
-std::unique_ptr<Transducer> abstract_single_strategy(
+std::unique_ptr<Transducer> DfaGameSynthesizer::abstract_single_strategy(
     const CUDD::BDD& winning_moves,
     const std::shared_ptr<VarMgr>& var_mgr,
     const std::vector<int>& initial_vector,
     const std::vector<CUDD::BDD>& transition_vector,
-    Player starting_player) {
+    Player starting_player) const {
     std::unordered_map<int, CUDD::BDD> strategy = synthesize_strategy(winning_moves, var_mgr);
     auto transducer = std::make_unique<Transducer>(var_mgr, initial_vector, strategy, transition_vector, starting_player);
     return transducer;
