@@ -1,23 +1,23 @@
 //
-// Created by shuzhu on 21/01/24.
+// Created by shuzhu on 18/04/24.
 //
-#include "synthesizer/GR1ReachabilitySynthesizer.h"
-#include "string_utilities.h"
-#include <iostream>
 
+#include "game/coGR1Reachability.hpp"
+#include "string_utilities.h"
+#include "Stopwatch.h"
 
 namespace Syft {
 
-    GR1ReachabilitySynthesizer::GR1ReachabilitySynthesizer(const std::shared_ptr<VarMgr> &var_mgr, const GR1 &gr1,
-                                                           const SymbolicStateDfa &env_safety,
-                                                           const SymbolicStateDfa &agn_reach,
-                                                           const SymbolicStateDfa &agn_safety,
-                                                           const std::string &slugs_dir,
-                                                           const std::string &benchmark_name)
-            : var_mgr_(var_mgr), gr1_(gr1), env_safety_(env_safety), agn_reach_(agn_reach),
-              agn_safety_(agn_safety), slugs_dir_{slugs_dir}, benchmark_name_{benchmark_name} {}
+    coGR1Reachability::coGR1Reachability(const std::shared_ptr<VarMgr> &var_mgr, const GR1 &gr1,
+                                         const SymbolicStateDfa &arena,
+                                         const CUDD::BDD &state_space,
+                                         const CUDD::BDD &initial_condition,
+                                         const std::string &slugs_dir,
+                                         const std::string &benchmark_name)
+            : var_mgr_(var_mgr), gr1_(gr1), arena_(arena), state_space_(state_space),
+              initial_condition_(initial_condition), slugs_dir_{slugs_dir}, benchmark_name_{benchmark_name} {}
 
-    void GR1ReachabilitySynthesizer::print_variables(const SymbolicStateDfa &arena, const std::string &filename) const {
+    void coGR1Reachability::print_variables(const std::string &filename) const {
         std::ofstream to_slugs;
         to_slugs.open(filename);
         if (to_slugs.is_open()) {
@@ -48,8 +48,8 @@ namespace Syft {
 
     }
 
-    void GR1ReachabilitySynthesizer::print_initial_conditions(const CUDD::BDD &arena_initial_state_bdd,
-                                                              const std::string &filename) const {
+    void coGR1Reachability::print_initial_conditions(const CUDD::BDD &arena_initial_state_bdd,
+                                                     const std::string &filename) const {
         std::ofstream to_slugs;
         to_slugs.open(filename, std::ios::app);
         if (to_slugs.is_open()) {
@@ -71,8 +71,8 @@ namespace Syft {
     }
 
 
-    void GR1ReachabilitySynthesizer::print_transitions(const SymbolicStateDfa &arena, const CUDD::BDD &safe_states,
-                                                       const std::string &filename) const {
+    void coGR1Reachability::print_transitions(const SymbolicStateDfa &arena, const CUDD::BDD &safe_states,
+                                              const std::string &filename) const {
         std::ofstream to_slugs;
         to_slugs.open(filename, std::ios::app);
         if (to_slugs.is_open()) {
@@ -152,7 +152,7 @@ namespace Syft {
     }
 
 
-    void GR1ReachabilitySynthesizer::print_liveness_constraints(const std::string &filename) const {
+    void coGR1Reachability::print_liveness_constraints(const std::string &filename) const {
         std::ofstream to_slugs;
         to_slugs.open(filename, std::ios::app);
         if (to_slugs.is_open()) {
@@ -182,9 +182,9 @@ namespace Syft {
     }
 
     const std::string
-    GR1ReachabilitySynthesizer::exec_slugs(const std::string &slugs, const std::string &slugs_input_file,
-                                           const std::string &slugs_res_file,
-                                           const std::string &slugs_strategy_file) const {
+    coGR1Reachability::exec_slugs(const std::string &slugs, const std::string &slugs_input_file,
+                                  const std::string &slugs_res_file,
+                                  const std::string &slugs_strategy_file) const {
         std::string result;
 
         std::string run_slugs =
@@ -220,33 +220,17 @@ namespace Syft {
         return result;
     }
 
-    SynthesisResult GR1ReachabilitySynthesizer::run() const {
-        Syft::Stopwatch reduction_to_gr1_stopwatch; // stopwatch for reducing to GR1
-        reduction_to_gr1_stopwatch.start();
-        std::cout << "* Start reducing to GR1 game...\n";
 
-        SymbolicStateDfa reach_safe = SymbolicStateDfa::product_AND({agn_reach_, agn_safety_});
+    std::string coGR1Reachability::get_slugs_path() const {
+        return slugs_dir_ + "/src/slugs";
+    }
 
-//        CUDD::BDD reach_goal_t1 = agn_reach_.final_states();
-        CUDD::BDD safe_region_t2 = agn_safety_.final_states() | agn_safety_.initial_state_bdd();
-
-        reach_safe.new_sink_states(!safe_region_t2);
-
-        SymbolicStateDfa arena = SymbolicStateDfa::product_AND({env_safety_, reach_safe});
-        CUDD::BDD arena_initial_state_bdd =
-                agn_reach_.initial_state_bdd() & agn_safety_.initial_state_bdd() & env_safety_.initial_state_bdd();
-
-        CUDD::BDD safe_states = (env_safety_.final_states() & !(reach_safe.final_states())) | arena_initial_state_bdd;
-
+    SynthesisResult coGR1Reachability::run() const {
         std::string to_slugs_parser = benchmark_name_ + ".parser";
-        print_variables(arena, to_slugs_parser);
-        print_initial_conditions(arena_initial_state_bdd, to_slugs_parser);
-        print_transitions(arena, safe_states, to_slugs_parser);
+        print_variables(to_slugs_parser);
+        print_initial_conditions(initial_condition_, to_slugs_parser);
+        print_transitions(arena_, state_space_, to_slugs_parser);
         print_liveness_constraints(to_slugs_parser);
-
-        auto reduction_to_gr1_time = reduction_to_gr1_stopwatch.stop();
-        std::cout << "* Finish reducing to GR1 game, took time: "
-                  << reduction_to_gr1_time.count() << " ms" << std::endl;
 
         Syft::Stopwatch gr1_game_stopwatch; // stopwatch for GR1 game solver Slugs
         gr1_game_stopwatch.start();
@@ -279,13 +263,8 @@ namespace Syft {
             result.realizability = false;
         } else {
             result.realizability = true;
-            result.safe_states = safe_states;
+            result.safe_states = state_space_;
         }
         return result;
     }
-
-    std::string GR1ReachabilitySynthesizer::get_slugs_path() const {
-        return slugs_dir_ + "/src/slugs";
-    }
-
 }

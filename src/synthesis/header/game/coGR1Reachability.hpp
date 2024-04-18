@@ -1,32 +1,50 @@
 //
-// Created by shuzhu on 21/01/24.
+// Created by shuzhu on 18/04/24.
 //
 
-#ifndef LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
-#define LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
+#ifndef LYDIASYFT_COGR1REACHABILITY_HPP
+#define LYDIASYFT_COGR1REACHABILITY_HPP
 
-#include "automata/ExplicitStateDfaAdd.h"
-#include "game/InputOutputPartition.h"
-#include "Player.h"
 #include "GR1.h"
-#include "Stopwatch.h"
 #include "automata/SymbolicStateDfa.h"
 #include "Synthesizer.h"
-#include "game/DfaGameSynthesizer.h"
-
 
 namespace Syft {
-
-    class GR1ReachabilitySynthesizer {
+/**
+ * \brief A single-strategy-synthesizer for a Buchi-reachability game given as a symbolic-state DFA.
+ *
+ * Either Buchi condition holds or reachability condition holds.
+ */
+    class coGR1Reachability {
     private:
-        const std::shared_ptr<VarMgr> &var_mgr_;
-        const GR1 &gr1_;
-        const SymbolicStateDfa &env_safety_;
-        const SymbolicStateDfa &agn_safety_;
-        const SymbolicStateDfa &agn_reach_;
-        const std::string &benchmark_name_;
-
-        std::string slugs_dir_;
+        /**
+         * \brief Variable manager.
+         */
+        const std::shared_ptr<VarMgr> var_mgr_;
+        /**
+         * \brief The GR(1) assumption.
+         */
+        const GR1 gr1_;
+        /**
+         * \brief The game arena. Here we only use the transition function of the game arena.
+         */
+        const SymbolicStateDfa arena_;
+        /**
+         * \brief The state space to consider.
+         */
+        const CUDD::BDD state_space_;
+        /**
+         * \brief The initial condition of the arena in a BDD representation.
+         */
+        const CUDD::BDD initial_condition_;
+        /**
+         * \brief The name of the benchmark file, which we use to name the input file of SLUGS.
+         */
+        const std::string benchmark_name_;
+        /**
+         * \brief The root directory of SLUGS
+         */
+        const std::string slugs_dir_;
 
         /**
          * \brief Prints out INPUT and OUTPUT variables in Slugs format
@@ -41,7 +59,7 @@ namespace Syft {
          * \param GR1 game arena
          * \param The file that should be written to
          */
-        void print_variables(const SymbolicStateDfa &arena, const std::string &filename) const;
+        void print_variables(const std::string &filename) const;
 
         /**
          * \brief Prints out INITIAL conditions in Slugs format
@@ -89,29 +107,32 @@ namespace Syft {
          */
         std::string get_slugs_path() const;
 
+
     public:
 
         /**
-         * \brief Construct a synthesizer for the given LTLf/GR(1) game.
+         * \brief Construct a single-strategy-synthesizer for the given Buchi-reachability game.
          *
-         * \param gr1 A GR(1) formula stating the winning condition.
-         * \param env_safety A symbolic-state DFA representing the environment safety game arena
-         * \param agn_reach  A symbolic-state DFA representing the system reachability game arena
-         * \param agn_safety A symbolic-state DFA representing the system safety game arena
-         * \param slugs_dir  The root directory of the SLUGS project
-         *
+         * \param spec A symbolic-state DFA representing the Buchi-reachability game arena.
+         * \param starting_player The player that moves first each turn.
+         * \param protagonist_player The player for which we aim to find the winning strategy.
+         * \param goal_states The reachability condition.
+         * \param Buchi The Buchi condition represented as a Boolean formula \beta over input variables, denoting the Buchi condition FG\beta.
+         * \param state_space The state space.
          */
-        GR1ReachabilitySynthesizer(const std::shared_ptr<VarMgr> &var_mgr, const GR1 &gr1,
-                                   const SymbolicStateDfa &env_safety,
-                                   const SymbolicStateDfa &agn_reach, const SymbolicStateDfa &agn_safety,
-                                   const std::string &slugs_dir,
-                                   const std::string &benchmark_name);
+        coGR1Reachability(const std::shared_ptr<VarMgr> &var_mgr, const GR1 &gr1,
+                          const SymbolicStateDfa &arena,
+                          const CUDD::BDD &state_space,
+                          const CUDD::BDD &initial_condition,
+                          const std::string &slugs_dir,
+                          const std::string &benchmark_name);
 
         const std::string exec_slugs(const std::string &slugs, const std::string &slugs_input_file,
                                      const std::string &slugs_res_file, const std::string &slugs_strategy_file) const;
 
+
         /**
-         * \brief Solves the LTLf/GR(1) game.
+         * \brief Solves the Buchi-reachability game.
          *
          * \return The result consists of
          * realizability
@@ -122,4 +143,6 @@ namespace Syft {
 
     };
 }
-#endif //LYDIASYFT_GR1REACHABILITYSYNTHESIZER_H
+
+
+#endif //LYDIASYFT_COGR1REACHABILITY_HPP

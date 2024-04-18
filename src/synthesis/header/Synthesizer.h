@@ -40,7 +40,9 @@ namespace Syft {
     template<class Spec>
     class Synthesizer {
     protected:
-
+        /**
+         * \brief The game arena.
+         */
         Spec spec_;
 
     public:

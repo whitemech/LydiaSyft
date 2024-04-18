@@ -6,7 +6,7 @@
 #define LYDIASYFT_CLI_GR1_H
 
 #include <CLI/CLI.hpp>
-#include "synthesizer/GR1ReachabilitySynthesizer.h"
+#include "synthesizer/GR1LTLfSynthesizer.h"
 
 
 namespace Syft {
@@ -30,7 +30,7 @@ namespace Syft {
         void do_gr1_synthesis_(const SymbolicStateDfa &dfa, const SymbolicStateDfa &dfa1,
                                const SymbolicStateDfa &dfa2) const;
 
-        void handle_gr1_synthesis_result_(const GR1ReachabilitySynthesizer &synthesizer,
+        void handle_gr1_synthesis_result_(const GR1LTLfSynthesizer &synthesizer,
                                           const SynthesisResult &result) const;
 
 

@@ -18,13 +18,33 @@ namespace Syft {
  */
     class FairnessLtlfSynthesizer {
     private:
-        SymbolicStateDfa spec_;
-        Player starting_player_;
-        Player protagonist_player_;
-        CUDD::BDD goal_states_;
-        CUDD::BDD state_space_;
+        /**
+         * \brief Variable manager.
+         */
         std::shared_ptr<VarMgr> var_mgr_;
-
+        /**
+         * \brief The game arena.
+         */
+        SymbolicStateDfa spec_;
+        /**
+         * \brief The player that moves first each turn.
+         */
+        Player starting_player_;
+        /**
+         * \brief The player for which we aim to find the winning strategy.
+         */
+        Player protagonist_player_;
+        /**
+         * \brief The set of goal states.
+         */
+        CUDD::BDD goal_states_;
+        /**
+         * \brief The state space to consider.
+         */
+        CUDD::BDD state_space_;
+        /**
+         * \brief The simple Fairness assumption represented as a Boolean formula \beta over input variables, denoting GF\beta
+         */
         CUDD::BDD assumption_;
 
     protected:

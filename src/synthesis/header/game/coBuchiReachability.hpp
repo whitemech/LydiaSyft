@@ -16,10 +16,17 @@ namespace Syft {
  */
     class coBuchiReachability : public DfaGameSynthesizer {
     private:
-
+        /**
+         * \brief The set of goal states.
+         */
         CUDD::BDD goal_states_;
+        /**
+         * \brief The state space to consider.
+         */
         CUDD::BDD state_space_;
-
+        /**
+         * \brief The coBuchi condition represented as a Boolean formula \beta over input variables, denoting the coBuchi condition FG\beta
+         */
         CUDD::BDD coBuchi_;
 
 

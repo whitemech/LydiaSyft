@@ -14,7 +14,7 @@
 #include "Preprocessing.h"
 #include "gr1.hpp"
 #include "GR1.h"
-#include "synthesizer/GR1ReachabilitySynthesizer.h"
+#include "synthesizer/GR1LTLfSynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 
@@ -55,13 +55,13 @@ namespace Syft {
                                       const SymbolicStateDfa &agent_goal_dfa) const {
         Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr_, gr1_file_);
         var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
-        Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr_, gr1, env_safety_dfa,
-                                                     agent_goal_dfa, agent_safety_dfa, path_to_slugs_, "problem");
+        Syft::GR1LTLfSynthesizer synthesizer(var_mgr_, gr1, env_safety_dfa,
+                                             agent_goal_dfa, agent_safety_dfa, path_to_slugs_, "problem");
         Syft::SynthesisResult result = synthesizer.run();
         handle_gr1_synthesis_result_(synthesizer, result);
     }
 
-    void GR1Runner::handle_gr1_synthesis_result_(const GR1ReachabilitySynthesizer &synthesizer,
+    void GR1Runner::handle_gr1_synthesis_result_(const GR1LTLfSynthesizer &synthesizer,
                                                  const SynthesisResult &result) const {
         if (result.realizability) {
             printer_.print_realizable();

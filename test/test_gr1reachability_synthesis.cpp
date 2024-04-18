@@ -6,7 +6,7 @@
 
 #include "automata/ExplicitStateDfa.h"
 #include "game/InputOutputPartition.h"
-#include "synthesizer/GR1ReachabilitySynthesizer.h"
+#include "synthesizer/GR1LTLfSynthesizer.h"
 #include "GR1.h"
 #include "Preprocessing.h"
 #include "Parser.h"
@@ -98,9 +98,9 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
 
     std::string benchmark_name = "hand_shake";
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
-                                                 Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
+    Syft::GR1LTLfSynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
+                                         Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
 
     Syft::SynthesisResult result = synthesizer.run();
 
@@ -195,9 +195,9 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
 
     std::string benchmark_name = "finding_nemo";
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
-                                                 Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
+    Syft::GR1LTLfSynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
+                                         Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
 
     Syft::SynthesisResult result = synthesizer.run();
 

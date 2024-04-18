@@ -15,7 +15,13 @@ namespace Syft {
  */
     class Reachability : public DfaGameSynthesizer {
     private:
+        /**
+         * \brief The set of goal states.
+         */
         CUDD::BDD goal_states_;
+        /**
+         * \brief The state space to consider.
+         */
         CUDD::BDD state_space_;
 
     public:
