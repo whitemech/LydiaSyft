@@ -7,7 +7,7 @@
 #include <ctime>
 #include <iomanip>
 #include "lydia/parser/ltlf/driver.hpp"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "string_utilities.h"
 
 typedef std::vector<std::string> vars;

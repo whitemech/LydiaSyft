@@ -3,7 +3,7 @@
 
 #include <tuple>
 #include "utils.hpp"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 
 
 TEST_CASE("Synthesis of true", "[synthesis]") {

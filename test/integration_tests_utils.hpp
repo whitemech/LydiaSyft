@@ -22,7 +22,7 @@
 #include <fstream>
 #include <algorithm>
 #include "lydia/types.hpp"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 
 #include "utils.hpp"
 #include "catch2/catch_test_macros.hpp"

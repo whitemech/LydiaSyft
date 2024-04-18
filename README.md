@@ -19,10 +19,9 @@ sudo apt install -y \
    unzip
 ```
 
-
 ### Install CUDD
 
-0.1 Make sure CUDD is installed. CUDD can be found at: 
+0.1 Make sure CUDD is installed. CUDD can be found at:
 
     https://github.com/KavrakiLab/cudd.git
 
@@ -37,19 +36,18 @@ sudo apt install -y \
     b. Needing to reconfigure, do this before configuring:
         autoreconf -i
 
-
 ### Install FLEX, BISON
 
 0.3 Install flex and bison:
 
     sudo apt-get install flex bison
 
-
 ### Install LYDIA
 
 The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
 
-However, if you want to install Lydia manually, you can co into `submodules/lydia` and follow the installation instructions in the `README.md`.
+However, if you want to install Lydia manually, you can co into `submodules/lydia` and follow the installation
+instructions in the `README.md`.
 
 ### Install Z3
 
@@ -74,7 +72,6 @@ For the graphical features (automata and strategy visualization), graphviz need 
 ```
 sudo apt install graphviz libgraphviz-dev
 ```
-
 
 ## Build LYDIASYFT
 
@@ -104,7 +101,6 @@ make -j$(nproc --ignore=1) LydiaSyft
 make -j$(nproc --ignore=1) tests
 ./bin/tests
 ```
-
 
 ## Run LYDIASYFT
 
@@ -162,8 +158,9 @@ Examples (run commands from the root directory of the project):
 ```
 
 - GR(1) synthesis:
+
 ```
-./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/
+./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/   # REALIZABLE
 ```
 
 ## Documentation

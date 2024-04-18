@@ -8,13 +8,13 @@
 
 #include "Stopwatch.h"
 
-#include "ExplicitStateDfa.h"
-#include "ReachabilityMaxSetSynthesizer.h"
-#include "InputOutputPartition.h"
+#include "automata/ExplicitStateDfa.h"
+#include "synthesizer/LTLfMaxSetSynthesizer.h"
+#include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "gr1.hpp"
 #include "GR1.h"
-#include "GR1ReachabilitySynthesizer.h"
+#include "synthesizer/GR1LTLfSynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 
@@ -26,9 +26,12 @@ namespace Syft {
         total_time_stopwatch.start();
 
         // proceed with DFAs construction
-        auto agent_safety_dfa = do_dfa_construction_with_message_(*agent_safety_, var_mgr_, "Agent Safety DFA construction time");
-        auto env_safety_dfa = do_dfa_construction_with_message_(*env_safety_, var_mgr_, "Env Safety DFA construction time");
-        auto agent_goal_dfa = do_dfa_construction_with_message_(*args_.formula, var_mgr_, "Agent Goal DFA construction time");
+        auto agent_safety_dfa = do_dfa_construction_with_message_(*agent_safety_, var_mgr_,
+                                                                  "Agent Safety DFA construction time");
+        auto env_safety_dfa = do_dfa_construction_with_message_(*env_safety_, var_mgr_,
+                                                                "Env Safety DFA construction time");
+        auto agent_goal_dfa = do_dfa_construction_with_message_(*args_.formula, var_mgr_,
+                                                                "Agent Goal DFA construction time");
 
         // do GR(1) synthesis
         do_gr1_synthesis_(agent_safety_dfa, env_safety_dfa, agent_goal_dfa);
@@ -37,7 +40,9 @@ namespace Syft {
         printer_.print_times_if_enabled("Total time", total_time);
     }
 
-    Syft::SymbolicStateDfa GR1Runner::do_dfa_construction_with_message_(const whitemech::lydia::LTLfFormula& formula, const std::shared_ptr<Syft::VarMgr>& var_mgr, const std::string& msg) const {
+    Syft::SymbolicStateDfa GR1Runner::do_dfa_construction_with_message_(const whitemech::lydia::LTLfFormula &formula,
+                                                                        const std::shared_ptr<Syft::VarMgr> &var_mgr,
+                                                                        const std::string &msg) const {
         Stopwatch aut_time_stopwatch_;
         aut_time_stopwatch_.start();
         auto symbolic_dfa = do_dfa_construction(formula, var_mgr);
@@ -46,16 +51,17 @@ namespace Syft {
         return symbolic_dfa;
     }
 
-    void GR1Runner::do_gr1_synthesis_(const SymbolicStateDfa& agent_safety_dfa, const SymbolicStateDfa& env_safety_dfa, const SymbolicStateDfa& agent_goal_dfa) const {
+    void GR1Runner::do_gr1_synthesis_(const SymbolicStateDfa &agent_safety_dfa, const SymbolicStateDfa &env_safety_dfa,
+                                      const SymbolicStateDfa &agent_goal_dfa) const {
         Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr_, gr1_file_);
         var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
-        Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr_, gr1, env_safety_dfa,
-                                                     agent_goal_dfa, agent_safety_dfa, path_to_slugs_, "problem");
+        Syft::GR1LTLfSynthesizer synthesizer(var_mgr_, gr1, env_safety_dfa,
+                                             agent_goal_dfa, agent_safety_dfa, path_to_slugs_, "problem");
         Syft::SynthesisResult result = synthesizer.run();
         handle_gr1_synthesis_result_(synthesizer, result);
     }
 
-    void GR1Runner::handle_gr1_synthesis_result_(const GR1ReachabilitySynthesizer &synthesizer,
+    void GR1Runner::handle_gr1_synthesis_result_(const GR1LTLfSynthesizer &synthesizer,
                                                  const SynthesisResult &result) const {
         if (result.realizability) {
             printer_.print_realizable();
@@ -74,7 +80,7 @@ namespace Syft {
         }
     }
 
-    std::string read_assumption_file_if_file_specified_(const std::optional<std::string>& filename) {
+    std::string read_assumption_file_if_file_specified_(const std::optional<std::string> &filename) {
         if (!filename.has_value()) {
             return "true";
         }

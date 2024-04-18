@@ -10,7 +10,7 @@
 #include "cli/stability.hpp"
 #include "cli/synthesis.hpp"
 #include "cli/maxset.hpp"
-#include "InputOutputPartition.h"
+#include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>

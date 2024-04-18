@@ -12,13 +12,13 @@
 #include "Stopwatch.h"
 
 #include "../parser/Parser.h"
-#include "ExplicitStateDfa.h"
-#include "ReachabilitySynthesizer.h"
-#include "ReachabilityMaxSetSynthesizer.h"
-#include "InputOutputPartition.h"
+#include "automata/ExplicitStateDfa.h"
+#include "synthesizer/LTLfSynthesizer.h"
+#include "synthesizer/LTLfMaxSetSynthesizer.h"
+#include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
 #include "fairness.hpp"
-#include "FairReachabilitySynthesizer.h"
+#include "synthesizer/FairnessLtlfSynthesizer.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
@@ -43,10 +43,10 @@ namespace Syft {
 
     void FairnessRunner::do_fairness_synthesis_(const SymbolicStateDfa &symbolic_dfa) const {
         var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
-        Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, args_.starting_player,
-                                                      args_.protagonist_player, symbolic_dfa.final_states(),
-                                                      var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);
+        Syft::FairnessLtlfSynthesizer synthesizer(symbolic_dfa, args_.starting_player,
+                                                  args_.protagonist_player, symbolic_dfa.final_states(),
+                                                  var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);
         Syft::SynthesisResult result = synthesizer.run();
-        handle_synthesis_result_(synthesizer, result);
+        handle_synthesis_result_(result);
     }
 }

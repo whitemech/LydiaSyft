@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include "string_utilities.h"
+#include "VarMgr.h"
 
 namespace Syft {
     /**
@@ -51,12 +52,13 @@ namespace Syft {
     struct GR1 {
         std::vector<CUDD::BDD> env_justices;
         std::vector<CUDD::BDD> agn_justices;
+
         /**
          * \brief Stores a player justice
          */
-        static CUDD::BDD read_gr1_justice(const std::shared_ptr<VarMgr>& var_mgr,
-                                          std::istream& in,
-                                          std::size_t& line_number){
+        static CUDD::BDD read_gr1_justice(const std::shared_ptr<VarMgr> &var_mgr,
+                                          std::istream &in,
+                                          std::size_t &line_number) {
             std::string line;
             CUDD::BDD justice = var_mgr->cudd_mgr()->bddOne();
 
@@ -65,24 +67,24 @@ namespace Syft {
                 CUDD::BDD clause = var_mgr->cudd_mgr()->bddZero();
                 if (line == "true") {
                     clause = var_mgr->cudd_mgr()->bddOne();
-                }
-                else if (line == "false") {
+                } else if (line == "false") {
                     clause = var_mgr->cudd_mgr()->bddZero();
-                }
-                else{
+                } else {
                     std::vector<std::string> tokens;
                     trim(line); // remove leading and trailing whitespace
                     tokens = split(line, " ");
                     std::vector<std::string> variable_names;
 
-                    for (std::string token : tokens) {
+                    for (std::string token: tokens) {
                         std::string variable_name;
-                        variable_name = (line.find("!") == std::string::npos)? token : token.substr(2, token.size()-3);
+                        variable_name = (line.find("!") == std::string::npos) ? token : token.substr(2,
+                                                                                                     token.size() - 3);
 //                        variable_name = to_upper_copy(variable_name); // turn variable names into uppercase to match the variable names in InputOutputPartition
                         variable_names.push_back(variable_name);
                         var_mgr->create_named_variables(variable_names);
                         CUDD::BDD variable_bdd = var_mgr->name_to_variable(variable_name);
-                        clause = (line.find("!") == std::string::npos)? (clause | variable_bdd) : (clause | !variable_bdd);
+                        clause = (line.find("!") == std::string::npos) ? (clause | variable_bdd) : (clause |
+                                                                                                    !variable_bdd);
                     }
                 }
                 justice = justice & clause;
@@ -97,20 +99,21 @@ namespace Syft {
                                       std::to_string(line_number) +
                                       " of the GR(1) file.");
         }
+
         /**
          * \brief Stores a GR(1) condition.
          *
          * \param gr1_filename The name of the file to read the GR(1) condition from.
          * \return The GR(1) condition stored in the file
          */
-        static GR1 read_from_gr1_file(const std::shared_ptr<VarMgr>& var_mgr,
-                                      const std::string& gr1_filename) {
+        static GR1 read_from_gr1_file(const std::shared_ptr<VarMgr> &var_mgr,
+                                      const std::string &gr1_filename) {
             GR1 gr1;
             std::ifstream in(gr1_filename);
             std::size_t line_number = 0;
             std::string line;
             while (std::getline(in, line) && line != "End") {
-                if (line.find("Justice") != std::string::npos){
+                if (line.find("Justice") != std::string::npos) {
                     if (line.find("Env") == std::string::npos && line.find("Agn") == std::string::npos) {
                         throw bad_file_format_exception(line_number);
                     }

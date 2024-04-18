@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "Transducer.h"
+#include "game/Transducer.h"
 #include <tuple>
 #include <optional>
 
@@ -13,7 +13,7 @@ namespace Syft {
     static const std::string REALIZABLE_STR = "REALIZABLE";
     static const std::string UNREALIZABLE_STR = "UNREALIZABLE";
 
-    struct SynthesisResult{
+    struct SynthesisResult {
         bool realizability;
         CUDD::BDD winning_states;
         CUDD::BDD winning_moves;
@@ -21,7 +21,13 @@ namespace Syft {
         CUDD::BDD safe_states;
     };
 
-    struct OneStepSynthesisResult{
+    struct MaxSetSynthesisResult {
+        bool realizability;
+        CUDD::BDD deferring_strategy;
+        CUDD::BDD nondeferring_strategy;
+    };
+
+    struct OneStepSynthesisResult {
         std::optional<bool> realizability = std::nullopt;
         CUDD::BDD winning_move;
     };
@@ -31,31 +37,32 @@ namespace Syft {
  *
  * Can be inherited to implement synthesizers for different specification types.
  */
-template <class Spec>
-class Synthesizer {
- protected:
+    template<class Spec>
+    class Synthesizer {
+    protected:
+        /**
+         * \brief The game arena.
+         */
+        Spec spec_;
 
-  Spec spec_;
-  
- public:
+    public:
 
-  Synthesizer(Spec spec)
-    : spec_(std::move(spec))
-    {}
+        Synthesizer(Spec spec)
+                : spec_(std::move(spec)) {}
 
-  virtual ~Synthesizer()
-    {}
 
-  /**
-   * \brief Solves the synthesis problem of the specification.
-   *
-   * \return The result consists of
-   * realizability
-   * a set of agent winning states
-   * a transducer representing a winning strategy for the specification or nullptr if the specification is unrealizable.
-   */
-  virtual SynthesisResult run() const = 0;
-};
+        virtual ~Synthesizer() {}
+
+        /**
+         * \brief Solves the synthesis problem of the specification.
+         *
+         * \return The result consists of
+         * realizability
+         * a set of agent winning states
+         * a transducer representing a winning strategy for the specification or nullptr if the specification is unrealizable.
+         */
+        virtual SynthesisResult run() const = 0;
+    };
 
 }
 

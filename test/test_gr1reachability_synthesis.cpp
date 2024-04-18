@@ -4,9 +4,9 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
-#include "ExplicitStateDfa.h"
-#include "InputOutputPartition.h"
-#include "GR1ReachabilitySynthesizer.h"
+#include "automata/ExplicitStateDfa.h"
+#include "game/InputOutputPartition.h"
+#include "synthesizer/GR1LTLfSynthesizer.h"
 #include "GR1.h"
 #include "Preprocessing.h"
 #include "Parser.h"
@@ -19,11 +19,12 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -44,7 +45,8 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
     Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_goal);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_goal);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                   explicit_dfa_agn_goal);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_goal = Syft::SymbolicStateDfa::from_explicit(
@@ -64,7 +66,8 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
     Syft::ExplicitStateDfa explicit_dfa_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_env_safety);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_env_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                     explicit_dfa_env_safety);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_env_safety = Syft::SymbolicStateDfa::from_explicit(
@@ -84,7 +87,8 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
 
     Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_safety);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                     explicit_dfa_agn_safety);
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_safety = Syft::SymbolicStateDfa::from_explicit(
             std::move(explicit_dfa_add_agn_safety));
@@ -93,10 +97,10 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr, Syft::Test::GR1SYNTHESIS_TEST_ENV_GR1);
 
 
-
     std::string benchmark_name = "hand_shake";
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
+    Syft::GR1LTLfSynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
+                                         Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
 
     Syft::SynthesisResult result = synthesizer.run();
 
@@ -111,11 +115,12 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
     bool sys_first = parser.get_sys_first();
 
-    Syft::Player starting_player = sys_first? Syft::Player::Agent : Syft::Player::Environment;
+    Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
     Syft::Player protagonist_player = Syft::Player::Agent;
 
     Syft::InputOutputPartition partition =
-            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(), parser.get_output_variables());
+            Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
+                                                             parser.get_output_variables());
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
     var_mgr->create_named_variables(partition.input_variables);
     var_mgr->create_named_variables(partition.output_variables);
@@ -136,7 +141,8 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
     Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_goal);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_goal);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                   explicit_dfa_agn_goal);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_goal = Syft::SymbolicStateDfa::from_explicit(
@@ -154,9 +160,11 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     // Apply no-empty semantics
     parsed_formula_env_safety = context->makeLtlfAnd({parsed_formula_env_safety, not_end});
 
-    Syft::ExplicitStateDfa explicit_dfa_mona_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_env_safety);
+    Syft::ExplicitStateDfa explicit_dfa_mona_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(
+            *parsed_formula_env_safety);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona_env_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                 explicit_dfa_mona_env_safety);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_env_safety = Syft::SymbolicStateDfa::from_explicit(
@@ -176,7 +184,8 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
 
     Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_safety);
 
-    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr,
+                                                                                                     explicit_dfa_agn_safety);
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_safety = Syft::SymbolicStateDfa::from_explicit(
             std::move(explicit_dfa_add_agn_safety));
@@ -185,10 +194,10 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr, Syft::Test::GR1SYNTHESIS_FINDING_NEMO_ENV_GR1);
 
 
-
     std::string benchmark_name = "finding_nemo";
-    Syft::GR1ReachabilitySynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
-                                                 symbolic_dfa_agn_goal, symbolic_dfa_agn_safety, Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
+    Syft::GR1LTLfSynthesizer synthesizer(var_mgr, gr1, symbolic_dfa_env_safety,
+                                         symbolic_dfa_agn_goal, symbolic_dfa_agn_safety,
+                                         Syft::Test::SLUGS_DIR_LOCATION, benchmark_name);
 
     Syft::SynthesisResult result = synthesizer.run();
 
