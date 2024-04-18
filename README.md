@@ -47,11 +47,9 @@ sudo apt install -y \
 
 ### Install LYDIA
 
-    cd submodules
-    cd lydia
+The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
 
-Follow the instructions to complete the installation of lydia.
-
+However, if you want to install Lydia manually, you can co into `submodules/lydia` and follow the installation instructions in the `README.md`.
 
 ### Install Z3
 
@@ -82,27 +80,36 @@ sudo apt install graphviz libgraphviz-dev
 
 1. Make build folder so your directory is not flooded with build files:
 
-    ```mkdir build && cd build```
+```
+mkdir build && cd build
+```
 
 3. Run CMake to generate the makefile:
 
-    ```cmake -DCMAKE_BUILD_TYPE=Release ..```
+```
+cmake -DCMAKE_BUILD_TYPE=Release ..
+```
 
 4. Compile using the generated makefile:
 
-    ```make -j$(nproc --ignore=1) LydiaSyft```
+```
+make -j$(nproc --ignore=1) LydiaSyft
+```
+
+4.1. For solving LTLf synthesis with GR(1) conditions, please install `slugs` following submodules/slugs/README.md
 
 5. Compile and Run tests:
 
-    ```
-    make -j$(nproc --ignore=1) tests
-    ./bin/tests
-   ```
+```
+make -j$(nproc --ignore=1) tests
+./bin/tests
+```
 
 
 ## Run LYDIASYFT
 
 Usage:
+
 ```
 LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)
 Usage: ./cmake-build-debug/bin/LydiaSyft [OPTIONS] SUBCOMMAND
@@ -139,13 +146,13 @@ Examples (run commands from the root directory of the project):
 - Maxset synthesis:
 
 ```
-./build/bin/LydiaSyft maxset -f example/test.tlsf
+./build/bin/LydiaSyft maxset -f example/test1.tlsf
 ```
 
 - Fairness synthesis:
 
 ```
-./build/bin/LydiaSyft .fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - Stability synthesis:
@@ -155,7 +162,20 @@ Examples (run commands from the root directory of the project):
 ```
 
 - GR(1) synthesis:
+```
+./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/
+```
+
+## Documentation
+
+The documentation is built using Doxygen. First, install `doxygen`:
 
 ```
-./cmake-build-debug/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/src/slugs
+sudo apt install doxygen
+```
+
+Then:
+
+```
+doxygen Doxyfile
 ```

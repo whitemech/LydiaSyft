@@ -1,8 +1,8 @@
 #include "utils.hpp"
 #include "InputOutputPartition.h"
 #include "VarMgr.h"
-#include "ExplicitStateDfaMona.h"
 #include "ExplicitStateDfa.h"
+#include "ExplicitStateDfaAdd.h"
 #include "SymbolicStateDfa.h"
 #include "Player.h"
 #include "ReachabilitySynthesizer.h"
@@ -50,8 +50,8 @@ namespace Test{
           std::cout << get_time_str() << ": Preprocessing was not successful. Continuing with full DFA construction." << std::endl;
         }
 
-      Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*formula);
-        Syft::ExplicitStateDfa explicit_dfa =  Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
+      Syft::ExplicitStateDfa explicit_dfa_mona = Syft::ExplicitStateDfa::dfa_of_formula(*formula);
+        Syft::ExplicitStateDfaAdd explicit_dfa =  Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona);
 
         Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
             std::move(explicit_dfa));

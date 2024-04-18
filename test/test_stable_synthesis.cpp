@@ -4,7 +4,7 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
-#include "ExplicitStateDfaMona.h"
+#include "ExplicitStateDfa.h"
 #include "InputOutputPartition.h"
 #include "StableReachabilitySynthesizer.h"
 #include "Preprocessing.h"
@@ -39,12 +39,12 @@ TEST_CASE("Stable Synthesis of realizable counter_1", "[stable synthesis]") {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
+    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula);
 
-    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa);
 
     Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa));
+            std::move(explicit_dfa_add));
 
     var_mgr->partition_variables(partition.input_variables,
                                  partition.output_variables);
@@ -84,13 +84,13 @@ TEST_CASE("Stable Synthesis of unrealizable counter_1", "[stable synthesis]") {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula);
+    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula);
 
-    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona);
-//    explicit_dfa.dump_dot("explicit_dfa.dot");
+    Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa);
+//    explicit_dfa.dump_dot("explicit_dfa_add.dot");
 
     Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa));
+            std::move(explicit_dfa_add));
 
 //    symbolic_dfa.dump_dot("symbolic_dfa.dot");
     var_mgr->partition_variables(partition.input_variables,

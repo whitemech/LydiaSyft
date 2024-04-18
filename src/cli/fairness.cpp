@@ -12,7 +12,7 @@
 #include "Stopwatch.h"
 
 #include "../parser/Parser.h"
-#include "ExplicitStateDfaMona.h"
+#include "ExplicitStateDfa.h"
 #include "ReachabilitySynthesizer.h"
 #include "ReachabilityMaxSetSynthesizer.h"
 #include "InputOutputPartition.h"
@@ -42,6 +42,7 @@ namespace Syft {
     }
 
     void FairnessRunner::do_fairness_synthesis_(const SymbolicStateDfa &symbolic_dfa) const {
+        var_mgr_->partition_variables(args_.partition.input_variables, args_.partition.output_variables);
         Syft::FairReachabilitySynthesizer synthesizer(symbolic_dfa, args_.starting_player,
                                                       args_.protagonist_player, symbolic_dfa.final_states(),
                                                       var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);

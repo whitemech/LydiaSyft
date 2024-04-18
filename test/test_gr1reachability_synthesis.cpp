@@ -4,7 +4,7 @@
 #include "catch2/catch_test_macros.hpp"
 #include "catch2/generators/catch_generators_all.hpp"
 
-#include "ExplicitStateDfaMona.h"
+#include "ExplicitStateDfa.h"
 #include "InputOutputPartition.h"
 #include "GR1ReachabilitySynthesizer.h"
 #include "GR1.h"
@@ -42,13 +42,13 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula_agn_goal = context->makeLtlfAnd({parsed_formula_agn_goal, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_agn_goal = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_agn_goal);
+    Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_goal);
 
-    Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_agn_goal);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_goal);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_goal = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_agn_goal));
+            std::move(explicit_dfa_add_agn_goal));
 
     // Parsing the formula env_safety
     std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver_env_safety;
@@ -62,13 +62,13 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     // Apply no-empty semantics
     parsed_formula_env_safety = context->makeLtlfAnd({parsed_formula_env_safety, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_env_safety = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_env_safety);
+    Syft::ExplicitStateDfa explicit_dfa_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_env_safety);
 
-    Syft::ExplicitStateDfa explicit_dfa_env_safety = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_env_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_env_safety);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_env_safety = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_env_safety));
+            std::move(explicit_dfa_add_env_safety));
 
     // Parsing the formula agn_safety
     std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver_agn_safetyy;
@@ -82,12 +82,12 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     // Apply no-empty semantics
     parsed_formula_agn_safety = context->makeLtlfAnd({parsed_formula_agn_safety, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_agn_safety = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_agn_safety);
+    Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_safety);
 
-    Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_agn_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_safety);
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_safety = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_agn_safety));
+            std::move(explicit_dfa_add_agn_safety));
 
     // gr1
     Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr, Syft::Test::GR1SYNTHESIS_TEST_ENV_GR1);
@@ -134,13 +134,13 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula_agn_goal = context->makeLtlfAnd({parsed_formula_agn_goal, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_agn_goal = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_agn_goal);
+    Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_goal);
 
-    Syft::ExplicitStateDfa explicit_dfa_agn_goal = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_agn_goal);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_goal = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_goal);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_goal = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_agn_goal));
+            std::move(explicit_dfa_add_agn_goal));
 
     // Parsing the formula env_safety
     std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver_env_safety;
@@ -154,9 +154,9 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     // Apply no-empty semantics
     parsed_formula_env_safety = context->makeLtlfAnd({parsed_formula_env_safety, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_env_safety = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_env_safety);
+    Syft::ExplicitStateDfa explicit_dfa_mona_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_env_safety);
 
-    Syft::ExplicitStateDfa explicit_dfa_env_safety = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_env_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_env_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona_env_safety);
 
 
     Syft::SymbolicStateDfa symbolic_dfa_env_safety = Syft::SymbolicStateDfa::from_explicit(
@@ -174,12 +174,12 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     // Apply no-empty semantics
     parsed_formula_agn_safety = context->makeLtlfAnd({parsed_formula_agn_safety, not_end});
 
-    Syft::ExplicitStateDfaMona explicit_dfa_mona_agn_safety = Syft::ExplicitStateDfaMona::dfa_of_formula(*parsed_formula_agn_safety);
+    Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_agn_safety);
 
-    Syft::ExplicitStateDfa explicit_dfa_agn_safety = Syft::ExplicitStateDfa::from_dfa_mona(var_mgr, explicit_dfa_mona_agn_safety);
+    Syft::ExplicitStateDfaAdd explicit_dfa_add_agn_safety = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_agn_safety);
 
     Syft::SymbolicStateDfa symbolic_dfa_agn_safety = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_agn_safety));
+            std::move(explicit_dfa_add_agn_safety));
 
     // gr1
     Syft::GR1 gr1 = Syft::GR1::read_from_gr1_file(var_mgr, Syft::Test::GR1SYNTHESIS_FINDING_NEMO_ENV_GR1);

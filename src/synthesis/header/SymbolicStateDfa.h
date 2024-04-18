@@ -6,7 +6,7 @@
 
 #include <cuddObj.hh>
 
-#include "ExplicitStateDfa.h"
+#include "ExplicitStateDfaAdd.h"
 
 namespace Syft {
 
@@ -55,7 +55,7 @@ class SymbolicStateDfa {
    * \param explicit_dfa The explicit DFA to be converted.
    * \return The symbolic representation of the DFA.
    */
-  static SymbolicStateDfa from_explicit(const ExplicitStateDfa& explicit_dfa);
+  static SymbolicStateDfa from_explicit(const ExplicitStateDfaAdd& explicit_dfa);
 
   /**
    * \brief Creates a simple automaton that remembers the value of predicates.

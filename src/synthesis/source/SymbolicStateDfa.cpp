@@ -91,7 +91,7 @@ std::vector<CUDD::BDD> SymbolicStateDfa::symbolic_transition_function(
 }
 
 SymbolicStateDfa SymbolicStateDfa::from_explicit(
-    const ExplicitStateDfa& explicit_dfa) {
+    const ExplicitStateDfaAdd& explicit_dfa) {
   std::shared_ptr<VarMgr> var_mgr = explicit_dfa.var_mgr();
 
   auto count_and_id = create_state_variables(var_mgr,
