@@ -8,6 +8,9 @@
 #include "automata/SymbolicStateDfa.h"
 #include "Synthesizer.h"
 
+#include "game/coGR1Reachability.hpp"
+#include "game/coBuchiReachability.hpp"
+
 namespace Syft {
 
 /**

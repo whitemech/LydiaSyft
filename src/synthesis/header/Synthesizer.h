@@ -50,6 +50,7 @@ namespace Syft {
         Synthesizer(Spec spec)
                 : spec_(std::move(spec)) {}
 
+
         virtual ~Synthesizer() {}
 
         /**

@@ -141,6 +141,8 @@ namespace Syft {
          */
         SynthesisResult run() const;
 
+        coGR1Reachability(SymbolicStateDfa dfa, Player player, Player player1, CUDD::BDD bdd, CUDD::BDD bdd1,
+                          CUDD::BDD bdd2);
     };
 }
 

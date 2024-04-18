@@ -21,6 +21,7 @@ namespace Syft {
         assumption_ = load_CNF(assumption_filename);
     }
 
+
     SynthesisResult FairnessLtlfSynthesizer::run() const {
         coBuchiReachability solver(spec_, starting_player_, protagonist_player_,
                                    goal_states_, !assumption_, state_space_);

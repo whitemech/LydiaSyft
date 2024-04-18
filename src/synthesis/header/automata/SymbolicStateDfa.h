@@ -47,6 +47,7 @@ namespace Syft {
 
     public:
 
+
         /**
          * \brief Converts an explicit DFA to a symbolic representation.
          *

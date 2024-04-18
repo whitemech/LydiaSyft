@@ -45,7 +45,6 @@ namespace Syft {
         coBuchiReachability(const SymbolicStateDfa &spec, Player starting_player, Player protagonist_player,
                             const CUDD::BDD &goal_states, const CUDD::BDD &coBuchi, const CUDD::BDD &state_space);
 
-
         /**
          * \brief Solves the coBuchi-reachability game.
          *

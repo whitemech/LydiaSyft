@@ -7,6 +7,7 @@
 #include "game/InputOutputPartition.h"
 #include "Synthesizer.h"
 #include "Preprocessing.h"
+#include "Synthesizer.h"
 
 namespace Syft {
 
@@ -23,7 +24,8 @@ namespace Syft {
         }
     }
 
-    void Printer::dump_maxset_if_enabled(const LTLfMaxSetSynthesizer &maxset_synthesizer, const MaxSet &maxset_strategy,
+    void Printer::dump_maxset_if_enabled(const LTLfMaxSetSynthesizer &maxset_synthesizer,
+                                         const MaxSetSynthesisResult &maxset_strategy,
                                          const std::string &def_strategy_output_file,
                                          const std::string &nondef_strategy_output_file) const {
         if (print_strategy_) {
@@ -153,7 +155,7 @@ namespace Syft {
         if (result.realizability) {
             printer_.print_realizable();
 
-            // abstract single strategy
+//             abstract single strategy
             Syft::Stopwatch abstract_single_strategy_time_stopwatch;
             abstract_single_strategy_time_stopwatch.start();
             auto transducer = synthesizer.AbstractSingleStrategy(result);
@@ -161,7 +163,18 @@ namespace Syft {
             printer_.print_times_if_enabled("Abstract single strategy time", abstract_single_strategy_time);
 
             // dump strategy
-            printer_.dump_transducer_if_enabled(*transducer, "strategy.dot");
+            printer_.dump_transducer_if_enabled(*result.transducer, "strategy.dot");
+        } else {
+            printer_.print_unrealizable();
+        }
+    }
+
+
+    void
+    BaseRunner::handle_synthesis_result_(const SynthesisResult &result) const {
+        if (result.realizability) {
+            printer_.print_realizable();
+            printer_.dump_transducer_if_enabled(*result.transducer, "strategy.dot");
         } else {
             printer_.print_unrealizable();
         }

@@ -85,7 +85,7 @@ namespace Syft {
                 result.realizability = true;
                 result.winning_states = new_winning_states;
                 result.winning_moves = new_winning_moves;
-                result.transducer = nullptr;
+                result.transducer = AbstractSingleStrategy(result);
                 return result;
 
             } else if (new_winning_states == winning_states) {

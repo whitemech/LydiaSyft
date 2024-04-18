@@ -7,6 +7,7 @@
 
 #include "automata/SymbolicStateDfa.h"
 #include "Synthesizer.h"
+#include "game/BuchiReachability.hpp"
 
 namespace Syft {
 

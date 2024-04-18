@@ -3,6 +3,7 @@
 
 #include "automata/SymbolicStateDfa.h"
 #include "Synthesizer.h"
+#include "game/Reachability.hpp"
 
 namespace Syft {
 
@@ -58,6 +59,13 @@ namespace Syft {
          * \return The synthesis result.
          */
         SynthesisResult run() const;
+
+        /**
+         * \brief Abstract a winning strategy for the agent.
+         *
+         * \return A winning strategy for the agent.
+         */
+        std::unique_ptr<Transducer> AbstractSingleStrategy(const SynthesisResult &result) const;
 
     };
 

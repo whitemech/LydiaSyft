@@ -1,5 +1,4 @@
 #include "game/DfaGameSynthesizer.h"
-
 #include <cassert>
 
 namespace Syft {

@@ -47,6 +47,6 @@ namespace Syft {
                                                   args_.protagonist_player, symbolic_dfa.final_states(),
                                                   var_mgr_->cudd_mgr()->bddOne(), assumption_filename_);
         Syft::SynthesisResult result = synthesizer.run();
-        handle_synthesis_result_(synthesizer, result);
+        handle_synthesis_result_(result);
     }
 }

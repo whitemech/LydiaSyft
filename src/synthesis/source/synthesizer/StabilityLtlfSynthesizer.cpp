@@ -30,6 +30,7 @@ namespace Syft {
         return solver.run();
     }
 
+
     CUDD::BDD StabilityLtlfSynthesizer::load_CNF(const std::string &filename) const {
         std::ifstream f(filename.c_str());
         CUDD::BDD assumption = var_mgr_->cudd_mgr()->bddOne();

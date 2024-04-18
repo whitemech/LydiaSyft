@@ -105,6 +105,8 @@ namespace Syft {
 
         void handle_synthesis_result_(const DfaGameSynthesizer &synthesizer, const SynthesisResult &result) const;
 
+        void handle_synthesis_result_(const SynthesisResult &result) const;
+
         SymbolicStateDfa do_dfa_construction_() const;
 
     public:
