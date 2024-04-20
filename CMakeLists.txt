@@ -43,7 +43,7 @@ if (Z3_FETCH)
       GIT_TAG        z3-4.8.12
       )
   FetchContent_MakeAvailable(z3)
-  set(Z3_INCLUDE_DIR ${z3_SOURCE_DIR}/src/api)
+  set(Z3_INCLUDE_DIR ${z3_SOURCE_DIR}/src/api/c++)
   set(Z3_LIBRARY libz3)
 else()
   message("-- since Z3_FETCH is ${Z3_FETCH}, the Z3 project is assumed to be found in the local filesystem")
