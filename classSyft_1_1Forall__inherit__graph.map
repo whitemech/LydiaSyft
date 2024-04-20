@@ -1,0 +1,4 @@
+<map id="Syft::Forall" name="Syft::Forall">
+<area shape="rect" id="node1" title="Performs universal quantification." alt="" coords="33,80,124,107"/>
+<area shape="rect" id="node2" href="$classSyft_1_1Quantification.html" title="Abstract class representing a quantification operation on BDDs." alt="" coords="5,5,152,32"/>
+</map>

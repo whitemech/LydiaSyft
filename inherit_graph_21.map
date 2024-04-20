@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classSyft_1_1Synthesizer.html" title=" " alt="" coords="5,74,164,115"/>
+<area shape="rect" id="node2" href="$classSyft_1_1DfaGameSynthesizer.html" title="A synthesizer for a game whose arena is a symbolic&#45;state DFA." alt="" coords="212,81,405,108"/>
+<area shape="rect" id="node3" href="$classSyft_1_1BuchiReachability.html" title="A single&#45;strategy&#45;synthesizer for a Buchi&#45;reachability game given as a symbolic&#45;state DFA." alt="" coords="461,5,633,32"/>
+<area shape="rect" id="node4" href="$classSyft_1_1Reachability.html" title="A single&#45;strategy&#45;synthesizer for a reachability game given as a symbolic&#45;state DFA." alt="" coords="479,56,615,83"/>
+<area shape="rect" id="node5" href="$classSyft_1_1ReachabilityMaxSet.html" title="A maxset&#45;strategy&#45;synthesizer for a reachability game given as a symbolic&#45;state DFA." alt="" coords="454,107,639,133"/>
+<area shape="rect" id="node6" href="$classSyft_1_1coBuchiReachability.html" title="A single&#45;strategy&#45;synthesizer for a coBuchi&#45;reachability game given as a symbolic&#45;state DFA." alt="" coords="453,157,640,184"/>
+</map>

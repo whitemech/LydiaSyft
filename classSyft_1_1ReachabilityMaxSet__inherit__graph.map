@@ -1,0 +1,5 @@
+<map id="Syft::ReachabilityMaxSet" name="Syft::ReachabilityMaxSet">
+<area shape="rect" id="node1" title="A maxset&#45;strategy&#45;synthesizer for a reachability game given as a symbolic&#45;state DFA." alt="" coords="9,169,195,196"/>
+<area shape="rect" id="node2" href="$classSyft_1_1DfaGameSynthesizer.html" title="A synthesizer for a game whose arena is a symbolic&#45;state DFA." alt="" coords="5,95,199,121"/>
+<area shape="rect" id="node3" href="$classSyft_1_1Synthesizer.html" title=" " alt="" coords="23,5,181,47"/>
+</map>
