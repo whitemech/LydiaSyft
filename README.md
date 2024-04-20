@@ -227,6 +227,18 @@ int main(int argc, char ** argv) {
 }
 ```
 
+## Implemented Data Structures and Algorithm
+
+- DFA representation and manipulation:
+  - Explicit-state DFA (à la MONA): [(N. Klarlund et al., 2002)](https://www.worldscientific.com/doi/abs/10.1142/S012905410200128X), [(De Giacomo and Favorito, 2021)](https://ojs.aaai.org/index.php/ICAPS/article/view/15954)
+  - Symbolic-state DFA: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+
+- LTLf synthesis settings:
+  - Classical synthesis: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+  - MaxSet synthesis: [(Zhu and De Giacomo, 2022)](https://www.ijcai.org/proceedings/2022/386)
+  - Synthesis with fairness assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with stability assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with environment GR(1) assumptions: [(De Giacomo et al., 2022)](https://link.springer.com/article/10.1007/s10703-023-00413-2)
 
 
 ## Documentation
