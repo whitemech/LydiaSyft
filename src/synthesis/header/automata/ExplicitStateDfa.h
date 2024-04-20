@@ -16,7 +16,7 @@ namespace Syft {
 /**
  * \brief A DFA with explicit states and symbolic transitions.
  *
- * The LTLf-to-DFA consstruction utilizes Lydia.
+ * The LTLf-to-DFA construction utilizes Lydia.
  * Giuseppe De Giacomo, Marco Favorito: Compositional Approach to Translate LTLf/LDLf into Deterministic Finite Automata. ICAPS 2021: 122-130
  */
     class ExplicitStateDfa : public whitemech::lydia::mona_dfa {

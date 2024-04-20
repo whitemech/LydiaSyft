@@ -12,7 +12,11 @@
 
 namespace Syft {
 
-
+  /**
+  * \brief Implementation of the one-step unrealizability check using Z3.
+  *
+  * Shengping Xiao, Jianwen Li, Shufang Zhu, Yingying Shi, Geguang Pu, Moshe Y. Vardi. "On-the-fly Synthesis for LTL over Finite Traces". AAAI 2021: 6530-6537
+  */
   class SmtOneStepUnrealizabilityVisitor : public whitemech::lydia::Visitor {
   public:
     InputOutputPartition partition;

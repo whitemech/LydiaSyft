@@ -88,6 +88,9 @@ namespace Syft {
     SymbolicStateDfa
     do_dfa_construction(const whitemech::lydia::LTLfFormula &formula, const std::shared_ptr<Syft::VarMgr> &var_mgr);
 
+    /**
+     * \brief Base class for running a synthesis algorithm.
+     */
     class BaseRunner {
     protected:
         const std::string formula_file_;
