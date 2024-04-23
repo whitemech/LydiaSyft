@@ -36,6 +36,21 @@ sudo apt install -y \
     b. Needing to reconfigure, do this before configuring:
         autoreconf -i
 
+### Install MONA
+
+To install MONA system-wide:
+
+```
+git clone --recursive https://github.com/whitemech/MONA.git
+cd MONA
+git checkout v1.4-19.dev0
+./configure && make -j && sudo make -j install
+# copy headers manually
+sudo mkdir -p /usr/local/include/mona
+sudo cp Mem/mem.h Mem/gnuc.h Mem/dlmalloc.h BDD/bdd_external.h BDD/bdd_dump.h BDD/bdd_internal.h BDD/bdd.h BDD/hash.h DFA/dfa.h GTA/gta.h config.h /usr/local/include/mona
+```
+
+
 ### Install FLEX, BISON
 
 0.3 Install flex and bison:
