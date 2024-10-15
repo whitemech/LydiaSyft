@@ -27,14 +27,9 @@ sudo apt install -y \
 
 0.2 Install CUDD:
 
-    ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=[install location]
+    autoreconf -f -i
+    ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=/usr/local
     sudo make install
-
-    If you get an error about aclocal, this might be due to either
-    a. Not having automake:
-        sudo apt-get install automake
-    b. Needing to reconfigure, do this before configuring:
-        autoreconf -i
 
 ### Install MONA
 
@@ -157,7 +152,7 @@ Examples (run commands from the root directory of the project):
 - Maxset synthesis:
 
 ```
-./build/bin/LydiaSyft maxset -f example/test1.tlsf
+./build/bin/LydiaSyft maxset -f example/test1.tlsf  # REALIZABLE
 ```
 
 - Fairness synthesis:
@@ -175,7 +170,12 @@ Examples (run commands from the root directory of the project):
 - GR(1) synthesis:
 
 ```
-./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/   # REALIZABLE
+./build/bin/LydiaSyft gr1 \
+    -f example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1.tlsf \
+    -g example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_gr1.txt \
+    -e example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_safety.ltlf \
+    -a example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_agn_safety.ltlf \
+    --slugs-path ./submodules/slugs/   # REALIZABLE
 ```
 
 ## Quickstart
