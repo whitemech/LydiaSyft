@@ -5,6 +5,7 @@ include(FetchContent)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_INSTALL_PREFIX /usr/local)
 
 add_definitions( -D__ROOT_DIRECTORY="${CMAKE_SOURCE_DIR}" )
 
