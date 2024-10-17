@@ -15,7 +15,7 @@ install(TARGETS LydiaSyft
 
 INSTALL (
   DIRECTORY ${CMAKE_SOURCE_DIR}/src/
-    DESTINATION include
+    DESTINATION include/lydiasyft
     FILES_MATCHING PATTERN "*.h*")
 
 #export vars
