@@ -1,5 +1,37 @@
 # LydiaSyft: A Compositional Symbolic Synthesis Framework for LTLf Specification
 
+LydiaSyft is an open-source software framework for reasoning and synthesis of Linear Tempora Logic formulas interpreted on finite traces (LTLf), integrating efficient data structures and techniques focused on LTLf specifications. 
+
+This project can be used either as a standalone CLI tool or as a C++ library that integrates with other projects. Among the implemented Data Structures and algorithms, we have:
+
+- DFA representation and manipulation:
+  - Explicit-state DFA (à la MONA): [(N. Klarlund et al., 2002)](https://www.worldscientific.com/doi/abs/10.1142/S012905410200128X), [(De Giacomo and Favorito, 2021)](https://ojs.aaai.org/index.php/ICAPS/article/view/15954)
+  - Symbolic-state DFA: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+
+- LTLf synthesis settings:
+  - Classical synthesis: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+  - MaxSet synthesis: [(Zhu and De Giacomo, 2022)](https://www.ijcai.org/proceedings/2022/386)
+  - Synthesis with fairness assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with stability assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with environment GR(1) assumptions: [(De Giacomo et al., 2022)](https://link.springer.com/article/10.1007/s10703-023-00413-2)
+
+  
+Currently, the system has been tested on Ubuntu 24.04 LTS, and should work on other Linux systems. We plan to fully support also MacOS and Windows systems.
+
+
+## Dependencies
+
+The software depends on the following projects:
+
+- CUDD: CU Decision Diagram package: https://github.com/KavrakiLab/cudd
+- MONA (WhiteMech's fork): https://github.com/whitemech/MONA
+- Lydia: https://github.com/whitemech/lydia
+- Flex & [Bison](https://www.gnu.org/software/bison/)
+- [Graphviz](https://graphviz.org/)
+- Syfco: the Synthesis Format Conversion Tool: https://github.com/reactive-systems/syfco
+- Slugs: SmalL bUt Complete GROne Synthesizer: https://github.com/VerifiableRobotics/slugs/
+
+
 ## Compilation Instructions using CMake
 
 ### System-wide dependencies
@@ -241,19 +273,6 @@ int main(int argc, char ** argv) {
     return 0;
 }
 ```
-
-## Implemented Data Structures and Algorithm
-
-- DFA representation and manipulation:
-  - Explicit-state DFA (à la MONA): [(N. Klarlund et al., 2002)](https://www.worldscientific.com/doi/abs/10.1142/S012905410200128X), [(De Giacomo and Favorito, 2021)](https://ojs.aaai.org/index.php/ICAPS/article/view/15954)
-  - Symbolic-state DFA: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
-
-- LTLf synthesis settings:
-  - Classical synthesis: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
-  - MaxSet synthesis: [(Zhu and De Giacomo, 2022)](https://www.ijcai.org/proceedings/2022/386)
-  - Synthesis with fairness assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
-  - Synthesis with stability assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
-  - Synthesis with environment GR(1) assumptions: [(De Giacomo et al., 2022)](https://link.springer.com/article/10.1007/s10703-023-00413-2)
 
 
 ## Documentation
