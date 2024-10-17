@@ -288,3 +288,12 @@ Then:
 ```
 doxygen Doxyfile
 ```
+
+
+## License
+
+This project is licensed under the GNU Affero General Public License. See the [LICENSE](LICENSE) file for details.
+
+Copyright (C) 2024, Marco Favorito, Shufang Zhu. All rights reserved.
+
+
