@@ -31,7 +31,7 @@ int main(int argc, char ** argv) {
     app.add_flag("-t, --print-times", print_times, "Print out running times of each step (default: false)");
 
     std::string formula_file;
-    std::string path_to_syfco;
+    std::optional<std::string> path_to_syfco_opt = std::nullopt;
     std::string assumption_file;
     std::string gr1_file;
     std::optional<std::string> env_safety_file;
@@ -41,29 +41,29 @@ int main(int argc, char ** argv) {
     // 'synthesis' subcommand
     CLI::App *synthesis = app.add_subcommand("synthesis", "solve a classical LTLf synthesis problem");
     Syft::add_spec_file_option(synthesis, formula_file);
-    Syft::add_syfco_option(synthesis, path_to_syfco);
+    Syft::add_syfco_option(synthesis, path_to_syfco_opt);
 
     // 'maxset' subcommand
     CLI::App *maxset = app.add_subcommand("maxset", "solve LTLf synthesis with maximally permissive strategies");
     Syft::add_spec_file_option(maxset, formula_file);
-    Syft::add_syfco_option(maxset, path_to_syfco);
+    Syft::add_syfco_option(maxset, path_to_syfco_opt);
 
     // 'fairness' subcommand
     CLI::App *fairness = app.add_subcommand("fairness", "solve LTLf synthesis with fairness assumptions");
     Syft::add_spec_file_option(fairness, formula_file);
-    Syft::add_syfco_option(fairness, path_to_syfco);
+    Syft::add_syfco_option(fairness, path_to_syfco_opt);
     Syft::add_assumption_file_option(fairness, assumption_file);
 
     // 'stability' subcommand
     CLI::App *stability = app.add_subcommand("stability", "solve LTLf synthesis with stability assumptions");
     Syft::add_spec_file_option(stability, formula_file);
-    Syft::add_syfco_option(stability, path_to_syfco);
+    Syft::add_syfco_option(stability, path_to_syfco_opt);
     Syft::add_assumption_file_option(stability, assumption_file);
 
     // 'gr1' subcommand
     CLI::App *gr1 = app.add_subcommand("gr1", "Solve LTLf synthesis with GR(1) conditions");
     Syft::add_spec_file_option(gr1, formula_file);
-    Syft::add_syfco_option(gr1, path_to_syfco);
+    Syft::add_syfco_option(gr1, path_to_syfco_opt);
     Syft::add_slugs_option(gr1, path_to_slugs);
     Syft::add_gr1_file_option(gr1, gr1_file);
     Syft::add_env_safety_file_option(gr1, env_safety_file);
@@ -71,9 +71,14 @@ int main(int argc, char ** argv) {
 
     app.require_subcommand(1);
 
+    // the CLI11 APIs add_option sets the value to empty string ""; resetting it to null value
+    path_to_syfco_opt = std::nullopt;
+
     CLI11_PARSE(app, argc, argv);
 
     std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
+
+    std::string path_to_syfco = Syft::find_syfco_path(path_to_syfco_opt);
 
     if (app.got_subcommand(synthesis)){
         Syft::SynthesisRunner(driver, formula_file, path_to_syfco, print_strategy, print_times).run();
