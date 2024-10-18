@@ -63,7 +63,7 @@ sudo apt install -y \
     ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=/usr/local
     sudo make install
 
-### Install MONA
+### Install Mona
 
 To install MONA system-wide:
 
@@ -78,13 +78,13 @@ sudo cp Mem/mem.h Mem/gnuc.h Mem/dlmalloc.h BDD/bdd_external.h BDD/bdd_dump.h BD
 ```
 
 
-### Install FLEX, BISON
+### Install Flex, Bison
 
 0.3 Install flex and bison:
 
     sudo apt-get install flex bison
 
-### Install LYDIA
+### Install Lydia
 
 The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
 
@@ -115,7 +115,7 @@ For the graphical features (automata and strategy visualization), graphviz need 
 sudo apt install graphviz libgraphviz-dev
 ```
 
-## Build LYDIASYFT
+## Build LydiaSyft
 
 1. Make build folder so your directory is not flooded with build files:
 
@@ -144,7 +144,7 @@ make -j$(nproc --ignore=1) tests
 ./bin/tests
 ```
 
-## Run LYDIASYFT
+## Run LydiaSyft
 
 Usage:
 
