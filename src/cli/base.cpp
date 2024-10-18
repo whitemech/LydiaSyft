@@ -6,8 +6,8 @@
 #include "lydia/parser/ltlf/driver.hpp"
 #include "game/InputOutputPartition.h"
 #include "Synthesizer.h"
-#include "Preprocessing.h"
-#include "Synthesizer.h"
+#include "misc.h"
+#include "Parser.h"
 
 namespace Syft {
 
@@ -62,14 +62,36 @@ namespace Syft {
         app->add_option("-f,--spec-file", spec_file, "Specification file")->required()->check(CLI::ExistingFile);
     }
 
-    void add_syfco_option(CLI::App *app, std::string &path_to_syfco) {
-        app->add_option("-s,--syfco-path", path_to_syfco, "Path to Syfco binary")->default_val(
-                DEFAULT_SYFCO_PATH_)->check(CLI::ExistingFile);
+    void add_syfco_option(CLI::App *app, std::optional<std::string> &path_to_syfco) {
+        app->add_option("-s,--syfco-path", path_to_syfco, "Path to Syfco binary")
+        ->check(CLI::ExistingFile);
     }
 
     void add_slugs_option(CLI::App *app, std::string &path_to_slugs) {
         app->add_option("-S,--slugs-path", path_to_slugs, "Path to Slugs root directory")->default_val(
                 DEFAULT_SLUGS_PATH_)->check(CLI::ExistingDirectory);
+    }
+
+    std::string find_syfco_path(std::optional<std::string> & syfco_path_opt) {
+        if (syfco_path_opt.has_value()) {
+            if (!std::filesystem::exists(syfco_path_opt.value())) {
+                throw std::runtime_error("The syfco path does not exist: '" + syfco_path_opt.value() + "'");
+            }
+            return syfco_path_opt.value();
+        }
+
+        auto result = find_executable_using_which(Syft::SYFCO_EXECUTABLE_NAME);
+
+        if (result.has_value()) {
+            return result.value();
+        }
+
+        if (std::filesystem::exists(Syft::DEFAULT_SYFCO_PATH_)) {
+            return Syft::DEFAULT_SYFCO_PATH_;
+        }
+
+        throw std::runtime_error("Could not find Syfco executable neither in system path, nor in current working directory");
+
     }
 
     TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,

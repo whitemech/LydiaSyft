@@ -5,12 +5,12 @@
 #ifndef LYDIASYFT_CLI_BASE_HPP
 #define LYDIASYFT_CLI_BASE_HPP
 
+#include <optional>
 #include <string>
 #include <CLI/CLI.hpp>
 #include "lydia/types.hpp"
 #include "Player.h"
 #include "VarMgr.h"
-#include "Parser.h"
 #include "game/InputOutputPartition.h"
 #include "game/Transducer.h"
 #include "Stopwatch.h"
@@ -20,6 +20,9 @@
 
 
 namespace Syft {
+    static const std::string SYFCO_EXECUTABLE_NAME = "syfco";
+    static const std::string SLUGS_EXECUTABLE_NAME = "slugs";
+
     static const std::string DEFAULT_SYFCO_PATH_ = "./syfco";
     static const std::string DEFAULT_SLUGS_PATH_ = "./slugs";
 
@@ -73,9 +76,11 @@ namespace Syft {
 
     void add_spec_file_option(CLI::App *, std::string &);
 
-    void add_syfco_option(CLI::App *, std::string &);
+    void add_syfco_option(CLI::App *, std::optional<std::string> &);
 
     void add_slugs_option(CLI::App *, std::string &);
+
+    std::string find_syfco_path(std::optional<std::string> & syfco_path_opt) ;
 
     TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
                         const std::string &path_to_syfco, const std::string &formula_file);
