@@ -248,7 +248,7 @@ TEST_CASE("One-step realizability check of a U strongXb", "[one-step-unrealizabi
   }
 }
 
-TEST_CASE("One-step realizability check of example/001.tlsf", "[one-step-realizability-check]") {
+TEST_CASE("One-step realizability check of examples/001.tlsf", "[one-step-realizability-check]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
     Syft::Parser parser;
