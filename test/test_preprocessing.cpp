@@ -266,7 +266,7 @@ TEST_CASE("Preprocessing of F(a) && F(!a)", "[one-step-unrealizability-check]") 
 }
 
 
-TEST_CASE("Preprocessing of example/001.tlsf", "[preprocessing]") {
+TEST_CASE("Preprocessing of examples/001.tlsf", "[preprocessing]") {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     auto var_mgr = std::make_shared<Syft::VarMgr>();
     Syft::Parser parser;

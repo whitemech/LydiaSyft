@@ -177,36 +177,36 @@ Examples (run commands from the root directory of the project):
 - Classical synthesis:
 
 ```
-./build/bin/LydiaSyft synthesis -f example/test.tlsf   # UNREALIZABLE
-./build/bin/LydiaSyft synthesis -f example/test1.tlsf  # REALIZABLE
+./build/bin/LydiaSyft synthesis -f examples/test.tlsf   # UNREALIZABLE
+./build/bin/LydiaSyft synthesis -f examples/test1.tlsf  # REALIZABLE
 ```
 
 - Maxset synthesis:
 
 ```
-./build/bin/LydiaSyft maxset -f example/test1.tlsf  # REALIZABLE
+./build/bin/LydiaSyft maxset -f examples/test1.tlsf  # REALIZABLE
 ```
 
 - Fairness synthesis:
 
 ```
-./build/bin/LydiaSyft fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft fairness -f examples/fair_stable_test.tlsf -a examples/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - Stability synthesis:
 
 ```
-./build/bin/LydiaSyft stability -f example/fair_stable_counter_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft stability -f examples/fair_stable_counter_test.tlsf -a examples/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - GR(1) synthesis:
 
 ```
 ./build/bin/LydiaSyft gr1 \
-    -f example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1.tlsf \
-    -g example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_gr1.txt \
-    -e example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_safety.ltlf \
-    -a example/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_agn_safety.ltlf \
+    -f examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1.tlsf \
+    -g examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_gr1.txt \
+    -e examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_safety.ltlf \
+    -a examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_agn_safety.ltlf \
     --slugs-path ./submodules/slugs/   # REALIZABLE
 ```
 
