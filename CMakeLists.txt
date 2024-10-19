@@ -60,6 +60,15 @@ else()
   message("-- LydiaSyft tests disabled")
 endif()
 
+if (NOT DEFINED LYDIASYFT_ENABLE_EXAMPLES)
+  set(LYDIASYFT_ENABLE_EXAMPLES ON)
+endif()
+if (LYDIASYFT_ENABLE_EXAMPLES)
+  message("-- LydiaSyft examples enabled")
+else()
+  message("-- LydiaSyft examples disabled")
+endif()
+
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 set(WITH_SYFT OFF)
@@ -82,4 +91,8 @@ add_subdirectory(src)
 
 if (LYDIASYFT_ENABLE_TESTS)
   add_subdirectory(test)
+endif()
+
+if (LYDIASYFT_ENABLE_EXAMPLES)
+  add_subdirectory(examples)
 endif()
