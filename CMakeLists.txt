@@ -51,6 +51,15 @@ else()
   find_package(Z3 REQUIRED)
 endif()
 
+if (NOT DEFINED LYDIASYFT_ENABLE_TESTS)
+  set(LYDIASYFT_ENABLE_TESTS ON)
+endif()
+if (LYDIASYFT_ENABLE_TESTS)
+  message("-- LydiaSyft tests enabled")
+else()
+  message("-- LydiaSyft tests disabled")
+endif()
+
 
 set(LYDIA_DIR ${PROJECT_SOURCE_DIR}/submodules/lydia)
 set(WITH_SYFT OFF)
@@ -70,4 +79,7 @@ message(STATUS EXT_LIBRARIES_PATH ${EXT_LIBRARIES_PATH})
 enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(test)
+
+if (LYDIASYFT_ENABLE_TESTS)
+  add_subdirectory(test)
+endif()
