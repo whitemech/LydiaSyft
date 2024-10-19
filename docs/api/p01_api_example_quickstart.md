@@ -1,13 +1,11 @@
-# C++ API Examples: Quickstart
+# Quickstart {#p01_api_example_quickstart}
 
 LydiaSyft can be used as a C++ library that integrates with other project.
 In this page we will walk through each example and explain the main features supported by the library. 
 The examples can be found in the `examples/` folder.
 
-## Quickstart
-
 In this example, we will see how to use the LydiaSyft C++ APIs to solve an instance of the LTLf synthesis problem in the classical setting.  
-The code for this example can be found in `examples/quickstart`.
+The code for this example can be found in `examples/01_quickstart/quickstart.cpp`.
 
 The content of the file `quickstart.cpp` is:
 
@@ -70,6 +68,12 @@ int main(int argc, char ** argv) {
     std::cout << (result.realizability? "" : "NOT ") << "REALIZABLE" << std::endl;
     return 0;
 }
+```
+
+The expected output of the program is:
+
+```
+REALIZABLE
 ```
 
 Below we break down each step of the program. 
@@ -194,4 +198,3 @@ Then, if `realizability` is `true`:
 - `winning_moves` is a BDD representing the set of winning moves;
 - `transducer` is an instance of the class `Transducer`, which represents the winning strategy;
 - `safe_states` is set only in case of `GR(1)` synthesis (we can ignore it now).
-
