@@ -36,28 +36,62 @@ The software depends on the following projects:
 
 ### System-wide dependencies
 
-We assume the software will be built on a Ubuntu 22.04 machine.
+The instructions have been tested over a machine with Ubuntu 24.04 as operating system.
 
 First, install the following system-wide dependencies:
 
 ```
 sudo apt install -y \
-   automake \
-   cmake    \
-   gcc      \
-   g++      \
-   libtool  \
-   wget     \
+   automake         \
+   build-essential  \
+   cmake            \
+   curl             \
+   libtool          \
+   wget             \
    unzip
 ```
 
+
+### Install Flex, Bison
+
+Install flex and bison:
+
+    sudo apt-get install flex bison
+
+### Graphviz
+
+For the graphical features (automata and strategy visualization), graphviz need to be installed:
+
+```
+sudo apt install graphviz libgraphviz-dev
+```
+
+### Syfco
+
+Building Syfco requires the Glasgow Haskell Compiler. To install the tool you can use `stack`:
+
+
+```
+curl -sSL https://get.haskellstack.org/ | sh
+git clone https://github.com/reactive-systems/syfco.git
+cd syfco
+git checkout 50585e0
+stack install
+```
+
+The installation should install the `syfco` binary in a directory in teh system path. 
+Then, make sure the binary `syfco` can be found on your system path: `which syfco`.
+
+When using the CLI, you can also provide the path to the `syfco` binary manually by setting `--syfco-path`. 
+
+
 ### Install CUDD
 
-0.1 Make sure CUDD is installed. CUDD can be found at:
+Make sure CUDD is installed. CUDD can be found at:
 
     https://github.com/KavrakiLab/cudd.git
 
-0.2 Install CUDD:
+Install CUDD:
 
     autoreconf -f -i
     ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=/usr/local
@@ -78,12 +112,6 @@ sudo cp Mem/mem.h Mem/gnuc.h Mem/dlmalloc.h BDD/bdd_external.h BDD/bdd_dump.h BD
 ```
 
 
-### Install Flex, Bison
-
-0.3 Install flex and bison:
-
-    sudo apt-get install flex bison
-
 ### Install Lydia
 
 The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
@@ -94,8 +122,9 @@ instructions in the `README.md`.
 ### Install Z3
 
 By default, the CMake configuration will fetch z3 automatically from the GitHub repository.
-In order to disable this behaviour, you can configure the project by setting -DZ3_FETCH=OFF.
+There might be required other dependencies. 
 
+In order to disable this behaviour, you can configure the project by setting `-DZ3_FETCH=OFF`.
 In that case, you have to have the library installed on your system.
 To link the static library of z3, you have to install z3 manually:
 
@@ -103,17 +132,10 @@ To link the static library of z3, you have to install z3 manually:
 wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
 unzip z3-4.8.12-x64-glibc-2.31.zip
 cd z3-4.8.12-x64-glibc-2.31
-cp bin/libz3.a /usr/local/lib
-cp include/*.h /usr/local/include
+sudo cp bin/libz3.a /usr/local/lib
+sudo cp include/*.h /usr/local/include
 ```
 
-### Graphviz
-
-For the graphical features (automata and strategy visualization), graphviz need to be installed:
-
-```
-sudo apt install graphviz libgraphviz-dev
-```
 
 ## Build LydiaSyft
 
@@ -144,7 +166,7 @@ make -j$(nproc --ignore=1) tests
 ./bin/tests
 ```
 
-## Run LydiaSyft
+## Run LydiaSyft as CLI tool
 
 Usage:
 
@@ -210,7 +232,7 @@ Examples (run commands from the root directory of the project):
     --slugs-path ./submodules/slugs/   # REALIZABLE
 ```
 
-## Quickstart
+## Use LydiaSyft as a library
 
 The software also provides C++ APIs. Here there is an example:
 
