@@ -245,7 +245,7 @@ Examples (run commands from the root directory of the project):
 
 ## Use LydiaSyft as a library
 
-The software also provides C++ APIs. Here there is an example:
+The software also provides C++ APIs. Here there is an example of usage:
 
 ```cpp
 #include <memory>
@@ -307,7 +307,7 @@ int main(int argc, char ** argv) {
 }
 ```
 
-More code examples can be found 
+More code examples can be found in the `examples/` folder.
 
 
 ## Documentation
