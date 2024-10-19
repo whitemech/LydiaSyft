@@ -73,24 +73,28 @@ namespace Syft {
     }
 
     std::string find_syfco_path(std::optional<std::string> & syfco_path_opt) {
-        if (syfco_path_opt.has_value()) {
-            if (!std::filesystem::exists(syfco_path_opt.value())) {
-                throw std::runtime_error("The syfco path does not exist: '" + syfco_path_opt.value() + "'");
+        return find_binary_path(syfco_path_opt, Syft::SYFCO_EXECUTABLE_NAME, Syft::DEFAULT_SYFCO_PATH_);
+    }
+
+    std::string find_binary_path(std::optional<std::string> & binary_path_opt, const std::string& executable_name, const std::string& default_value) {
+        if (binary_path_opt.has_value()) {
+            if (!std::filesystem::exists(binary_path_opt.value())) {
+                throw std::runtime_error("Path does not exist: '" + binary_path_opt.value() + "'");
             }
-            return syfco_path_opt.value();
+            return binary_path_opt.value();
         }
 
-        auto result = find_executable_using_which(Syft::SYFCO_EXECUTABLE_NAME);
+        auto result = find_executable_using_which(executable_name);
 
         if (result.has_value()) {
             return result.value();
         }
 
-        if (std::filesystem::exists(Syft::DEFAULT_SYFCO_PATH_)) {
-            return Syft::DEFAULT_SYFCO_PATH_;
+        if (std::filesystem::exists(default_value)) {
+            return default_value;
         }
 
-        throw std::runtime_error("Could not find Syfco executable neither in system path, nor in current working directory");
+        throw std::runtime_error("Could not find '" + executable_name + "' executable neither in system path, nor in current working directory");
 
     }
 

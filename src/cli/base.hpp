@@ -81,6 +81,7 @@ namespace Syft {
     void add_slugs_option(CLI::App *, std::string &);
 
     std::string find_syfco_path(std::optional<std::string> & syfco_path_opt) ;
+    std::string find_binary_path(std::optional<std::string> & binary_path_opt, const std::string& executable_name, const std::string& default_value) ;
 
     TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
                         const std::string &path_to_syfco, const std::string &formula_file);
