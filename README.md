@@ -58,7 +58,7 @@ Install flex and bison:
 
     sudo apt-get install flex bison
 
-### Graphviz
+### Install Graphviz
 
 For the graphical features (automata and strategy visualization), graphviz need to be installed:
 
@@ -66,10 +66,9 @@ For the graphical features (automata and strategy visualization), graphviz need 
 sudo apt install graphviz libgraphviz-dev
 ```
 
-### Syfco
+### Install Syfco
 
 Building Syfco requires the Glasgow Haskell Compiler. To install the tool you can use `stack`:
-
 
 ```
 curl -sSL https://get.haskellstack.org/ | sh
@@ -84,6 +83,18 @@ Then, make sure the binary `syfco` can be found on your system path: `which syfc
 
 When using the CLI, you can also provide the path to the `syfco` binary manually by setting `--syfco-path`. 
 
+### Install Slugs (Optional)
+
+Slugs is required for solving LTLf synthesis with GR(1) conditions.
+
+To build Slugs, run:
+
+```
+cd submodules/slugs
+git checkout a188d83
+cd src
+make -j$(nproc --ignore 1)
+```
 
 ### Install CUDD
 
