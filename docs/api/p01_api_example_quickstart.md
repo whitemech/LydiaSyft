@@ -6,6 +6,7 @@ The examples can be found in the `examples/` folder.
 
 In this example, we will see how to use the LydiaSyft C++ APIs to solve an instance of the LTLf synthesis problem in the classical setting.  
 The code for this example can be found in `examples/01_quickstart/quickstart.cpp`.
+To build this example, you can run `make quickstart_example`.
 
 The content of the file `quickstart.cpp` is:
 
