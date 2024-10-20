@@ -15,7 +15,7 @@ namespace Syft {
                                                        Player starting_player, Player protagonist_player,
                                                        CUDD::BDD goal_states,
                                                        CUDD::BDD state_space,
-                                                       std::string &assumption_filename)
+                                                       const std::string &assumption_filename)
             : spec_(spec), starting_player_(starting_player), protagonist_player_(protagonist_player),
               goal_states_(goal_states),
               state_space_(state_space) {
