@@ -3,7 +3,9 @@
 #include <iostream>
 #include <cstdio>
 #include <memory>
-#include <optional>
+#include <stdexcept>
+#include <string>
+#include <array>
 
 
 namespace Syft {
@@ -31,6 +33,12 @@ namespace Syft {
             result.pop_back();
         }
 
+        // if result is empty, return null
+        if (result.empty()){
+            return std::nullopt;
+        }
+
         return result;
     }
+
 }
