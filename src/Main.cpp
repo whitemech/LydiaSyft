@@ -1,8 +1,4 @@
-#include <cstring>
-#include <iostream>
 #include <memory>
-
-#include "Stopwatch.h"
 
 #include "cli/base.hpp"
 #include "cli/fairness.hpp"
@@ -12,6 +8,7 @@
 #include "cli/maxset.hpp"
 #include "game/InputOutputPartition.h"
 #include "Preprocessing.h"
+#include "Utils.h"
 #include <lydia/parser/ltlf/driver.hpp>
 #include <CLI/CLI.hpp>
 
