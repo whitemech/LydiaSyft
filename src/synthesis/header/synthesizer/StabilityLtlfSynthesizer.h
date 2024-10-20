@@ -66,7 +66,7 @@ namespace Syft {
          */
         StabilityLtlfSynthesizer(SymbolicStateDfa spec, Player starting_player, Player protagonist_player,
                                  CUDD::BDD goal_states, CUDD::BDD state_space,
-                                 std::string &assumption_filename);
+                                 const std::string &assumption_filename);
 
 
         /**
