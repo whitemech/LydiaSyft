@@ -1,3 +1,4 @@
 
 add_subdirectory(01_quickstart)
 add_subdirectory(02_dfa_representation)
+add_subdirectory(03_dfa_creation_and_manipulation)
