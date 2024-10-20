@@ -4,3 +4,4 @@ In this part of the documentation, we show examples of how to use the C++ API of
 
 - @subpage p01_api_example_quickstart
 - @subpage p02_api_example_dfa_representation
+- @subpage p03_api_example_dfa_creation_and_manipulation
