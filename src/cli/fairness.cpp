@@ -34,7 +34,7 @@ namespace Syft {
         // proceed with DFA construction
         auto symbolic_dfa = do_dfa_construction_();
 
-        // do maxset synthesis
+        // do fairness synthesis
         do_fairness_synthesis_(symbolic_dfa);
 
         auto total_time = total_time_stopwatch.stop();
