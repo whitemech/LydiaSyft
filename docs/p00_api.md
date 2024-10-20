@@ -6,3 +6,4 @@ In this part of the documentation, we show examples of how to use the C++ API of
 - @subpage p02_api_example_dfa_representation
 - @subpage p03_api_example_dfa_creation_and_manipulation
 - @subpage p04_api_example_ltlf_synthesis
+- @subpage p05_api_example_ltlf_synthesis_maximally_permissive
