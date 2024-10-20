@@ -15,6 +15,7 @@
 #include "gr1.hpp"
 #include "GR1.h"
 #include "synthesizer/GR1LTLfSynthesizer.h"
+#include "Utils.h"
 
 #include <lydia/parser/ltlf/driver.hpp>
 
