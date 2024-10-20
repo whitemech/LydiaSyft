@@ -7,6 +7,7 @@
 
 #include <CLI/CLI.hpp>
 #include "synthesizer/GR1LTLfSynthesizer.h"
+#include "Utils.h"
 
 
 namespace Syft {
