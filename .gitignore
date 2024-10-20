@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# custom
+.z3-trace
+*.dot
+*.res
+*.strategy

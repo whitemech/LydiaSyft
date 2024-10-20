@@ -5,30 +5,22 @@
 #ifndef LYDIASYFT_CLI_BASE_HPP
 #define LYDIASYFT_CLI_BASE_HPP
 
+#include <optional>
 #include <string>
 #include <CLI/CLI.hpp>
 #include "lydia/types.hpp"
+#include "lydia/parser/ltlf/driver.hpp"
 #include "Player.h"
 #include "VarMgr.h"
-#include "Parser.h"
 #include "game/InputOutputPartition.h"
 #include "game/Transducer.h"
 #include "Stopwatch.h"
 #include "Synthesizer.h"
 #include "synthesizer/LTLfMaxSetSynthesizer.h"
-#include "lydia/parser/ltlf/driver.hpp"
+#include "Utils.h"
 
 
 namespace Syft {
-    static const std::string DEFAULT_SYFCO_PATH_ = "./syfco";
-    static const std::string DEFAULT_SLUGS_PATH_ = "./slugs";
-
-    struct TLSFArgs {
-        const Player starting_player;
-        const Player protagonist_player;
-        const InputOutputPartition partition;
-        const whitemech::lydia::ltlf_ptr formula;
-    };
 
     class Printer {
     private:
@@ -73,20 +65,9 @@ namespace Syft {
 
     void add_spec_file_option(CLI::App *, std::string &);
 
-    void add_syfco_option(CLI::App *, std::string &);
+    void add_syfco_option(CLI::App *, std::optional<std::string> &);
 
     void add_slugs_option(CLI::App *, std::string &);
-
-    TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
-                        const std::string &path_to_syfco, const std::string &formula_file);
-
-    whitemech::lydia::ltlf_ptr parse_formula(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
-                                             const std::string &formula);
-
-    std::shared_ptr<Syft::VarMgr> build_var_mgr(const InputOutputPartition &partition);
-
-    SymbolicStateDfa
-    do_dfa_construction(const whitemech::lydia::LTLfFormula &formula, const std::shared_ptr<Syft::VarMgr> &var_mgr);
 
     /**
      * \brief Base class for running a synthesis algorithm.
@@ -119,7 +100,7 @@ namespace Syft {
                 driver_(driver),
                 formula_file_(formula_file), path_to_syfco_(path_to_syfco),
                 printer_(print_strategy, print_times, std::cout),
-                args_(parse_tlsf(driver, path_to_syfco, formula_file)),
+                args_(parse_tlsf(driver, formula_file, path_to_syfco)),
                 var_mgr_(build_var_mgr(args_.partition)) {}
     };
 

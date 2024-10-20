@@ -1,0 +1,8 @@
+
+add_subdirectory(01_quickstart)
+add_subdirectory(02_dfa_representation)
+add_subdirectory(03_dfa_creation_and_manipulation)
+add_subdirectory(04_ltlf_synthesis)
+add_subdirectory(05_ltlf_synthesis_maximally_permissive)
+add_subdirectory(06_ltlf_synthesis_with_fairness_conditions)
+add_subdirectory(07_ltlf_synthesis_with_stability_conditions)

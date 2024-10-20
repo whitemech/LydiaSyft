@@ -6,8 +6,8 @@
 #include "lydia/parser/ltlf/driver.hpp"
 #include "game/InputOutputPartition.h"
 #include "Synthesizer.h"
-#include "Preprocessing.h"
-#include "Synthesizer.h"
+#include "misc.h"
+#include "Parser.h"
 
 namespace Syft {
 
@@ -62,62 +62,14 @@ namespace Syft {
         app->add_option("-f,--spec-file", spec_file, "Specification file")->required()->check(CLI::ExistingFile);
     }
 
-    void add_syfco_option(CLI::App *app, std::string &path_to_syfco) {
-        app->add_option("-s,--syfco-path", path_to_syfco, "Path to Syfco binary")->default_val(
-                DEFAULT_SYFCO_PATH_)->check(CLI::ExistingFile);
+    void add_syfco_option(CLI::App *app, std::optional<std::string> &path_to_syfco) {
+        app->add_option("-s,--syfco-path", path_to_syfco, "Path to Syfco binary")
+        ->check(CLI::ExistingFile);
     }
 
     void add_slugs_option(CLI::App *app, std::string &path_to_slugs) {
-        app->add_option("-S,--slugs-path", path_to_slugs, "Path to Slugs root directory")->default_val(
-                DEFAULT_SLUGS_PATH_)->check(CLI::ExistingDirectory);
-    }
-
-    TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
-                        const std::string &path_to_syfco, const std::string &formula_file) {
-        Syft::Parser parser;
-        // the parser assumes "syfco" is in the current working directory
-        parser = Syft::Parser::read_from_file(path_to_syfco, formula_file);
-        bool sys_first = parser.get_sys_first();
-
-        // get starting player and protagonist player
-        Syft::Player starting_player = sys_first ? Syft::Player::Agent : Syft::Player::Environment;
-        Syft::Player protagonist_player = Syft::Player::Agent;
-
-        Syft::InputOutputPartition partition =
-                Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
-                                                                 parser.get_output_variables());
-
-        // Parsing the formula
-        whitemech::lydia::ltlf_ptr parsed_formula = Syft::parse_formula(driver, parser.get_formula());
-
-        return {starting_player, protagonist_player, partition, parsed_formula};
-    }
-
-    whitemech::lydia::ltlf_ptr parse_formula(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
-                                             const std::string &formula) {
-        std::stringstream formula_stream(formula);
-        driver->parse(formula_stream);
-        whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
-        // Apply no-empty semantics
-        auto context = driver->context;
-        auto not_end = context->makeLtlfNotEnd();
-        parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});
-        return parsed_formula;
-    }
-
-    std::shared_ptr<Syft::VarMgr> build_var_mgr(const InputOutputPartition &partition) {
-        std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
-        var_mgr->create_named_variables(partition.input_variables);
-        var_mgr->create_named_variables(partition.output_variables);
-        return var_mgr;
-    }
-
-    SymbolicStateDfa
-    do_dfa_construction(const whitemech::lydia::LTLfFormula &formula, const std::shared_ptr<Syft::VarMgr> &var_mgr) {
-        ExplicitStateDfa explicit_dfa_mona = ExplicitStateDfa::dfa_of_formula(formula);
-        ExplicitStateDfaAdd explicit_dfa = ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona);
-        SymbolicStateDfa symbolic_dfa = SymbolicStateDfa::from_explicit(explicit_dfa);
-        return symbolic_dfa;
+        app->add_option("-S,--slugs-path", path_to_slugs, "Path to Slugs root directory")
+        ->check(CLI::ExistingDirectory);
     }
 
     bool BaseRunner::handle_preprocessing_result_(const OneStepSynthesisResult &one_step_result,

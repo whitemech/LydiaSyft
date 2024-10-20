@@ -1,42 +1,114 @@
 # LydiaSyft: A Compositional Symbolic Synthesis Framework for LTLf Specification
 
+LydiaSyft is an open-source software framework for reasoning and synthesis of Linear Tempora Logic formulas interpreted on finite traces (LTLf), integrating efficient data structures and techniques focused on LTLf specifications. 
+
+This project can be used either as a standalone CLI tool or as a C++ library that integrates with other projects. Among the implemented Data Structures and algorithms, we have:
+
+- DFA representation and manipulation:
+  - Explicit-state DFA (à la MONA): [(N. Klarlund et al., 2002)](https://www.worldscientific.com/doi/abs/10.1142/S012905410200128X), [(De Giacomo and Favorito, 2021)](https://ojs.aaai.org/index.php/ICAPS/article/view/15954)
+  - Symbolic-state DFA: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+
+- LTLf synthesis settings:
+  - Classical synthesis: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
+  - MaxSet synthesis: [(Zhu and De Giacomo, 2022)](https://www.ijcai.org/proceedings/2022/386)
+  - Synthesis with fairness assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with stability assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
+  - Synthesis with environment GR(1) assumptions: [(De Giacomo et al., 2022)](https://link.springer.com/article/10.1007/s10703-023-00413-2)
+
+  
+Currently, the system has been tested on Ubuntu 24.04 LTS, and should work on other Linux systems. We plan to fully support also MacOS and Windows systems.
+
+
+## Dependencies
+
+The software depends on the following projects:
+
+- CUDD: CU Decision Diagram package: https://github.com/KavrakiLab/cudd
+- MONA (WhiteMech's fork): https://github.com/whitemech/MONA
+- Lydia: https://github.com/whitemech/lydia
+- Flex & [Bison](https://www.gnu.org/software/bison/)
+- [Graphviz](https://graphviz.org/)
+- Syfco: the Synthesis Format Conversion Tool: https://github.com/reactive-systems/syfco
+- Slugs: SmalL bUt Complete GROne Synthesizer: https://github.com/VerifiableRobotics/slugs/
+
+
 ## Compilation Instructions using CMake
 
 ### System-wide dependencies
 
-We assume the software will be built on a Ubuntu 22.04 machine.
+The instructions have been tested over a machine with Ubuntu 24.04 as operating system.
 
 First, install the following system-wide dependencies:
 
 ```
 sudo apt install -y \
-   automake \
-   cmake    \
-   gcc      \
-   g++      \
-   libtool  \
-   wget     \
+   automake         \
+   build-essential  \
+   cmake            \
+   curl             \
+   libtool          \
+   wget             \
    unzip
+```
+
+
+### Install Flex, Bison
+
+Install flex and bison:
+
+    sudo apt-get install flex bison
+
+### Install Graphviz
+
+For the graphical features (automata and strategy visualization), graphviz need to be installed:
+
+```
+sudo apt install graphviz libgraphviz-dev
+```
+
+### Install Syfco
+
+Building Syfco requires the Glasgow Haskell Compiler. To install the tool you can use `stack`:
+
+```
+curl -sSL https://get.haskellstack.org/ | sh
+git clone https://github.com/reactive-systems/syfco.git
+cd syfco
+git checkout 50585e0
+stack install
+```
+
+The installation should install the `syfco` binary in a directory in teh system path. 
+Then, make sure the binary `syfco` can be found on your system path: `which syfco`.
+
+When using the CLI, you can also provide the path to the `syfco` binary manually by setting `--syfco-path`. 
+
+### Install Slugs (Optional)
+
+Slugs is required for solving LTLf synthesis with GR(1) conditions.
+
+To build Slugs, run:
+
+```
+cd submodules/slugs
+git checkout a188d83
+cd src
+make -j$(nproc --ignore 1)
 ```
 
 ### Install CUDD
 
-0.1 Make sure CUDD is installed. CUDD can be found at:
+Make sure CUDD is installed. CUDD can be found at:
 
     https://github.com/KavrakiLab/cudd.git
 
-0.2 Install CUDD:
+Install CUDD:
 
-    ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=[install location]
+    autoreconf -f -i
+    ./configure --enable-silent-rules --enable-obj --enable-dddmp --prefix=/usr/local
     sudo make install
 
-    If you get an error about aclocal, this might be due to either
-    a. Not having automake:
-        sudo apt-get install automake
-    b. Needing to reconfigure, do this before configuring:
-        autoreconf -i
-
-### Install MONA
+### Install Mona
 
 To install MONA system-wide:
 
@@ -51,13 +123,7 @@ sudo cp Mem/mem.h Mem/gnuc.h Mem/dlmalloc.h BDD/bdd_external.h BDD/bdd_dump.h BD
 ```
 
 
-### Install FLEX, BISON
-
-0.3 Install flex and bison:
-
-    sudo apt-get install flex bison
-
-### Install LYDIA
+### Install Lydia
 
 The tool requires the installation of Lydia, which will be triggered by the CMake configuration.
 
@@ -67,8 +133,9 @@ instructions in the `README.md`.
 ### Install Z3
 
 By default, the CMake configuration will fetch z3 automatically from the GitHub repository.
-In order to disable this behaviour, you can configure the project by setting -DZ3_FETCH=OFF.
+There might be required other dependencies. 
 
+In order to disable this behaviour, you can configure the project by setting `-DZ3_FETCH=OFF`.
 In that case, you have to have the library installed on your system.
 To link the static library of z3, you have to install z3 manually:
 
@@ -76,19 +143,12 @@ To link the static library of z3, you have to install z3 manually:
 wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
 unzip z3-4.8.12-x64-glibc-2.31.zip
 cd z3-4.8.12-x64-glibc-2.31
-cp bin/libz3.a /usr/local/lib
-cp include/*.h /usr/local/include
+sudo cp bin/libz3.a /usr/local/lib
+sudo cp include/*.h /usr/local/include
 ```
 
-### Graphviz
 
-For the graphical features (automata and strategy visualization), graphviz need to be installed:
-
-```
-sudo apt install graphviz libgraphviz-dev
-```
-
-## Build LYDIASYFT
+## Build LydiaSyft
 
 1. Make build folder so your directory is not flooded with build files:
 
@@ -117,7 +177,7 @@ make -j$(nproc --ignore=1) tests
 ./bin/tests
 ```
 
-## Run LYDIASYFT
+## Run LydiaSyft as CLI tool
 
 Usage:
 
@@ -150,37 +210,42 @@ Examples (run commands from the root directory of the project):
 - Classical synthesis:
 
 ```
-./build/bin/LydiaSyft synthesis -f example/test.tlsf   # UNREALIZABLE
-./build/bin/LydiaSyft synthesis -f example/test1.tlsf  # REALIZABLE
+./build/bin/LydiaSyft synthesis -f examples/test.tlsf   # UNREALIZABLE
+./build/bin/LydiaSyft synthesis -f examples/test1.tlsf  # REALIZABLE
 ```
 
 - Maxset synthesis:
 
 ```
-./build/bin/LydiaSyft maxset -f example/test1.tlsf
+./build/bin/LydiaSyft maxset -f examples/test1.tlsf  # REALIZABLE
 ```
 
 - Fairness synthesis:
 
 ```
-./build/bin/LydiaSyft fairness -f example/fair_stable_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft fairness -f examples/fair_stable_test.tlsf -a examples/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - Stability synthesis:
 
 ```
-./build/bin/LydiaSyft stability -f example/fair_stable_counter_test.tlsf -a example/fair_stable_test_assumption.txt  # REALIZABLE
+./build/bin/LydiaSyft stability -f examples/fair_stable_counter_test.tlsf -a examples/fair_stable_test_assumption.txt  # REALIZABLE
 ```
 
 - GR(1) synthesis:
 
 ```
-./build/bin/LydiaSyft gr1 -f example/GR1benchmarks/finding_nemo_agn_goal.tlsf -g example/GR1benchmarks/finding_nemo_env_gr1.txt -e example/GR1benchmarks/finding_nemo_env_safety.ltlf -a example/GR1benchmarks/finding_nemo_agn_safety.ltlf --slugs-path ./submodules/slugs/   # REALIZABLE
+./build/bin/LydiaSyft gr1 \
+    -f examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1.tlsf \
+    -g examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_gr1.txt \
+    -e examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_env_safety.ltlf \
+    -a examples/TLSF/GR1benchmarks/finding_nemo/finding_nemo_1_agn_safety.ltlf \
+    --slugs-path ./submodules/slugs/   # REALIZABLE
 ```
 
-## Quickstart
+## Use LydiaSyft as a library
 
-The software also provides C++ APIs. Here there is an example:
+The software also provides C++ APIs. Here there is an example of usage:
 
 ```cpp
 #include <memory>
@@ -242,18 +307,7 @@ int main(int argc, char ** argv) {
 }
 ```
 
-## Implemented Data Structures and Algorithm
-
-- DFA representation and manipulation:
-  - Explicit-state DFA (à la MONA): [(N. Klarlund et al., 2002)](https://www.worldscientific.com/doi/abs/10.1142/S012905410200128X), [(De Giacomo and Favorito, 2021)](https://ojs.aaai.org/index.php/ICAPS/article/view/15954)
-  - Symbolic-state DFA: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
-
-- LTLf synthesis settings:
-  - Classical synthesis: [(Zhu et al., 2017)](https://www.ijcai.org/proceedings/2017/0189)
-  - MaxSet synthesis: [(Zhu and De Giacomo, 2022)](https://www.ijcai.org/proceedings/2022/386)
-  - Synthesis with fairness assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
-  - Synthesis with stability assumptions: [(Zhu et al., 2020)](https://ojs.aaai.org/index.php/AAAI/article/view/5704)
-  - Synthesis with environment GR(1) assumptions: [(De Giacomo et al., 2022)](https://link.springer.com/article/10.1007/s10703-023-00413-2)
+More code examples can be found in the `examples/` folder.
 
 
 ## Documentation
@@ -269,3 +323,12 @@ Then:
 ```
 doxygen Doxyfile
 ```
+
+
+## License
+
+This project is licensed under the GNU Affero General Public License. See the [LICENSE](LICENSE) file for details.
+
+Copyright (C) 2024, Marco Favorito, Shufang Zhu. All rights reserved.
+
+

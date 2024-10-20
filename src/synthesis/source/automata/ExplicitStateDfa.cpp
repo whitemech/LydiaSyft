@@ -21,11 +21,7 @@
 namespace Syft {
 
     void ExplicitStateDfa::dfa_print() {
-        std::cout << "Number of states " +
-                     std::to_string(get_nb_states()) << "\n";
-
-
-        std::cout << "Computed automaton: ";
+        std::cout << "Computed automaton: " << std::endl;
         whitemech::lydia::dfaPrint(get_dfa(),
                                    get_nb_variables(),
                                    names, indices.data());
@@ -442,8 +438,9 @@ namespace Syft {
 
 
     ExplicitStateDfa ExplicitStateDfa::dfa_complement(ExplicitStateDfa &d) {
-        dfaNegation(d.dfa_);
-        ExplicitStateDfa res_dfa(d.dfa_, d.names);
+        DFA* arg = dfaCopy(d.dfa_);
+        dfaNegation(arg);
+        ExplicitStateDfa res_dfa(arg, d.names);
         return res_dfa;
     }
 
