@@ -183,7 +183,7 @@ Usage:
 
 ```
 LydiaSyft: A compositional synthesizer for Linear Temporal Logic on finite traces (LTLf)
-Usage: ./cmake-build-debug/bin/LydiaSyft [OPTIONS] SUBCOMMAND
+Usage: LydiaSyft [OPTIONS] SUBCOMMAND
 
 Options:
   -h,--help                   Print this help message and exit
