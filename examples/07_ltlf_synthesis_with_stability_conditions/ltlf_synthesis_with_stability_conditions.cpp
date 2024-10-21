@@ -1,12 +1,10 @@
 #include <filesystem>
 #include <memory>
-#include <string>
 
 #include <lydia/parser/ltlf/driver.hpp>
 
 #include "automata/SymbolicStateDfa.h"
 #include "synthesizer/StabilityLtlfSynthesizer.h"
-#include "VarMgr.h"
 #include "Utils.h"
 #include "Preprocessing.h"
 

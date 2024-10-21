@@ -12,8 +12,6 @@
 
 namespace Syft {
 
-    std::string read_assumption_file_if_file_specified_(const std::optional<std::string> &filename);
-
     class GR1Runner : public BaseRunner {
     private:
         const std::string path_to_slugs_;
@@ -46,10 +44,10 @@ namespace Syft {
                                                            env_safety_file_(env_safety_file),
                                                            agent_safety_file_(agent_safety_file),
                                                            agent_safety_(parse_formula(driver_,
-                                                                                       read_assumption_file_if_file_specified_(
+                                                                                       read_assumption_file_if_file_specified(
                                                                                                agent_safety_file_))),
                                                            env_safety_(parse_formula(driver_,
-                                                                                     read_assumption_file_if_file_specified_(
+                                                                                     read_assumption_file_if_file_specified(
                                                                                              env_safety_file_))) {}
 
         void run() const;

@@ -81,17 +81,4 @@ namespace Syft {
         }
     }
 
-    std::string read_assumption_file_if_file_specified_(const std::optional<std::string> &filename) {
-        if (!filename.has_value()) {
-            return "true";
-        }
-        std::ifstream file(filename.value());
-        if (!file.good()) {
-            throw std::runtime_error("File " + filename.value() + " not found");
-        }
-        std::string assumption_str;
-        std::getline(file, assumption_str);
-        return assumption_str;
-    }
-
 }

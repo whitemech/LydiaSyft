@@ -1,10 +1,16 @@
+#include "synthesizer/GR1LTLfSynthesizer.h"
+#include "GR1.h"
+#include "Preprocessing.h"
+#include "synthesizer/LTLfMaxSetSynthesizer.h"
+#include "automata/ExplicitStateDfa.h"
+#include "Stopwatch.h"
+#include <CLI/CLI.hpp>
 #include "Parser.h"
 #include "misc.h"
 #include "Synthesizer.h"
 #include "game/InputOutputPartition.h"
 #include "lydia/parser/ltlf/driver.hpp"
 #include "Utils.h"
-
 
 
 namespace Syft {
@@ -87,4 +93,19 @@ namespace Syft {
         Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(explicit_dfa);
         return symbolic_dfa;
     }
+
+
+    std::string read_assumption_file_if_file_specified(const std::optional<std::string> &filename) {
+        if (!filename.has_value()) {
+            return "true";
+        }
+        std::ifstream file(filename.value());
+        if (!file.good()) {
+            throw std::runtime_error("File " + filename.value() + " not found");
+        }
+        std::string assumption_str;
+        std::getline(file, assumption_str);
+        return assumption_str;
+    }
+
 }
