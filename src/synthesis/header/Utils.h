@@ -1,6 +1,7 @@
 #ifndef LYDIASYFT_UTILS_H
 #define LYDIASYFT_UTILS_H
 
+#include "synthesizer/GR1LTLfSynthesizer.h"
 #include "synthesizer/LTLfMaxSetSynthesizer.h"
 #include "Synthesizer.h"
 #include "Stopwatch.h"
@@ -42,6 +43,9 @@ namespace Syft {
 
     Syft::SymbolicStateDfa
     do_dfa_construction(const whitemech::lydia::LTLfFormula &formula, const std::shared_ptr<Syft::VarMgr> &var_mgr);
+
+    std::string read_assumption_file_if_file_specified(const std::optional<std::string> &filename);
+
 }
 
 #endif //LYDIASYFT_UTILS_H
