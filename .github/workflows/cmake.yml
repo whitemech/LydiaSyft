@@ -38,6 +38,12 @@ jobs:
           # build slugs
           sudo apt install -y libboost-all-dev
           cd submodules/slugs/src && make -j
+      - name: install Syfco
+        run: |
+          git clone https://github.com/reactive-systems/syfco.git syfco-repo
+          cd syfco-repo
+          git checkout 50585e0
+          stack install
       - name: Install Z3
         run: |
           wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.12/z3-4.8.12-x64-glibc-2.31.zip
@@ -87,3 +93,16 @@ jobs:
         # TODO: disable Lydia tests, temporarily run them manually
         # run: ctest -C ${{env.BUILD_TYPE}}
         run: ${{github.workspace}}/build/bin/tests
+
+      - name: Examples
+        working-directory: ${{github.workspace}}/build
+        # Execute examples
+        run: |
+          ${{github.workspace}}/build//bin/quickstart_example
+          ${{github.workspace}}/build//bin/dfa_representation_example
+          ${{github.workspace}}/build//bin/dfa_creation_and_manipulation_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_maximally_permissive_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_with_fairness_constraints_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_with_stability_constraints_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_with_gr1_env_spec_example
