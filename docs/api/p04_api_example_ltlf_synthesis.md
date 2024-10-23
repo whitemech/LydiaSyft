@@ -25,7 +25,7 @@ int main(int argc, char ** argv) {
 
     // parse TLSF file
     std::filesystem::path ROOT_DIRECTORY = __ROOT_DIRECTORY;
-    std::filesystem::path tlsf_file_test = ROOT_DIRECTORY / "examples" / "test.tlsf";
+    std::filesystem::path tlsf_file_test = ROOT_DIRECTORY / "examples" / "test1.tlsf";
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     Syft::TLSFArgs args = Syft::parse_tlsf(driver, tlsf_file_test.string());
     std::cout << "TLSF file parsed: " << tlsf_file_test.string() << std::endl;
@@ -90,7 +90,7 @@ that wrap other lower-level function calls to the LydiaSyft library.
 We start by using the `Syft::parse_tlsf` function, which uses the tool `syfco` to parse a TLSF input file.
 
 ```cpp
-std::filesystem::path tlsf_file_test = ROOT_DIRECTORY / "examples" / "test.tlsf";
+std::filesystem::path tlsf_file_test = ROOT_DIRECTORY / "examples" / "test1.tlsf";
 auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
 Syft::TLSFArgs args = Syft::parse_tlsf(driver, tlsf_file_test.string());
 ```
@@ -179,14 +179,11 @@ else {
 }
 ```
 
-The specification `examples/test.tlsf` is unrealizable, so no output can be produced.
-However, you can run the code by changing the variable `tlsf_file_test` to `ROOT_DIRECTORY / "examples" / "test1.tlsf"` and recompile.
-
-The SVG corresponding to the transducer of `examples/test.tlsf` is:
+The specification `examples/test1.tlsf` is realizable, the SVG corresponding to the transducer of `examples/test1.tlsf` is:
 
 ![](test1_winning_strategy.svg)
 
 As you can see, we have the root nodes (top-left), one for each user specified output (system) variable. 
-The first decision node determines the current state, and the second decision node determines the value of the input (environment) variable `a1`. Here since input variable `a2` does not occur in the formula, so the valueo of `a2` does not affect the value of output variables.
+The first decision node determines the current state, and the second decision node determines the value of the input (environment) variable `a1`. Here since input variable `a2` does not occur in the formula, so the value of `a2` does not affect the value of output variables.
 The final value determines the value of output (system) variable.
 
