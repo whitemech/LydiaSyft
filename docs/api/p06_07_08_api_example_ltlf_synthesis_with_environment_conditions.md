@@ -5,7 +5,7 @@ In this example, we will show how to use the LydiaSyft C++ APIs to solve LTLf sy
 ## Fairness Assumptions
 
 The code for this example can be found in `examples/06_ltlf_synthesis_with_fairness_conditions/ltlf_synthesis_with_fairness_constraints.cpp`.
-To build this example, you can run `make ltlf_synthesis_with_fairness_constraints_example`.
+To build this example, you can run `make ltlf_synthesis_with_fairness_conditions_example`.
 
 Follows the full code of the example:
 ```cpp
@@ -71,7 +71,7 @@ The declaration of the class `Syft::FairnessLtlfSynthesizer` can be found in the
 ## Stability Assumptions
 
 The code for this example can be found in `examples/07_ltlf_synthesis_with_stability_conditions/ltlf_synthesis_with_stability_conditions.cpp`.
-To build this example, you can run `make ltlf_synthesis_with_stability_constraints_example`.
+To build this example, you can run `make ltlf_synthesis_with_stability_conditions_example`.
 
 Follows the full code of the example:
 

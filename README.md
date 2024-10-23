@@ -308,7 +308,7 @@ int main(int argc, char ** argv) {
 ```
 
 More code examples can be found in the `examples/` folder.
-
+To build them, run `make examples`.
 
 ## Documentation
 

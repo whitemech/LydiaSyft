@@ -103,6 +103,6 @@ jobs:
           ${{github.workspace}}/build//bin/dfa_creation_and_manipulation_example
           ${{github.workspace}}/build//bin/ltlf_synthesis_example
           ${{github.workspace}}/build//bin/ltlf_synthesis_maximally_permissive_example
-          ${{github.workspace}}/build//bin/ltlf_synthesis_with_fairness_constraints_example
-          ${{github.workspace}}/build//bin/ltlf_synthesis_with_stability_constraints_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_with_fairness_conditions_example
+          ${{github.workspace}}/build//bin/ltlf_synthesis_with_stability_conditions_example
           ${{github.workspace}}/build//bin/ltlf_synthesis_with_gr1_env_spec_example
