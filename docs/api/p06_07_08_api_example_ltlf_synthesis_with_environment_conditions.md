@@ -1,6 +1,6 @@
-# LTLf Synthesis with Fairness Constraints {#p06_07_08_api_example_ltlf_synthesis_with_fairness_conditions}
+# LTLf Synthesis with Environment Constraints {#p06_07_08_api_example_ltlf_synthesis_with_environment_conditions}
 
-In this example, we will show how to use the LydiaSyft C++ APIs to solve LTLf synthesis with different kinds of fairness constraints.
+In this example, we will show how to use the LydiaSyft C++ APIs to solve LTLf synthesis with different kinds of environment constraints.
 
 ## Fairness Assumptions
 

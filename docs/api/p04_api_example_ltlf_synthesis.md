@@ -182,4 +182,11 @@ else {
 The specification `examples/test.tlsf` is unrealizable, so no output can be produced.
 However, you can run the code by changing the variable `tlsf_file_test` to `ROOT_DIRECTORY / "examples" / "test1.tlsf"` and recompile.
 
+The SVG corresponding to the transducer of `examples/test.tlsf` is:
+
+![](test1_winning_strategy.svg)
+
+As you can see, we have the root nodes (top-left), one for each user specified output (system) variable. 
+The first decision node determines the current state, and the second decision node determines the value of the input (environment) variable `a1`. Here since input variable `a2` does not occur in the formula, so the valueo of `a2` does not affect the value of output variables.
+The final value determines the value of output (system) variable.
 
