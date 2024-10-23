@@ -12,7 +12,7 @@ namespace Syft {
               state_space_(state_space) {
     }
 
-    SynthesisResult Reachability::run() const {
+    SynthesisResult Reachability:: run() const {
         SynthesisResult result;
         CUDD::BDD winning_states = state_space_ & goal_states_;
         CUDD::BDD winning_moves = winning_states;
