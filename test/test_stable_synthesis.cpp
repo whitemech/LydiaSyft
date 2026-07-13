@@ -35,7 +35,7 @@ TEST_CASE("Stable Synthesis of realizable counter_1", "[stable synthesis]") {
     driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     std::stringstream formula_stream(parser.get_formula());
     driver->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
+    whitemech::lydia::ltlf_ptr parsed_formula = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver->get_result());
     // Apply no-empty semantics
     auto context = driver->context;
     auto not_end = context->makeLtlfNotEnd();
@@ -83,8 +83,7 @@ TEST_CASE("Stable Synthesis of unrealizable counter_1", "[stable synthesis]") {
     driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     std::stringstream formula_stream(parser.get_formula());
     driver->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
-    // Apply no-empty semantics
+    whitemech::lydia::ltlf_ptr parsed_formula = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver->get_result());    // Apply no-empty semantics
     auto context = driver->context;
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula = context->makeLtlfAnd({parsed_formula, not_end});

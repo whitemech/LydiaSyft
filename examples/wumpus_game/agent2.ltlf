@@ -1,0 +1,1 @@
+A(G(w2at20 || w2at21 || w2at22)) && A(G(w2north || w2south || w2east || w2west && (w2north -> (!w2south && !w2east && !w2west)) && (w2south -> (!w2north && !w2east && !w2west)) && (w2east -> (!w2north && !w2south && !w2west)) && (w2west -> (!w2north && !w2south && !w2east)))) && A(G((w2at20 -> X(w2at21)) && (w2at21 -> X(w2at20 || w2at22)) && (w2at22 -> X(w2at21))))

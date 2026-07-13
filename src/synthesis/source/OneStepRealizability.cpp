@@ -2,7 +2,7 @@
 #include "Synthesizer.h"
 
 #include <lydia/logic/ltlf/base.hpp>
-
+#if 0
 namespace Syft {
 
     void SmtOneStepRealizabilityVisitor::visit(const whitemech::lydia::LTLfTrue &formula) {
@@ -125,3 +125,4 @@ namespace Syft {
         return move;
     }
 }
+#endif

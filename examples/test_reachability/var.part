@@ -1,0 +1,4 @@
+.inputs:ready
+.agent0:req0 
+.agent1:grant0 grant1
+.agent2:busy

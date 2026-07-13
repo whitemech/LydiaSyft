@@ -17,7 +17,8 @@ namespace Syft {
     private:
 
         std::vector<std::string> input_variables;
-        std::vector<std::string> output_variables;
+        std::vector<std::vector<std::string>> agent_variables;
+        std::vector<std::string> agent_formulas;
         std::string formula;
         bool sys_first;
 
@@ -47,9 +48,9 @@ namespace Syft {
         std::vector<std::string> get_input_variables() const;
 
         /**
-         * \brief Return output variables in a vector.
+         * \brief Return agent variables in a vector.
          */
-        std::vector<std::string> get_output_variables() const;
+        std::vector<std::vector<std::string>> get_agent_variables() const;
 
         /**
          * \brief Return the formula.
@@ -57,9 +58,22 @@ namespace Syft {
         std::string get_formula() const;
 
         /**
+         * \brief Return the formula.
+         */
+        std::vector<std::string> get_agent_formulas() const;
+
+        /**
          * \brief Return true if the target is a Moore machine.
          */
         bool get_sys_first() const;
+
+    
+        /**
+         * \brief Return output variables in a vector.
+         */
+        std::vector<std::string> get_output_variables() const;
+
+
     };
 
 }

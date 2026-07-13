@@ -3,7 +3,7 @@
 #include "lydia/logic/nnf.hpp"
 
 #include <lydia/logic/ltlf/base.hpp>
-
+#if 0
 namespace Syft {
 
     void SmtOneStepUnrealizabilityVisitor::visit(const whitemech::lydia::LTLfTrue &formula) {
@@ -147,3 +147,4 @@ namespace Syft {
 
     }
 }
+#endif

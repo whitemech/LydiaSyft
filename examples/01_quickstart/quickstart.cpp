@@ -1,57 +1,98 @@
+#include <iostream>
+#include <string>
+#include "Parser.h"
+#include "VarMgr.h"
 #include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <filesystem>
+#include "lydia/mona_ext/mona_ext_base.hpp"
 #include <lydia/parser/ltlf/driver.hpp>
-
 #include "automata/ExplicitStateDfa.h"
 #include "automata/ExplicitStateDfaAdd.h"
 #include "automata/SymbolicStateDfa.h"
 #include "game/InputOutputPartition.h"
 #include "Player.h"
-#include "VarMgr.h"
 #include "synthesizer/LTLfSynthesizer.h"
 
 
 int main(int argc, char ** argv) {
-
-    // define the formula and the input/output variables
-    std::string formula_str = "F(a | b)";
-    std::vector<std::string> input_vars{"a"};
-    std::vector<std::string> output_vars{"b"};
+    std::string partition_file = "/examples/01_quickstart/test_vars.part";
+    std::cout << "Open file: " << partition_file << std::endl;
     
-    // parse the formula
-    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
-    std::stringstream formula_stream(formula_str);
-    driver->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr formula = driver->get_result();
+    
+    Syft::InputOutputPartition partition = Syft::InputOutputPartition::read_from_file(partition_file);
 
-    // initialize the variables
-    Syft::InputOutputPartition partition = Syft::InputOutputPartition::construct_from_input(input_vars, output_vars);
+    auto input = partition.input_variables;
+    auto agents = partition.agent_variables;
+
+    std::vector<std::string> formulas = {
+        "F(x & a)",      // Agent 0
+        "G(y -> b)",     // Agent 1
+        "F(a & b & c)"   // Agent 2
+    };
+    std::cout << "Input variables found: " << input.size() << std::endl;
+    std::cout << "Number of agents found: " << agents.size() << std::endl; 
+    std::cout << "Agent formulas found: " << formulas.size() << std::endl;
+
+    std::cout << "Input variables: " << std::endl;  
+    for (const auto& var : input) {
+        std::cout << var << std::endl;
+    }
+    for (std::size_t i = 0; i < agents.size(); ++i) {
+        std::cout << "Agent " << i << " variables: " << std::endl;
+        for (const auto& var : agents[i]) {
+            std::cout << var << std::endl;
+        }
+        std::cout << "Agent " << i << " formula: " << formulas[i] << std::endl;
+    }
+    
+    //set up VarMgr
     std::shared_ptr<Syft::VarMgr> var_mgr = std::make_shared<Syft::VarMgr>();
-    var_mgr->create_named_variables(partition.input_variables);
-    var_mgr->create_named_variables(partition.output_variables);
+    var_mgr->create_named_variables(input);
+    for (const auto& agent_vars : agents) {
+        var_mgr->create_named_variables(agent_vars);
+    }
+    var_mgr->partition_variables(input, agents);
 
-    // build the explicit-state DFA
-    Syft::ExplicitStateDfa explicit_dfa = Syft::ExplicitStateDfa::dfa_of_formula(*formula);
-    Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa);
-
-    // build the symbolic-state DFA from the explicit-state DFA
-    Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(
-            std::move(explicit_dfa_add));
+    //Directory for showing results
+    std::string out_dir = "dfa_outputs";
+    std::filesystem::remove_all(out_dir);
+    std::filesystem::create_directories(out_dir);
     
+    auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     
-    // do synthesis
-    var_mgr->partition_variables(partition.input_variables, partition.output_variables);
-    Syft::Player starting_player = Syft::Player::Agent;
-    Syft::Player protagonist_player = Syft::Player::Agent;
-    Syft::LTLfSynthesizer synthesizer(symbolic_dfa, starting_player,
-                                        protagonist_player, symbolic_dfa.final_states(),
-                                        var_mgr->cudd_mgr()->bddOne());
-    Syft::SynthesisResult result = synthesizer.run();
+    for (size_t i = 0; i < formulas.size(); ++i){
+        std::string name = (i == 0) ? " main_agent" : " peer" + std::to_string(i);
+        std::string prefix= out_dir + "/" + name;
+        std::cout << "Generating DFA for" << name << " with formula: " << formulas[i] << std::endl;
+        std::stringstream formula_stream(formulas[i]);
+        driver->parse(formula_stream);
+        auto ltlf_ptr = driver->get_result();
 
+        //Explicit DFA
+        auto ltlf_formula = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(ltlf_ptr);
+        Syft::ExplicitStateDfa dfa = Syft::ExplicitStateDfa::dfa_of_formula(*ltlf_formula);
+        dfa.export_dfa(prefix + ".mona");
+        whitemech::lydia::print_mona_dfa(
+            dfa.dfa_,
+            prefix,
+            dfa.get_nb_variables()
+        );
+        
+        //Explicit DFA
+        Syft::ExplicitStateDfaAdd explicit_dfa_add = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, dfa);
+        explicit_dfa_add.dump_dot(prefix + "_add.dot");
 
-    std::cout << (result.realizability? "" : "NOT ") << "REALIZABLE" << std::endl;
+        //Symbolic DFA
+        Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(std::move(explicit_dfa_add));
+        symbolic_dfa.dump_dot(prefix + "_symbolic.dot");
+
+        
+    }
+    std::cout << "\nCompleted" << std::endl;
+
     return 0;
+
 }

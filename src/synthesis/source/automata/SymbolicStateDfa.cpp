@@ -1,9 +1,22 @@
 #include "automata/SymbolicStateDfa.h"
+#include "game/BuchiReachability_multiagent.hpp"
+#include <cstdio>
 
 namespace Syft {
 
     SymbolicStateDfa::SymbolicStateDfa(std::shared_ptr<VarMgr> var_mgr)
             : var_mgr_(std::move(var_mgr)) {}
+
+    SymbolicStateDfa::SymbolicStateDfa(std::shared_ptr<Syft::VarMgr> var_mgr,
+        std::size_t automaton_id,
+        const std::vector<int>& initial_state,
+        const std::vector<CUDD::BDD>& transition_function,
+        const CUDD::BDD& final_states) : 
+            var_mgr_(std::move(var_mgr)), 
+            automaton_id_(automaton_id),
+            initial_state_(initial_state),
+            transition_function_(transition_function),
+            final_states_(final_states) {}
 
     std::pair<std::size_t, std::size_t> SymbolicStateDfa::create_state_variables(
             std::shared_ptr<VarMgr> &var_mgr,
@@ -299,5 +312,99 @@ namespace Syft {
         return complement_automaton;
     }
 
+  
+    
+SymbolicStateDfa SymbolicStateDfa::get_CORE(const Syft::SymbolicStateDfa &dfa, Actor protagonist_actor, Actor starting_actor) {
+
+    auto var_mgr = dfa.var_mgr();
+    //STEP 1: Get winning region for the agent using BuchiReachability
+    size_t num_agents = var_mgr->agents_count();
+    CUDD::BDD buchi_condition = dfa.final_states();
+    CUDD::BDD state_space = var_mgr->cudd_mgr()->bddOne();
+
+    BuchiReachability_multiagent game(dfa, starting_actor, protagonist_actor, buchi_condition, state_space, num_agents);
+    SynthesisResult result = game.run();
+    std::cout << (protagonist_actor.is_agent() ? "Agent core is realizable: " : "Environment core is realizable: ")
+              << result.realizability << std::endl;
+    CUDD::BDD winning_region = result.winning_states;
+
+    auto initial_state = dfa.initial_state();
+    
+    //chech if initial state is in winning region
+    //std::cout << "initial state of automata non restricted is in winning region? " << (winning_region.Eval(initial_state.data()).IsOne() ? 1 : 0) << std::endl;
+   
+    //STEP 2: create a new dfa with the same values of the original Dfa + STEP 3) create new sink
+    std::string sink_name = "z_sink_" + (protagonist_actor.is_environment() ? "env" : "agent" + std::to_string(protagonist_actor.id()));
+    std::size_t new_id = var_mgr->create_core_state_space(dfa.automaton_id(), sink_name);
+    
+    
+    std::string unique_sink_name = sink_name + "_" + std::to_string(new_id);
+    CUDD::BDD z_sink = var_mgr->name_to_variable(unique_sink_name);  
+    
+    //STEP 4:set BDD for z_sinz when actor is an agent
+    //STEP 5:set BDD for z_sink when actor is environment
+    std::vector<CUDD::BDD> compose_vector = var_mgr->make_compose_vector(
+        dfa.automaton_id(), 
+        dfa.transition_function_
+    );
+
+    CUDD::BDD next_W = winning_region.VectorCompose(compose_vector);
+
+    CUDD::BDD z_sink_bdd;
+    if(protagonist_actor.is_agent()){
+        CUDD::BDD external_variables_cube = var_mgr->agent_input_cube(protagonist_actor.id());
+        CUDD::BDD forallX_nextW = next_W.UnivAbstract(external_variables_cube);
+        CUDD::BDD t_Z_Y = winning_region * forallX_nextW;
+        z_sink_bdd = z_sink + (winning_region * !t_Z_Y) + (!winning_region);
+    } else {
+        CUDD::BDD t_Z_Y_X = winning_region * next_W;
+        z_sink_bdd = z_sink + (winning_region * !t_Z_Y_X) + (!winning_region);
+    }
+
+    std::vector<int> core_initial_state = dfa.initial_state();
+    core_initial_state.push_back(0);
+    
+    std::vector<CUDD::BDD> core_transition_function = dfa.transition_function();
+    core_transition_function.push_back(z_sink_bdd);
+
+    //STEP 6: Modify final states function
+    CUDD::BDD core_final_states = dfa.final_states() * winning_region * !z_sink;
+    
+    SymbolicStateDfa core_dfa(std::move(var_mgr));
+    core_dfa.automaton_id_ = new_id;
+    core_dfa.initial_state_ = std::move(core_initial_state);
+    core_dfa.transition_function_ = std::move(core_transition_function);
+    core_dfa.final_states_ = std::move(core_final_states);
+
+    return core_dfa;
+}
+
+SymbolicStateDfa SymbolicStateDfa::get_NE(const Syft::SymbolicStateDfa &dfa, Actor protagonist_actor) {
+    auto var_mgr = dfa.var_mgr();
+    std::string ne_name = "z_ne_" + (protagonist_actor.is_environment() ? "env" : "agent" + std::to_string(protagonist_actor.id()));
+    std::size_t new_id = var_mgr->create_nonempty_state_space(dfa.automaton_id(), ne_name);
+
+    std::string unique_ne_name = ne_name + "_" + std::to_string(new_id);
+    CUDD::BDD ne_sink = var_mgr->name_to_variable(unique_ne_name);  
+
+    std::vector<int> ne_initial_state = dfa.initial_state();
+    ne_initial_state.push_back(0);
+    
+    std::vector<CUDD::BDD> ne_transition_function = dfa.transition_function();
+    ne_transition_function.push_back(var_mgr->cudd_mgr()->bddOne());
+
+    CUDD::BDD ne_final_states = dfa.final_states() * ne_sink;
+
+     
+    SymbolicStateDfa ne_dfa(std::move(var_mgr));
+    ne_dfa.automaton_id_ = new_id;
+    ne_dfa.initial_state_ = std::move(ne_initial_state);
+    ne_dfa.transition_function_ = std::move(ne_transition_function);
+    ne_dfa.final_states_ = std::move(ne_final_states);
+
+    return ne_dfa;  
+
+
+}
 }
 

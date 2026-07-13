@@ -29,8 +29,13 @@ namespace Syft {
         const whitemech::lydia::ltlf_ptr formula;
     };
 
+    // Single formula (backward compatibility)
     TLSFArgs parse_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
                         const std::string &formula_file, const std::optional<std::string> &path_to_syfco_opt = std::nullopt);
+
+    // NEW // Multi-agent: multiple formulas
+    std::vector<TLSFArgs> parse_multi_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
+                                           const std::vector<std::string> &formula_files, const std::optional<std::string> &path_to_syfco_opt = std::nullopt);
 
     std::string find_syfco_path(const std::optional<std::string> & syfco_path_opt) ;
 
@@ -43,6 +48,10 @@ namespace Syft {
 
     Syft::SymbolicStateDfa
     do_dfa_construction(const whitemech::lydia::LTLfFormula &formula, const std::shared_ptr<Syft::VarMgr> &var_mgr);
+
+    // Multi-agent: multiple DFAs
+    std::vector<Syft::SymbolicStateDfa>
+    do_multi_dfa_construction(const std::vector<whitemech::lydia::LTLfFormula> &formulas, const std::shared_ptr<Syft::VarMgr> &var_mgr);
 
     std::string read_assumption_file_if_file_specified(const std::optional<std::string> &filename);
 

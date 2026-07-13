@@ -40,6 +40,10 @@ class Transducer {
    * \brief Saves the output function of the transducer in a .dot file.
    */
   void dump_dot(const std::string& filename) const;
+
+  std::unordered_map<int, CUDD::BDD> get_output_function() const {
+    return output_function_;
+  }
 };
 
 }

@@ -3,7 +3,10 @@ project(LydiaSyft)
 
 include(FetchContent)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_INSTALL_PREFIX /usr/local)
 
@@ -30,7 +33,6 @@ if (NOT DEFINED MONA_USE_STATIC_LIBS)
   set(MONA_USE_STATIC_LIBS ON)
 endif()
 find_package(mona REQUIRED)
-
 
 if (NOT DEFINED Z3_FETCH)
   set(Z3_FETCH ON)
@@ -85,14 +87,14 @@ set(EXT_INCLUDE_PATH ${LYDIA_INCLUDE_DIR} ${LYDIA_THIRD_PARTY_INCLUDE_PATH} ${CU
 
 message(STATUS EXT_LIBRARIES_PATH ${EXT_LIBRARIES_PATH})
 
-enable_testing()
+# enable_testing()
 
 add_subdirectory(src)
 
-if (LYDIASYFT_ENABLE_TESTS)
-  add_subdirectory(test)
-endif()
+#if (LYDIASYFT_ENABLE_TESTS)
+   add_subdirectory(test)
+# endif()
 
-if (LYDIASYFT_ENABLE_EXAMPLES)
+# if (LYDIASYFT_ENABLE_EXAMPLES)
   add_subdirectory(examples)
-endif()
+# endif()

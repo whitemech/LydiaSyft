@@ -15,15 +15,15 @@ int main(int argc, char ** argv) {
     auto driver = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     std::stringstream formula_p_stream(formula_p_str);
     driver->parse(formula_p_stream);
-    whitemech::lydia::ltlf_ptr formula_p = driver->get_result();
+    whitemech::lydia::ltlf_ptr formula_p = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver->get_result());
 
     std::stringstream formula_q_stream(formula_q_str);
     driver->parse(formula_q_stream);
-    whitemech::lydia::ltlf_ptr formula_q = driver->get_result();
+    whitemech::lydia::ltlf_ptr formula_q = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver->get_result());
 
     std::stringstream formula_r_stream(formula_r_str);
     driver->parse(formula_r_stream);
-    whitemech::lydia::ltlf_ptr formula_r = driver->get_result();
+    whitemech::lydia::ltlf_ptr formula_r = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver->get_result());
 
     // build the explicit-state DFAs
     Syft::ExplicitStateDfa dfa_p = Syft::ExplicitStateDfa::dfa_of_formula(*formula_p);

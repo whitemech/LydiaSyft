@@ -7,6 +7,7 @@
 #include <cuddObj.hh>
 
 #include "ExplicitStateDfaAdd.h"
+#include "Synthesizer.h"
 
 namespace Syft {
 
@@ -46,6 +47,23 @@ namespace Syft {
                 const std::vector<CUDD::ADD> &transition_function);
 
     public:
+
+        /**
+        * \brief Constructs a symbolic DFA
+        * 
+        * \param var_mgr. The variable manager of the DFA
+        * \param automaton_id. The ID of the DFA within the variable manager
+        * \param initial_state. The initial state of the DFA
+        * \param transition_function. The transition function of the DFA
+        * \param final_states. The final states of the DFA
+        */
+        SymbolicStateDfa(
+            std::shared_ptr<Syft::VarMgr> var_mgr,
+            std::size_t automaton_id,
+            const std::vector<int>& initial_state,
+            const std::vector<CUDD::BDD>& transition_function,
+            const CUDD::BDD& final_states
+        );
 
 
         /**
@@ -180,8 +198,29 @@ namespace Syft {
     * \return A symbolic DFA of the complement.
     */
         static SymbolicStateDfa complement(const SymbolicStateDfa dfa);
+    
+        /**
+       
+        /**
+    * \brief Returns the CORE of a formula.
+    *
+    * \param dwa of the specification of an actor.
+    * \param protagonist_actor the protagonist actor for which we want to compute the CORE.
+    * \param starting_actor the starting actor for the game used to compute the winning region.
+    * \return A symbolic DWA that accepts the CORE(formula).
+    */ 
+        static SymbolicStateDfa get_CORE(const SymbolicStateDfa &dfa, Actor protagonist_actor, Actor starting_actor);
+    
+        /**
+    * \brief Returns a dwa.
+    *
+    * \param dwa of the specification of an actor.
+    * \param protagonist_actor the protagonist actor.
+    * \return A symbolic DWA  with a non empty new state variable.
+    */ 
+        static SymbolicStateDfa get_NE(const SymbolicStateDfa &dfa, Actor protagonist_actor);
     };
-
+    
 }
 
 #endif // SYMBOLIC_STATE_DFA_H

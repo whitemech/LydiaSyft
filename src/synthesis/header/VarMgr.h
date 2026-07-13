@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <iostream>
 
 #include "cuddObj.hh"
 
@@ -20,8 +21,8 @@ namespace Syft {
         std::unordered_map<std::string, CUDD::BDD> name_to_variable_;
         std::size_t state_variable_count_ = 0;
         std::vector<std::vector<CUDD::BDD>> state_variables_;
-        std::vector<CUDD::BDD> input_variables_;
-        std::vector<CUDD::BDD> output_variables_;
+        std::vector<CUDD::BDD> input_variables_; //enviroment variables
+        std::vector<std::vector<CUDD::BDD>> agent_variables_; // 0 is the main agent, 1..n are peer agents
         std::size_t total_variable_count_ = 0;
 
     public:
@@ -32,12 +33,39 @@ namespace Syft {
         VarMgr();
 
         /**
+        * \brief Prints the VarMgr
+        */
+        void print_mgr() const;
+
+        /**
+        * \brief Prints BDD variables
+        */
+        void print_bdd_vars(CUDD::BDD cube) const;
+
+        /**
          * \brief Creates BDD variables and associates each with a name.
          *
          * \param variable_names The names of the variables to create. A new variable
          *   is only created if a variable by that name does not already exist.
          */
         void create_named_variables(const std::vector<std::string> &variable_names);
+
+        /**
+        * \brief Create and store input variables
+        * 
+        * \param input_vars The input variables to create
+        * \return void. Adds input_vars to input variables
+        */
+        void create_input_variables(const std::vector<std::string>& input_vars);
+
+        /**
+        * \brief Create and store agent variables for a specific agent
+        * 
+        * \param agent_id The ID of the agent (0 for main agent, 1..n for peer agents)
+        * \param agent_vars The agent variables to create
+        * \return void. Adds agent_vars to the specified agent's variables
+        */
+        void create_agent_variables(std::size_t agent_id, const std::vector<std::string>& agent_vars);
 
         /**
          * \brief Creates and stores state variables.
@@ -50,6 +78,18 @@ namespace Syft {
          * \return The automaton ID the variables are associated with.
          */
         std::size_t create_state_variables(std::size_t variable_count);
+
+        /**
+         * \brief Creates and stores named state variables
+         * 
+         * Multiple calls of this function create separate groups of state variables.
+         * The call generates an ID for the automaton whose state space the variables
+         * represent, so that the correct group of variables can be retrieved later.
+         *
+         * \param variable_names The names of the variables being created.
+         * \return The automaton ID the variables are associated with.
+         */
+        std::size_t create_named_state_variables(const std::vector<std::string>& variable_names);
 
         /**
          * \brief Registers a new automaton ID associated with a product state space.
@@ -73,6 +113,14 @@ namespace Syft {
         CUDD::BDD state_variable(std::size_t automaton_id, std::size_t i) const;
 
         /**
+        * \brief get the state variables of the automaton with the given automaton_id
+        * 
+        * \param automaton_id. The automaton_id of the DFA whose state variables are being returned
+        * \return std::vector<CUDD::BDD> of state variables
+        */
+        std::vector<CUDD::BDD> state_variables(std::size_t automaton_id) const;
+
+        /**
          * \brief Converts a state vector to a BDD.
          *
          * \param automaton_id The ID of the automaton whose variables to use.
@@ -86,15 +134,15 @@ namespace Syft {
                                       const std::vector<int> &state_vector) const;
 
         /**
-         * \brief Partitions the named variables between inputs and outputs.
+         * \brief Partitions the named variables between inputs and agents.
          *
          * \param input_names The names of the variables that should be considered
          *   inputs.
-         * \param output_names The names of the variables that should be considered
-         *   outputs.
+         * \param agent_names A vector of vectors, where agent_names[0] contains
+         *   the names for the main agent, and agent_names[1..n] for peer agents.
          */
         void partition_variables(const std::vector<std::string> &input_names,
-                                 const std::vector<std::string> &output_names);
+                                 const std::vector<std::vector<std::string>> &agent_names);
 
         /**
          * \brief Returns the CUDD manager used to create the variables.
@@ -110,6 +158,11 @@ namespace Syft {
          * \brief Returns the name of the variable at index \a index.
          */
         std::string index_to_name(int index) const;
+
+        /**
+         * \brief Returns the map between integers and var names
+         */
+        std::unordered_map<int, std::string> get_index_to_name_map() const;
 
         /**
          * \brief Returns the total number of variables, including named and state.
@@ -132,19 +185,57 @@ namespace Syft {
         std::size_t input_variable_count() const;
 
         /**
-         * \brief Returns the number of output variables.
+         * \brief Returns the number of environment variables.
          */
-        std::size_t output_variable_count() const;
+        std::size_t environment_variable_count() const;
 
         /**
-         * \brief Returns a BDD formed by the conjunction of all input variables.
+         * \brief Returns the number of variables for a given agent.
+         */
+        std::size_t agent_variable_count(std::size_t agent_id) const;
+        
+        /**
+         * \brief Returns the number agents.
+         */
+        std::size_t agents_count() const;
+
+        /**
+         * \brief Backword compatibility: Returns a BDD formed by the conjunction of all environment variables.
          */
         CUDD::BDD input_cube() const;
 
         /**
-         * \brief Returns a BDD formed by the conjunction of all output variables.
+         * \brief Returns a BDD formed by the conjunction of all agents variables.
          */
-        CUDD::BDD output_cube() const;
+        CUDD::BDD environment_input_cube() const;
+
+        /**
+         * \brief Returns a BDD formed by the conjunction of all environment variables.
+         */
+        CUDD::BDD environment_output_cube() const;
+
+
+        /**
+         * \brief Returns a BDD formed by the conjunction of all the variables wich are not under the control of agent with ID agent_id.
+         */
+        CUDD::BDD agent_input_cube(std::size_t agent_id) const;
+
+        /**
+         * \brief Returns a BDD formed by the conjunction of all agent variables for a given agent.
+         */
+        CUDD::BDD agent_output_cube(std::size_t agent_id) const;
+
+        /**
+        * @brief Determine whether a string is an input variable
+        * \param var. The name of a variable as a string
+        */
+        bool is_input_variable(const std::string& var) const;
+
+        /**
+        * @brief Determine whether a string is an agent variable
+        * \param var. The name of a variable as a string
+        * \param agent_id. The ID of the agent         */
+        bool is_agent_variable(const std::string& var, std::size_t agent_id) const;
 
         /**
          * \brief Returns a BDD formed by the conjunction of all state variables of automaton automaton_id.
@@ -218,14 +309,15 @@ namespace Syft {
         std::vector<std::string> input_variable_labels() const;
 
         /**
-         * \brief Returns a vector with a label for each output variable.
+         * \brief Returns a vector with a label for each agent variable.
          *
          * To be used with CUDD::Cudd::DumpDot.
          *
+         * \param agent_id The ID of the agent whose variables to label.
          * \return A vector \a v such that \a v[i] contains the name of the i-th
-         *   output variable.
+         *   agent variable.
          */
-        std::vector<std::string> output_variable_labels() const;
+        std::vector<std::string> agent_variable_labels(std::size_t agent_id) const;
 
         /**
          * \brief Returns a vector with a label for each state variable.
@@ -281,6 +373,44 @@ namespace Syft {
          */
         std::size_t create_complement_state_space(
                 const std::size_t automaton_id);
+        
+        /**
+         * \brief Create the state space when creating the core of a DFA.
+         *
+         */
+        std::size_t create_core_state_space(
+                const std::size_t automaton_id, const std::string& sink_name);
+
+        /**
+         * \brief Create the non empty space.
+         *
+         */
+        std::size_t create_nonempty_state_space(
+                const std::size_t automaton_id, const std::string& ne_name);
+
+
+        // Backward compatibility for two-player
+        void create_output_variables(const std::vector<std::string>& output_vars) {
+            create_agent_variables(0, output_vars);  // Main agent is index 0
+        }
+        std::size_t output_variable_count() const {
+            return agent_variable_count(0);
+        }
+        CUDD::BDD output_cube() const {
+            return agent_output_cube(0);
+        }
+        bool is_output_variable(const std::string& var) const {
+            return is_agent_variable(var, 0);
+        }
+        std::vector<std::string> output_variable_labels() const {
+            return agent_variable_labels(0);
+        }
+        // Overload partition_variables for old signature
+        void partition_variables(const std::vector<std::string> &input_names,
+                                 const std::vector<std::string> &output_names) {
+            std::vector<std::vector<std::string>> agent_names = {output_names};  // Only main agent
+            partition_variables(input_names, agent_names);
+        }
     };
 
 }

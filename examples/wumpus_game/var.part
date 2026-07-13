@@ -1,0 +1,4 @@
+.inputs: at00 at01 at02 at10 at11 at12 at20 at21 at22 w1at00 w1at01 w1at02 w1at10 w1at11 w1at12 w1at20 w1at21 w1at22 w2at00 w2at01 w2at02 w2at10 w2at11 w2at12 w2at20 w2at21 w2at22
+.agent0: anorth asouth aeast awest
+.agent1: w1north w1south w1east w1west
+.agent2: w2north w2south w2east w2west

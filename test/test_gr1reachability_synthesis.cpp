@@ -37,8 +37,7 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     driver_agn_goal = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     std::stringstream formula_stream(parser.get_formula());
     driver_agn_goal->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr parsed_formula_agn_goal = driver_agn_goal->get_result();
-    // Apply no-empty semantics
+    whitemech::lydia::ltlf_ptr parsed_formula_agn_goal = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_agn_goal->get_result());    // Apply no-empty semantics
     auto context = driver_agn_goal->context;
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula_agn_goal = context->makeLtlfAnd({parsed_formula_agn_goal, not_end});
@@ -60,8 +59,7 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     std::getline(in_env_safety, env_safety);
     std::stringstream formula_stream_env_safety(env_safety);
     driver_env_safety->parse(formula_stream_env_safety);
-    whitemech::lydia::ltlf_ptr parsed_formula_env_safety = driver_env_safety->get_result();
-    // Apply no-empty semantics
+    whitemech::lydia::ltlf_ptr parsed_formula_env_safety = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_env_safety->get_result());    // Apply no-empty semantics
     parsed_formula_env_safety = context->makeLtlfAnd({parsed_formula_env_safety, not_end});
 
     Syft::ExplicitStateDfa explicit_dfa_env_safety = Syft::ExplicitStateDfa::dfa_of_formula(*parsed_formula_env_safety);
@@ -81,7 +79,7 @@ TEST_CASE("GR1 Synthesis test", "[gr1 synthesis]") {
     std::getline(in_agn_safety, agn_safety);
     std::stringstream formula_stream_agn_safety(agn_safety);
     driver_env_safety->parse(formula_stream_agn_safety);
-    whitemech::lydia::ltlf_ptr parsed_formula_agn_safety = driver_env_safety->get_result();
+    whitemech::lydia::ltlf_ptr parsed_formula_agn_safety = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_env_safety->get_result());
     // Apply no-empty semantics
     parsed_formula_agn_safety = context->makeLtlfAnd({parsed_formula_agn_safety, not_end});
 
@@ -133,8 +131,7 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     driver_agn_goal = std::make_shared<whitemech::lydia::parsers::ltlf::LTLfDriver>();
     std::stringstream formula_stream(parser.get_formula());
     driver_agn_goal->parse(formula_stream);
-    whitemech::lydia::ltlf_ptr parsed_formula_agn_goal = driver_agn_goal->get_result();
-    // Apply no-empty semantics
+    whitemech::lydia::ltlf_ptr parsed_formula_agn_goal = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_agn_goal->get_result());    // Apply no-empty semantics
     auto context = driver_agn_goal->context;
     auto not_end = context->makeLtlfNotEnd();
     parsed_formula_agn_goal = context->makeLtlfAnd({parsed_formula_agn_goal, not_end});
@@ -156,7 +153,7 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     std::getline(in_env_safety, env_safety);
     std::stringstream formula_stream_env_safety(env_safety);
     driver_env_safety->parse(formula_stream_env_safety);
-    whitemech::lydia::ltlf_ptr parsed_formula_env_safety = driver_env_safety->get_result();
+    whitemech::lydia::ltlf_ptr parsed_formula_env_safety = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_env_safety->get_result());
     // Apply no-empty semantics
     parsed_formula_env_safety = context->makeLtlfAnd({parsed_formula_env_safety, not_end});
 
@@ -178,7 +175,7 @@ TEST_CASE("GR1 Synthesis finding_nemo", "[gr1 synthesis]") {
     std::getline(in_agn_safety, agn_safety);
     std::stringstream formula_stream_agn_safety(agn_safety);
     driver_env_safety->parse(formula_stream_agn_safety);
-    whitemech::lydia::ltlf_ptr parsed_formula_agn_safety = driver_env_safety->get_result();
+    whitemech::lydia::ltlf_ptr parsed_formula_agn_safety = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(driver_env_safety->get_result());
     // Apply no-empty semantics
     parsed_formula_agn_safety = context->makeLtlfAnd({parsed_formula_agn_safety, not_end});
 

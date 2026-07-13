@@ -25,11 +25,11 @@ namespace Syft {
         total_time_stopwatch.start();
 
         // preprocessing
-        auto one_step_result = preprocessing(*args_.formula, args_.partition, *var_mgr_, args_.starting_player);
-        if (handle_preprocessing_result_(one_step_result, total_time_stopwatch)) {
-            // preprocessing was successful
-            return;
-        }
+        // auto one_step_result = preprocessing(*args_.formula, args_.partition, *var_mgr_, args_.starting_player);
+        // if (handle_preprocessing_result_(one_step_result, total_time_stopwatch)) {
+        //     // preprocessing was successful
+        //     return;
+        // }
 
         // proceed with DFA construction
         auto symbolic_dfa = do_dfa_construction_();

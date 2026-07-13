@@ -1,0 +1,1 @@
+A(G(w1at02 || w1at12 || w1at22)) && A(G(w1north || w1south || w1east || w1west && (w1north -> (!w1south && !w1east && !w1west)) && (w1south -> (!w1north && !w1east && !w1west)) && (w1east -> (!w1north && !w1south && !w1west)) && (w1west -> (!w1north && !w1south && !w1east)))) && A(G((w1at02 -> X(w1at12)) && (w1at12 -> X(w1at02 || w1at22)) && (w1at22 -> X(w1at12))))

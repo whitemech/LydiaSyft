@@ -59,7 +59,11 @@ namespace Syft {
 
     CUDD::BDD DfaGameSynthesizer::project_into_states(
             const CUDD::BDD &winning_moves) const {
-        return quantify_non_state_variables_->apply(winning_moves);
+
+        CUDD::BDD result = quantify_non_state_variables_->apply(winning_moves);
+        std::cout << "DFA game synthesizer_project into states: " << result << std::endl;
+
+        return result;
     }
 
     bool DfaGameSynthesizer::includes_initial_state(

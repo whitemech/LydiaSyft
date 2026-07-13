@@ -4,8 +4,11 @@
 #include <memory>
 
 #include "game/Transducer.h"
+#include "game/Transducer_multiagent.h"
 #include <tuple>
 #include <optional>
+#include "lydia/logic/pnf.hpp"
+#include "lydia/logic/pp_pnf.hpp"
 
 
 namespace Syft {
@@ -18,6 +21,7 @@ namespace Syft {
         CUDD::BDD winning_states;
         CUDD::BDD winning_moves;
         std::unique_ptr<Transducer> transducer;
+        std::unique_ptr<Transducer_multiagent> transducer_multiagent;
         CUDD::BDD safe_states;
     };
 
@@ -31,7 +35,13 @@ namespace Syft {
         std::optional<bool> realizability = std::nullopt;
         CUDD::BDD winning_move;
     };
-
+    
+    struct LTLfPlus {
+        std::string color_formula_;
+        std::unordered_map<whitemech::lydia::ltlf_plus_ptr, std::string> formula_to_color_;
+        std::unordered_map<whitemech::lydia::ltlf_plus_ptr, whitemech::lydia::PrefixQuantifier> formula_to_quantification_;
+    };
+ 
 /**
  * \brief Abstract class for synthesizers.
  *
@@ -62,6 +72,7 @@ namespace Syft {
          * a transducer representing a winning strategy for the specification or nullptr if the specification is unrealizable.
          */
         virtual SynthesisResult run() const = 0;
+
     };
 
 }

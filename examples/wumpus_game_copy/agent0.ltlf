@@ -1,0 +1,1 @@
+((E(F(at00 && F(at11)))) && A(G((anord || asud || aovest || aest) && (anord -> (!asud && !aovest && !aest)) && (asud -> (!anord && !aovest && !aest)) && (aovest -> (!anord && !asud && !aest)) && (aest -> (!anord && !asud && !aovest))))) 

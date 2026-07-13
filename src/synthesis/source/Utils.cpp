@@ -57,12 +57,22 @@ namespace Syft {
 
         Syft::InputOutputPartition partition =
                 Syft::InputOutputPartition::construct_from_input(parser.get_input_variables(),
-                                                                 parser.get_output_variables());
+                                                                 parser.get_agent_variables());
 
         // Parsing the formula
         whitemech::lydia::ltlf_ptr parsed_formula = parse_formula(driver, parser.get_formula());
 
         return {starting_player, protagonist_player, partition, parsed_formula};
+    }
+
+    // Multi-agent version
+    std::vector<TLSFArgs> parse_multi_tlsf(const std::shared_ptr<whitemech::lydia::parsers::ltlf::LTLfDriver> &driver,
+                                           const std::vector<std::string> &formula_files, const std::optional<std::string> &path_to_syfco_opt) {
+        std::vector<TLSFArgs> results;
+        for (const auto& file : formula_files) {
+            results.push_back(parse_tlsf(driver, file, path_to_syfco_opt));
+        }
+        return results;
     }
 
 
@@ -71,7 +81,8 @@ namespace Syft {
                                              const std::string &formula) {
         std::stringstream formula_stream(formula);
         driver->parse(formula_stream);
-        whitemech::lydia::ltlf_ptr parsed_formula = driver->get_result();
+        auto result = driver->get_result();
+        whitemech::lydia::ltlf_ptr parsed_formula = std::dynamic_pointer_cast<const whitemech::lydia::LTLfFormula>(result);
         // Apply no-empty semantics
         auto context = driver->context;
         auto not_end = context->makeLtlfNotEnd();
@@ -92,6 +103,16 @@ namespace Syft {
         Syft::ExplicitStateDfaAdd explicit_dfa = Syft::ExplicitStateDfaAdd::from_dfa_mona(var_mgr, explicit_dfa_mona);
         Syft::SymbolicStateDfa symbolic_dfa = Syft::SymbolicStateDfa::from_explicit(explicit_dfa);
         return symbolic_dfa;
+    }
+
+    // Multi-agent version
+    std::vector<Syft::SymbolicStateDfa>
+    do_multi_dfa_construction(const std::vector<whitemech::lydia::LTLfFormula> &formulas, const std::shared_ptr<Syft::VarMgr> &var_mgr) {
+        std::vector<Syft::SymbolicStateDfa> dfas;
+        for (const auto& formula : formulas) {
+            dfas.push_back(do_dfa_construction(formula, var_mgr));
+        }
+        return dfas;
     }
 
 
